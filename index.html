@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ARCANA — Psicologia Archetipica</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  html, body { width: 100%; min-height: 100vh; overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #000; color: #e0e0e0; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; line-height: 1.6; }
+  #root { width: 100%; min-height: 100vh; overflow-y: auto; overflow-x: hidden; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+  @keyframes twinkle { 0%, 100% { opacity: 0.15; transform: scale(0.8); } 50% { opacity: 0.9; transform: scale(1.3); } }
+  .spin { animation: spin 1s linear infinite; }
+  .fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  .fade-in { animation: fadeIn 0.5s ease forwards; }
+  .pulse { animation: pulse 4s ease-in-out infinite; }
+  .float { animation: float 6s ease-in-out infinite; }
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; }
+  textarea { font-family: inherit; resize: none; outline: none; border: none; }
+  .tab-scroll::-webkit-scrollbar { display: none; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback, useMemo } = React;
+
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
+
+const SIGNS = [
+  { key:'ariete', name:'Ariete', symbol:'♈', archetype:'Il Guerriero', planet:'Marte', stone:'Rubino', color:'#e8391a', colorLight:'#ff6b4a', darkBg:'#1a0505', rgb:[232,57,26], starColor:'#ff8a65', day:'Martedì', number:9,
+    w:'La paura di essere inutile, di non lasciare traccia. Il terrore che la propria fiamma si consumi nel vuoto.',
+    img:'Un guerriero con la fronte insanguinata che avanza verso un muro di fuoco, non per vincere, ma per dimostrare a se stesso che esiste.',
+    v:'Voce tagliente, ritmata come il battito di un tamburo di guerra. Frasi corte. Nessuna punteggiatura emotiva.',
+    sec:'L\'astrologia comune dice che Ariete è impulsivo. La verità è che Ariete ha paura del vuoto tra un impulso e l\'altro.' },
+  { key:'toro', name:'Toro', symbol:'♉', archetype:'Il Costruttore', planet:'Venere', stone:'Smeraldo', color:'#2d8a3e', colorLight:'#5cb85c', darkBg:'#051a08', rgb:[45,138,62], starColor:'#81c784', day:'Venerdì', number:6,
+    w:'La paura che tutto ciò che ha costruito possa svanire in un attimo. Il terrore della perdita materiale come perdita di sé.',
+    img:'Un toro che scalpisce la terra, ma le corna sono fatte di radici. Non combatte: ancora. Ogni passo è una fondamenta.',
+    v:'Voce lenta, pesante, come il rotolare di pietre millenarie. Frasi che si costruiscono mattone su mattone.',
+    sec:'L\'astrologia comune dice che Toro è testardo. La verità è che Toro ha paura che, se cede anche una volta, tutto crolli.' },
+  { key:'gemelli', name:'Gemelli', symbol:'♊', archetype:'Il Messaggero', planet:'Mercurio', stone:'Agata', color:'#e0b030', colorLight:'#ffe082', darkBg:'#1a1605', rgb:[224,176,48], starColor:'#fff176', day:'Mercoledì', number:5,
+    w:'La paura di essere solo una faccia di una moneta mai lanciata. Il terrore che entrambe le versioni di sé siano false.',
+    img:'Due figure speculari che si guardano attraverso uno specchio rotto. Non si riconoscono, ma non possono smettere di cercarsi.',
+    v:'Voce che cambia registro ogni tre parole. Veloce, saltellante, piena di pause strategiche.',
+    sec:'L\'astrologia comune dice che Gemelli è superficiale. La verità è che Gemelli ha scavato così a fondo nella propria duplicità che la superficie è diventata profondità.' },
+  { key:'cancro', name:'Cancro', symbol:'♋', archetype:'La Madre', planet:'Luna', stone:'Perla', color:'#4aa8cc', colorLight:'#80deea', darkBg:'#05101a', rgb:[74,168,204], starColor:'#b2ebf2', day:'Lunedì', number:2,
+    w:'La paura che il guscio non basti. Che il mondo esterno scopra quanto è fragile ciò che protegge.',
+    img:'Un granchio che cammina all\'indietro verso il mare, tenendo in una chela un cuore ancora pulsante.',
+    v:'Voce che fluttua come la marea. A volte sommersa, a volte a galla. Parla in metafore liquide.',
+    sec:'L\'astrologia comune dice che Cancro è troppo sensibile. La verità è che Cancro ha imparato a sentire ciò che gli altri non osano.' },
+  { key:'leone', name:'Leone', symbol:'♌', archetype:'Il Sovrano', planet:'Sole', stone:'Diamante', color:'#e8a020', colorLight:'#ffd54f', darkBg:'#1a1205', rgb:[232,160,32], starColor:'#ffcc80', day:'Domenica', number:1,
+    w:'La paura che, se nessuno lo guarda, smetta di esistere. Il terrore dell\'invisibilità più profondo del terrore della morte.',
+    img:'Un leone che cammina su una savanna bruciata. La criniera è fatta di raggi di sole spenti.',
+    v:'Voce che riempie la stanza anche quando sussurra. Teatrale ma mai falsa. Ogni parola è un atto di presenza.',
+    sec:'L\'astrologia comune dice che Leone è vanitoso. La verità è che Leone ha paura che, se non brilla, il buio lo inghiotta.' },
+  { key:'vergine', name:'Vergine', symbol:'♍', archetype:'L\'Alchimista', planet:'Mercurio', stone:'Zaffiro', color:'#6b8f71', colorLight:'#a5d6a7', darkBg:'#051a08', rgb:[107,143,113], starColor:'#c8e6c9', day:'Mercoledì', number:5,
+    w:'La paura che il mondo sia irrimediabilmente disordinato e che il proprio ordine sia solo un\'illusione patetica.',
+    img:'Una figura che setaccia la sabbia cercando un granello d\'oro che sa non esistere. Ma non può smettere.',
+    v:'Voce precisa, chirurgica, che pesa ogni parola su una bilancia invisibile. Frasi costruite come dimostrazioni matematiche.',
+    sec:'L\'astrologia comune dice che Vergine è critica. La verità è che Vergine si critica mille volte di più degli altri.' },
+  { key:'bilancia', name:'Bilancia', symbol:'♎', archetype:'Il Giudice', planet:'Venere', stone:'Opale', color:'#c090c0', colorLight:'#e1bee7', darkBg:'#1a051a', rgb:[192,144,192], starColor:'#f3e5f5', day:'Venerdì', number:6,
+    w:'La paura di scegliere e di sbagliare. Il terrore che ogni decisione sia una violenza contro qualcuno.',
+    img:'Due piatti di una bilancia che oscillano nel vuoto. Non c\'è peso su nessuno dei due.',
+    v:'Voce che cerca sempre la giusta nota, come un violino che si accorda all\'infinito. Frasi bilanciate, simmetriche.',
+    sec:'L\'astrologia comune dice che Bilancia è indecisa. La verità è che Bilancia vede tutte le verità contemporaneamente.' },
+  { key:'scorpione', name:'Scorpione', symbol:'♏', archetype:'Il Trasformatore', planet:'Plutone', stone:'Ossidiana', color:'#9030c8', colorLight:'#ce93d8', darkBg:'#0a0514', rgb:[144,48,200], starColor:'#ce93d8', day:'Martedì', number:9,
+    w:'La paura di essere visto nella propria nudità più totale. Il terrore che qualcuno scopra quanto è profondo il pozzo.',
+    img:'Uno scorpione che si punge con il proprio pungiglione. Non è suicidio: è alchimia. Il veleno è anche l\'antidoto.',
+    v:'Voce che emerge dal sottosuolo. Lenta, intensa, ogni parola carica di sottintesi.',
+    sec:'L\'astrologia comune dice che Scorpione è vendicativo. La verità è che Scorpione non dimentica perché non può.' },
+  { key:'sagittario', name:'Sagittario', symbol:'♐', archetype:'Il Cercatore', planet:'Giove', stone:'Topazio', color:'#8060e0', colorLight:'#b39ddb', darkBg:'#0f051a', rgb:[128,96,224], starColor:'#d1c4e9', day:'Giovedì', number:3,
+    w:'La paura che la verità non esista, e che tutta la ricerca sia una fuga da un vuoto più grande.',
+    img:'Un arciere che scaglia frecce verso l\'orizzonte, ma le frecce sono fatte di domande.',
+    v:'Voce che si espande, esplora, divaga. Frasi lunghe che attraversano continenti.',
+    sec:'L\'astrologia comune dice che Sagittario è ottimista. La verità è che Sagittario ha visto l\'abisso e ha deciso di correre.' },
+  { key:'capricorno', name:'Capricorno', symbol:'♑', archetype:'Il Maestro', planet:'Saturno', stone:'Onice', color:'#607080', colorLight:'#90a4ae', darkBg:'#0a0d12', rgb:[96,112,128], starColor:'#b0bec5', day:'Sabato', number:8,
+    w:'La paura che tutto il lavoro, tutta la disciplina, tutta la rinuncia siano stati inutili.',
+    img:'Una capra che scala una montagna di ossa. Ogni passo è un sacrificio. In cima c\'è uno specchio che riflette il vuoto.',
+    v:'Voce secca, essenziale, come pietra su pietra. Frasi che non sprecano nulla.',
+    sec:'L\'astrologia comune dice che Capricorno è freddo. La verità è che Capricorno ha spento il fuoco per non bruciare.' },
+  { key:'acquario', name:'Acquario', symbol:'♒', archetype:'Il Visionario', planet:'Urano', stone:'Ametista', color:'#5060d8', colorLight:'#9fa8da', darkBg:'#050a1a', rgb:[80,96,216], starColor:'#c5cae9', day:'Sabato', number:4,
+    w:'La paura di appartenere. Il terrore che, se si lascia entrare qualcuno, si perda la propria unicità.',
+    img:'Una figura che versa acqua da un\'anfora rotta. L\'acqua non cade: vola verso le stelle.',
+    v:'Voce che viene da un altro pianeta. Distaccata, brillante, piena di salti logici.',
+    sec:'L\'astrologia comune dice che Acquario è distaccato. La verità è che Acquario sente così intensamente che ha dovuto creare distanza.' },
+  { key:'pesci', name:'Pesci', symbol:'♓', archetype:'Il Mistico', planet:'Nettuno', stone:'Acquamarina', color:'#4858b8', colorLight:'#9fa8da', darkBg:'#05081a', rgb:[72,88,184], starColor:'#c5cae9', day:'Giovedì', number:7,
+    w:'La paura di confondersi con il mare. Il terrore che i propri confini siano così permeabili da non esistere più.',
+    img:'Due pesci che nuotano in direzioni opposte, legati da un filo d\'argento. Non si allontanano mai.',
+    v:'Voce che fluisce, si dissolve, ricompare. Frasi che non finiscono mai davvero.',
+    sec:'L\'astrologia comune dice che Pesci è confuso. La verità è che Pesci vede mille verità sovrapposte.' }
+];
+
+const THEMES = {
+  dark: { name:'Notte', bg:'#000000', text:'#e8e0f0', textMuted:'#6a5a7a', card:'#0d0a12', border:'#1a1420', accent:'#d4a5d4', surface:'#130f1a' },
+  dim:  { name:'Crepuscolo', bg:'#0d0a14', text:'#d4c4e0', textMuted:'#7a6a8a', card:'#151020', border:'#251a35', accent:'#d4a5d4', surface:'#1a1428' },
+  light:{ name:'Aurora', bg:'#f5f0ff', text:'#1a0a2e', textMuted:'#6a5a7a', card:'#ffffff', border:'#e0d5f0', accent:'#7818b8', surface:'#faf5ff' }
+};
+
+const TABS = [
+  { key:'psiche',  label:'Psiche',  question:'Cosa vedi quando chiudi gli occhi?',  hint:'L\'inconscio parla oggi' },
+  { key:'eros',    label:'Eros',    question:'Cosa desideri senza osarlo?',           hint:'Il desiderio nascosto' },
+  { key:'ombra',   label:'Ombra',   question:'Cosa neghi di essere?',                hint:'Ciò che proietti' },
+  { key:'soma',    label:'Soma',    question:'Dove senti il peso del corpo?',         hint:'Il corpo ricorda' },
+  { key:'oracolo', label:'Oracolo', question:'Una sola frase per oggi.',              hint:'L\'oracolo non chiede permesso' }
+];
+
+const MANUAL_SECTIONS = [
+  { key:'essenza', title:'Essenza', icon:'✦' },
+  { key:'ferita',  title:'Ferita',  icon:'◈' },
+  { key:'dono',    title:'Dono',    icon:'◇' },
+  { key:'ombra',   title:'Ombra',   icon:'◉' },
+  { key:'eros',    title:'Eros',    icon:'◆' },
+  { key:'karma',   title:'Karma',   icon:'◎' },
+  { key:'rituale', title:'Rituale', icon:'✧' }
+];
+
+const SIGN_MANUAL = {
+  ariete: {
+    essenza: "Ariete è il fuoco che precede il pensiero. Il primo impulso dell'universo a esprimersi. Vive nell'eterno adesso dell'azione — non sa aspettare perché l'attesa gli sembra tradimento di ciò che è.",
+    dono:    "La capacità di aprire varchi dove altri vedono muri. Il coraggio non come assenza di paura, ma come movimento nonostante essa. Ariete inizia ciò che il mondo non sa ancora di volere.",
+    eros:    "Ama con tutto il corpo, senza strategie. Il desiderio è immediato e totale — vuole conquistare, ma cerca già la prossima sfida prima di capire cosa ha trovato. L'intensità è la sua forma d'amore.",
+    karma:   "Imparare che la forza vera non è nella velocità ma nella profondità. Che alcune battaglie si vincono stando fermi. Che il silenzio non è resa ma presenza.",
+    rituale: "All'alba, accendi una candela rossa. Scrivi su un foglio ciò che vuoi bruciare via da te. Guarda le fiamme fino a quando non senti di poter ricominciare."
+  },
+  toro: {
+    essenza: "Toro è la terra sotto i piedi. La certezza del corpo, il sapore del pane, il calore di ciò che si tiene tra le mani. Esiste per ancorare il mondo alla realtà sensibile.",
+    dono:    "La pazienza come forma d'amore. La capacità di costruire qualcosa di duraturo nel tempo. La fedeltà come atto rivoluzionario in un'epoca di abbandoni.",
+    eros:    "Sensuale e profondo, ama con il corpo prima che con le parole. Ha bisogno di tempo, di ritmi, di ritualità. L'eros di Toro è un giardino: non si forza, si coltiva con costanza.",
+    karma:   "Imparare che il distacco non è perdita ma libertà. Che la sicurezza vera non dipende da ciò che si possiede, ma da ciò che si è.",
+    rituale: "Una volta a settimana, prepara un pasto solo per te. Siediti a tavola senza schermi. Mangia lentamente. Questo è il tuo rito di fondazione."
+  },
+  gemelli: {
+    essenza: "Gemelli è il ponte tra mondi. Vive nel tempo della connessione, dello scambio, della parola che crea realtà. Non è mai solo una cosa perché il suo dono è vedere tutto contemporaneamente.",
+    dono:    "La capacità di vedere da ogni prospettiva. La mente come strumento di libertà. Il dono della parola che nomina ciò che gli altri non riescono a esprimere.",
+    eros:    "Il desiderio di Gemelli è mentale prima che fisico. Seduce con le parole, con le idee, con la promessa di mondi nuovi. Ama chi riesce a sorprenderlo quando meno se lo aspetta.",
+    karma:   "Imparare a scegliere senza perdere. Che la profondità non esclude la vastità. Che restare non significa smettere di muoversi.",
+    rituale: "Scrivi due lettere: una da parte di chi sei, una da parte di chi vorresti essere. Tienile entrambe. La verità è nella distanza tra le due."
+  },
+  cancro: {
+    essenza: "Cancro è la memoria del mondo. Porta con sé tutto ciò che è stato amato, perduto, custodito. Il passato non è nostalgia: è la fondamenta su cui costruisce ogni presente.",
+    dono:    "La capacità di contenere l'altro senza perdersi. La cura come forma di potere. L'intuizione come sesto senso affinato dal dolore.",
+    eros:    "Ama in modo viscerale, totale, a volte soffocante. Il desiderio di Cancro è fondersi. Ha paura di amare perché sa quanto fa male perdere — eppure continua ad amare.",
+    karma:   "Imparare che proteggere non significa trattenere. Che il guscio deve aprirsi almeno una volta per essere vivo. Che essere amati richiede di essere visti.",
+    rituale: "La notte di luna piena, scrivi il nome di qualcosa che non riesci a lasciare andare. Immergilo in acqua salata. Guarda l'inchiostro dissolversi."
+  },
+  leone: {
+    essenza: "Leone è la presenza che illumina la stanza. Non perché si imponga, ma perché porta con sé qualcosa di solare — un calore che gli altri riconoscono come necessario alla propria vita.",
+    dono:    "La generosità come stato naturale. La capacità di creare spazi dove gli altri possano brillare. Il cuore grande come atto politico in un mondo di scarsità.",
+    eros:    "Ama con grandiosità e fedeltà assoluta. Il desiderio di Leone è essere scelto, celebrato, amato in modo visibile. Non tollera l'amore silenzioso — vuole essere dichiarato.",
+    karma:   "Imparare che la luce vera non ha bisogno di un pubblico. Che il valore non dipende dagli applausi. Che brillare per sé stessi è il coraggio più grande.",
+    rituale: "La domenica mattina, fai qualcosa di creativo solo per te — non per mostrarlo, non per condividerlo. Tienilo segreto per almeno sette giorni."
+  },
+  vergine: {
+    essenza: "Vergine è il principio dell'ordine che emerge dal caos. La mente che distilla, affina, trasforma il grezzo in prezioso. Non è perfezionismo: è alchimia autentica.",
+    dono:    "La capacità di vedere ciò che non funziona e immaginare come ripararlo. La cura nei dettagli come atto d'amore. Il servizio come vocazione, non come dovere.",
+    eros:    "Il desiderio di Vergine è discreto e profondo. Ama attraverso gli atti di cura, non attraverso le dichiarazioni. La sensualità emerge dal dettaglio: il gesto preciso, il momento esatto.",
+    karma:   "Imparare che non tutto ha bisogno di essere risolto. Che alcune cose sono perfette nella loro imperfezione. Che il corpo ha ragione anche quando la mente non capisce.",
+    rituale: "Ogni sera, scrivi tre cose che hai fatto bene oggi. Non tre imperfezioni — tre doni. Pratica questo finché non ti sembrerà naturale come respirare."
+  },
+  bilancia: {
+    essenza: "Bilancia è il momento prima della scelta. Vive nello spazio tra le possibilità, dove tutto è ancora aperto. Non è indecisione: è la capacità di tenere la complessità senza semplificarla.",
+    dono:    "La capacità di vedere la bellezza in tutto. La diplomazia come forma di saggezza. Il dono di creare armonia dove c'era conflitto — senza cancellare le differenze.",
+    eros:    "Ama con eleganza e reciprocità. Ha bisogno di essere corrisposto in modo visibile. Il desiderio di Bilancia è per la relazione stessa — la danza, il dialogo, il rispecchiamento.",
+    karma:   "Imparare a scegliere anche quando fa male. Che non decidere è anch'essa una scelta. Che il proprio bisogno ha lo stesso peso di quello degli altri.",
+    rituale: "Prendi due oggetti di peso diverso. Tienili nelle palme aperte. Senti lo squilibrio senza cercare di correggerlo. Questo è il tuo esercizio."
+  },
+  scorpione: {
+    essenza: "Scorpione è il guardiano della soglia tra la vita e la morte, tra ciò che si vede e ciò che si nasconde. Vive nella profondità perché solo lì trova la verità che conta.",
+    dono:    "La capacità di trasformare il veleno in medicina. La visione che penetra le maschere. L'intensità come forma di presenza totale — essere completamente lì dove si è.",
+    eros:    "Il desiderio di Scorpione è una questione di vita o di morte. Ama con possessività e devozione assoluta. Vuole fondersi, trasformarsi, rinascere attraverso l'altro.",
+    karma:   "Imparare che il perdono non è dimenticare ma liberarsi. Che il controllo è una forma di paura. Che lasciarsi essere visti è il vero atto di potere.",
+    rituale: "Nell'oscurità, scrivi una cosa che non hai mai detto a nessuno. Non leggerla. Chiudila in una busta. Custodiscila come il segreto più prezioso che possiedi."
+  },
+  sagittario: {
+    essenza: "Sagittario è l'orizzonte in movimento. Esiste nella tensione tra ciò che è e ciò che potrebbe essere. La freccia non è violenza: è la promessa che un mondo più ampio è possibile.",
+    dono:    "La capacità di trovare significato nel caos. L'ottimismo non come ingenuità ma come atto di ribellione. Il dono di espandere i confini di ciò che è possibile immaginare.",
+    eros:    "Ama con avventura e libertà come condizioni necessarie. Il desiderio è per il viaggio, non per la destinazione. Ha paura di annoiarsi più di quanto abbia paura di essere ferito.",
+    karma:   "Imparare che le radici non sono prigioni. Che la profondità è un orizzonte verticale. Che alcune verità si trovano solo fermandosi.",
+    rituale: "Ogni mese, vai in un posto dove non sei mai stato. Siediti in silenzio per almeno un'ora. Non fotografare nulla. Solo guardare e lasciare che qualcosa cambi."
+  },
+  capricorno: {
+    essenza: "Capricorno è il tempo che si costruisce mattone su mattone. Non ha fretta perché sa che la vetta esiste — e sa che ci arriverà, qualunque cosa accada nel cammino.",
+    dono:    "La capacità di persistere dove altri cedono. La saggezza che emerge dal sacrificio vissuto. Il dono di costruire strutture che durano oltre la propria vita.",
+    eros:    "Il desiderio di Capricorno è segreto e profondo. Mostra la propria vulnerabilità solo a chi ha guadagnato la sua fiducia nel tempo. L'eros emerge lentamente, come il disgelo.",
+    karma:   "Imparare che il riposo non è fallimento. Che il piacere non va guadagnato. Che il corpo ha bisogno di calore, non solo di disciplina e forza.",
+    rituale: "Una volta all'anno, scrivi una lettera a te stesso di dieci anni fa. Scrivi cosa hai imparato — non cosa hai ottenuto. Cosa hai capito sulla tua natura."
+  },
+  acquario: {
+    essenza: "Acquario è il futuro che abita il presente. Vede ciò che non esiste ancora e lo porta nel mondo come visione. La sua stranezza non è difetto: è anticipo di ciò che verrà.",
+    dono:    "La capacità di immaginare sistemi nuovi. La libertà come valore assoluto. Il dono di connettere le persone intorno a un'idea più grande di tutte le parti.",
+    eros:    "Il desiderio di Acquario è intellettuale prima che fisico. Ama chi sfida il suo pensiero. Ha bisogno di libertà anche nell'amore — non per tradire, ma per non scomparire.",
+    karma:   "Imparare che la connessione non è perdita di sé. Che appartenere a qualcuno non significa essere posseduti. Che le emozioni sono dati, non debolezze da correggere.",
+    rituale: "Una volta al mese, trascorri un'intera giornata senza tecnologia. Non per purificarti — per ritrovare il ritmo del tuo pensiero non filtrato da schermi."
+  },
+  pesci: {
+    essenza: "Pesci è la dissoluzione che precede la rinascita. Vive nella porosità tra sé e l'altro, tra il reale e il sognato. Non è confusione: è l'esperienza del tutto come uno.",
+    dono:    "La capacità di sentire ciò che gli altri non osano ammettere. La compassione come forma di intelligenza. Il dono di tenere lo spazio per l'impossibile senza farlo crollare.",
+    eros:    "Ama con la totalità dell'oceano. Il desiderio di Pesci è per la fusione, per il dissolversi nell'altro. Ha bisogno di confini non per proteggersi ma per non perdersi del tutto.",
+    karma:   "Imparare che avere confini è un atto d'amore, non di egoismo. Che la propria esistenza separata ha valore. Che scegliere sé stessi non è abbandonare gli altri.",
+    rituale: "La mattina, prima di alzarti, rimani per cinque minuti nel corpo. Senti il peso, il calore, i confini della tua pelle. Questo sei tu — separato, reale, presente."
+  }
+};
+
+// ═══════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════
+const getTodayKey = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+};
+const getPlanetaryDay = () => ['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'][new Date().getDay()];
+const getSeason = () => {
+  const m = new Date().getMonth()+1;
+  if(m>=3&&m<=5) return 'Primavera';
+  if(m>=6&&m<=8) return 'Estate';
+  if(m>=9&&m<=11) return 'Autunno';
+  return 'Inverno';
+};
+const getLunarPhase = () => {
+  const d = new Date().getDate();
+  return d<=7?'Luna Nuova':d<=14?'Luna Crescente':d<=21?'Luna Piena':'Luna Calante';
+};
+const getEntryAngle = () => {
+  const seed = new Date().getDate() + new Date().getMonth()*31;
+  const angles = [
+    'il punto di rottura tra ciò che eri e ciò che stai diventando',
+    'la ferita che non hai mai mostrato a nessuno',
+    'il desiderio che dici di non avere',
+    'il ricordo che torna senza avvertire',
+    'la paura che ti sveglia alle tre di notte',
+    'la forza che non sai di possedere',
+    'la verità che stai evitando di dire'
+  ];
+  return angles[seed % angles.length];
+};
+
+// ═══════════════════════════════════════════
+// STAR FIELD
+// ═══════════════════════════════════════════
+function StarField({ color='#ffffff', count=80 }) {
+  const stars = useMemo(() => Array.from({ length: count }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 2 + 0.5,
+    delay: Math.random() * 5,
+    duration: Math.random() * 3 + 2,
+  })), []);
+  return (
+    <div style={{ position:'absolute', inset:0, overflow:'hidden', pointerEvents:'none' }}>
+      {stars.map(s => (
+        <div key={s.id} style={{
+          position:'absolute', left:`${s.x}%`, top:`${s.y}%`,
+          width:s.size, height:s.size, borderRadius:'50%', background:color,
+          animation:`twinkle ${s.duration}s ${s.delay}s ease-in-out infinite`
+        }} />
+      ))}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════
+// HOME SCREEN
+// ═══════════════════════════════════════════
+function HomeScreen({ t, onSelectSign }) {
+  const [hovered, setHovered] = useState(null);
+  return (
+    <div style={{ minHeight:'100vh', background:t.bg, position:'relative', overflow:'hidden' }}>
+      <StarField color="#6a5a7a" count={140} />
+
+      {/* Header */}
+      <div className="fade-in-up" style={{ textAlign:'center', padding:'80px 24px 48px', position:'relative', zIndex:1 }}>
+        <div style={{
+          fontFamily:"'Cormorant Garamond', serif",
+          fontSize:'clamp(56px, 14vw, 108px)',
+          fontWeight:300, letterSpacing:'0.28em',
+          color:t.text, lineHeight:1, marginBottom:'14px'
+        }}>
+          ARCANA
+        </div>
+        <div style={{
+          fontSize:'10px', letterSpacing:'0.45em',
+          color:t.textMuted, textTransform:'uppercase', marginBottom:'44px'
+        }}>
+          Psicologia Archetipica
+        </div>
+        <div style={{ display:'flex', justifyContent:'center', gap:'28px', flexWrap:'wrap' }}>
+          {[
+            { label:getLunarPhase(), icon:'◎' },
+            { label:getPlanetaryDay(), icon:'✦' },
+            { label:getSeason(), icon:'◇' },
+          ].map((x,i) => (
+            <div key={i} style={{ display:'flex', alignItems:'center', gap:'6px', color:t.textMuted }}>
+              <span style={{ fontSize:'9px', opacity:0.5 }}>{x.icon}</span>
+              <span style={{ fontSize:'10px', letterSpacing:'0.18em' }}>{x.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Thin divider */}
+      <div style={{ width:'1px', height:'40px', background:`linear-gradient(transparent,${t.border},transparent)`, margin:'0 auto 40px' }} />
+
+      {/* Sign Grid */}
+      <div style={{
+        display:'grid',
+        gridTemplateColumns:'repeat(auto-fill, minmax(130px, 1fr))',
+        maxWidth:'900px', margin:'0 auto',
+        border:`1px solid ${t.border}`,
+        position:'relative', zIndex:1
+      }}>
+        {SIGNS.map((sign, i) => (
+          <div key={sign.key}
+            className="fade-in-up"
+            style={{ animationDelay:`${i*0.04}s`, opacity:0 }}
+            onClick={() => onSelectSign(sign)}
+            onMouseEnter={() => setHovered(sign.key)}
+            onMouseLeave={() => setHovered(null)}
+          >
+            <div style={{
+              padding:'28px 12px',
+              background: hovered===sign.key ? `rgba(${sign.rgb[0]},${sign.rgb[1]},${sign.rgb[2]},0.12)` : t.card,
+              cursor:'pointer', transition:'all 0.25s ease',
+              display:'flex', flexDirection:'column', alignItems:'center', gap:'8px',
+              borderBottom:`1px solid ${t.border}`, borderRight:`1px solid ${t.border}`
+            }}>
+              <div style={{
+                fontSize:'30px',
+                color: hovered===sign.key ? sign.color : t.text,
+                transition:'color 0.25s', lineHeight:1,
+                filter: hovered===sign.key ? `drop-shadow(0 0 8px ${sign.color}60)` : 'none'
+              }}>
+                {sign.symbol}
+              </div>
+              <div style={{
+                fontFamily:"'Cormorant Garamond', serif",
+                fontSize:'15px',
+                color: hovered===sign.key ? sign.colorLight : t.text,
+                fontWeight:400, transition:'color 0.25s'
+              }}>
+                {sign.name}
+              </div>
+              <div style={{ fontSize:'8px', color:t.textMuted, letterSpacing:'0.18em', textTransform:'uppercase' }}>
+                {sign.archetype}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Daily angle */}
+      <div style={{ textAlign:'center', padding:'56px 24px 96px', position:'relative', zIndex:1 }}>
+        <div style={{
+          fontFamily:"'Cormorant Garamond', serif",
+          fontSize:'12px', fontStyle:'italic', color:t.textMuted, letterSpacing:'0.06em'
+        }}>
+          Oggi il portale si apre su
+        </div>
+        <div style={{
+          fontFamily:"'Cormorant Garamond', serif",
+          fontSize:'19px', fontStyle:'italic', color:t.text,
+          marginTop:'10px', maxWidth:'380px', margin:'10px auto 0'
+        }}>
+          {getEntryAngle()}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════
+// JOURNAL TAB
+// ═══════════════════════════════════════════
+function JournalTab({ sign, tab, t, entry, onSave }) {
+  const [value, setValue] = useState(entry);
+  const [saved, setSaved] = useState(false);
+  const timer = useRef(null);
+  useEffect(() => { setValue(entry); }, [entry]);
+  const handleChange = e => {
+    setValue(e.target.value);
+    setSaved(false);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => { onSave(e.target.value); setSaved(true); }, 900);
+  };
+  if(!tab) return null;
+  const wordCount = value.trim() ? value.trim().split(/\s+/).length : 0;
+  return (
+    <div style={{ maxWidth:'680px', margin:'0 auto', padding:'48px 24px 96px' }}>
+      <div style={{ marginBottom:'40px' }}>
+        <div style={{ fontSize:'9px', letterSpacing:'0.3em', color:t.textMuted, textTransform:'uppercase', marginBottom:'10px' }}>
+          {tab.hint}
+        </div>
+        <div style={{
+          fontFamily:"'Cormorant Garamond', serif",
+          fontSize:'clamp(22px, 5vw, 30px)', fontStyle:'italic',
+          color:t.text, lineHeight:1.4
+        }}>
+          {tab.question}
+        </div>
+      </div>
+      <div style={{ borderBottom:`1px solid ${t.border}` }}>
+        <textarea
+          value={value} onChange={handleChange}
+          placeholder="Scrivi qui…" rows={10}
+          style={{
+            width:'100%', background:'transparent', color:t.text,
+            fontSize:'16px', lineHeight:1.9, padding:'16px 0',
+            caretColor:sign.color, placeholderColor:t.textMuted
+          }}
+        />
+        <div style={{ display:'flex', justifyContent:'space-between', paddingBottom:'10px' }}>
+          <span style={{ fontSize:'10px', color:t.textMuted }}>
+            {wordCount > 0 ? `${wordCount} ${wordCount===1?'parola':'parole'}` : ''}
+          </span>
+          {saved && <span style={{ fontSize:'10px', color:sign.color, letterSpacing:'0.12em' }}>salvato ✓</span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════
+// SIGN SCREEN
+// ═══════════════════════════════════════════
+function SignScreen({ sign, t, onBack, journalEntries, saveEntry }) {
+  const [mode, setMode] = useState('profile');
+  const [activeTab, setActiveTab] = useState('psiche');
+  const [activeSection, setActiveSection] = useState('essenza');
+  const manual = SIGN_MANUAL[sign.key] || {};
+
+  const getManualContent = key => {
+    if(key === 'ferita') return sign.w;
+    if(key === 'ombra')  return sign.sec;
+    return manual[key] || '';
+  };
+
+  return (
+    <div style={{ minHeight:'100vh', background:t.bg }}>
+      {/* Hero */}
+      <div style={{ position:'relative', background:`linear-gradient(180deg,${sign.darkBg} 0%,${t.bg} 100%)`, overflow:'hidden' }}>
+        <StarField color={sign.starColor} count={70} />
+
+        <button onClick={onBack} style={{
+          position:'absolute', top:'20px', left:'20px', zIndex:10,
+          color:t.textMuted, fontSize:'12px', letterSpacing:'0.1em',
+          display:'flex', alignItems:'center', gap:'8px', padding:'8px 0'
+        }}>
+          ← indietro
+        </button>
+
+        <div className="fade-in-up" style={{ textAlign:'center', padding:'72px 24px 52px', position:'relative', zIndex:1 }}>
+          <div style={{
+            fontSize:'68px', color:sign.color, lineHeight:1, marginBottom:'16px',
+            filter:`drop-shadow(0 0 24px ${sign.color}50)`
+          }}>
+            {sign.symbol}
+          </div>
+          <div style={{
+            fontFamily:"'Cormorant Garamond', serif",
+            fontSize:'clamp(38px, 9vw, 62px)', fontWeight:300,
+            color:t.text, letterSpacing:'0.1em', marginBottom:'8px'
+          }}>
+            {sign.name}
+          </div>
+          <div style={{
+            fontSize:'10px', letterSpacing:'0.32em', color:sign.colorLight,
+            textTransform:'uppercase', marginBottom:'36px'
+          }}>
+            {sign.archetype}
+          </div>
+          <div style={{ display:'flex', justifyContent:'center', gap:'28px', flexWrap:'wrap' }}>
+            {[
+              { label:'Pianeta', val:sign.planet },
+              { label:'Pietra',  val:sign.stone  },
+              { label:'Giorno',  val:sign.day    },
+              { label:'Numero',  val:sign.number },
+            ].map(a => (
+              <div key={a.label} style={{ textAlign:'center' }}>
+                <div style={{ fontSize:'8px', letterSpacing:'0.22em', color:t.textMuted, textTransform:'uppercase', marginBottom:'5px' }}>{a.label}</div>
+                <div style={{ fontSize:'14px', color:sign.colorLight, fontFamily:"'Cormorant Garamond', serif" }}>{a.val}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Mode nav */}
+      <div style={{
+        display:'flex', borderBottom:`1px solid ${t.border}`,
+        position:'sticky', top:0, background:t.bg, zIndex:20
+      }}>
+        {[{key:'profile',label:'Profilo'},{key:'journal',label:'Diario'},{key:'manual',label:'Manuale'}].map(m => (
+          <button key={m.key} onClick={() => setMode(m.key)} style={{
+            flex:1, padding:'16px 8px',
+            fontSize:'10px', letterSpacing:'0.2em', textTransform:'uppercase',
+            color: mode===m.key ? sign.colorLight : t.textMuted,
+            borderBottom: mode===m.key ? `1px solid ${sign.color}` : '1px solid transparent',
+            transition:'all 0.2s', marginBottom:'-1px'
+          }}>
+            {m.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── PROFILE ── */}
+      {mode==='profile' && (
+        <div className="fade-in" style={{ maxWidth:'680px', margin:'0 auto', padding:'52px 24px 96px' }}>
+          <Section label="✦ Visione" accent={sign.color}>
+            <Quote t={t}>{sign.img}</Quote>
+          </Section>
+          <Hr t={t} />
+          <Section label="◈ Ferita" accent={sign.color}>
+            <Body t={t}>{sign.w}</Body>
+          </Section>
+          <Card t={t} style={{ margin:'40px 0' }}>
+            <Micro label="◆ Voce" accent={sign.color} />
+            <div style={{ fontSize:'14px', color:t.textMuted, lineHeight:1.8, fontStyle:'italic', marginTop:'10px' }}>{sign.v}</div>
+          </Card>
+          <Section label="◎ Il Segreto" accent={sign.color}>
+            <Quote t={t} border={sign.color}>{sign.sec}</Quote>
+          </Section>
+        </div>
+      )}
+
+      {/* ── JOURNAL ── */}
+      {mode==='journal' && (
+        <div className="fade-in">
+          <div className="tab-scroll" style={{ display:'flex', overflowX:'auto', borderBottom:`1px solid ${t.border}` }}>
+            {TABS.map(tab => (
+              <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{
+                padding:'14px 20px', fontSize:'10px', letterSpacing:'0.18em',
+                textTransform:'uppercase', whiteSpace:'nowrap',
+                color: activeTab===tab.key ? sign.colorLight : t.textMuted,
+                borderBottom: activeTab===tab.key ? `1px solid ${sign.color}` : '1px solid transparent',
+                transition:'all 0.2s', marginBottom:'-1px'
+              }}>
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          <JournalTab
+            sign={sign}
+            tab={TABS.find(t => t.key===activeTab)}
+            t={t}
+            entry={journalEntries[`${getTodayKey()}_${sign.key}_${activeTab}`] || ''}
+            onSave={text => saveEntry(sign.key, activeTab, text)}
+          />
+        </div>
+      )}
+
+      {/* ── MANUAL ── */}
+      {mode==='manual' && (
+        <div className="fade-in">
+          <div className="tab-scroll" style={{ display:'flex', overflowX:'auto', borderBottom:`1px solid ${t.border}` }}>
+            {MANUAL_SECTIONS.map(s => (
+              <button key={s.key} onClick={() => setActiveSection(s.key)} style={{
+                padding:'14px 16px', fontSize:'9px', letterSpacing:'0.18em',
+                textTransform:'uppercase', whiteSpace:'nowrap',
+                color: activeSection===s.key ? sign.colorLight : t.textMuted,
+                borderBottom: activeSection===s.key ? `1px solid ${sign.color}` : '1px solid transparent',
+                transition:'all 0.2s', marginBottom:'-1px',
+                display:'flex', alignItems:'center', gap:'6px'
+              }}>
+                <span style={{ opacity:0.5 }}>{s.icon}</span>{s.title}
+              </button>
+            ))}
+          </div>
+          <div style={{ maxWidth:'680px', margin:'0 auto', padding:'52px 24px 96px' }}>
+            <div className="fade-in" key={activeSection}>
+              <Micro
+                label={`${MANUAL_SECTIONS.find(s=>s.key===activeSection)?.icon} ${MANUAL_SECTIONS.find(s=>s.key===activeSection)?.title}`}
+                accent={sign.color}
+              />
+              <Quote t={t} style={{ marginTop:'24px' }}>{getManualContent(activeSection)}</Quote>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════
+// SMALL UI PRIMITIVES
+// ═══════════════════════════════════════════
+function Section({ label, accent, children }) {
+  return (
+    <div style={{ marginBottom:'44px' }}>
+      <Micro label={label} accent={accent} />
+      <div style={{ marginTop:'16px' }}>{children}</div>
+    </div>
+  );
+}
+function Micro({ label, accent }) {
+  return (
+    <div style={{ fontSize:'9px', letterSpacing:'0.3em', color:accent, textTransform:'uppercase' }}>
+      {label}
+    </div>
+  );
+}
+function Quote({ t, border, children, style }) {
+  return (
+    <div style={{
+      fontFamily:"'Cormorant Garamond', serif", fontSize:'20px', fontStyle:'italic',
+      color:t.text, lineHeight:1.7,
+      borderLeft: border ? `2px solid ${border}40` : 'none',
+      paddingLeft: border ? '20px' : 0,
+      ...style
+    }}>
+      {children}
+    </div>
+  );
+}
+function Body({ t, children }) {
+  return (
+    <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:'18px', color:t.text, lineHeight:1.75, opacity:0.9 }}>
+      {children}
+    </div>
+  );
+}
+function Card({ t, children, style }) {
+  return (
+    <div style={{ padding:'24px', background:t.surface, border:`1px solid ${t.border}`, ...style }}>
+      {children}
+    </div>
+  );
+}
+function Hr({ t }) {
+  return <div style={{ width:'100%', height:'1px', background:t.border, margin:'44px 0' }} />;
+}
+
+// ═══════════════════════════════════════════
+// THEME SWITCHER
+// ═══════════════════════════════════════════
+function ThemeSwitcher({ theme, setTheme, t }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ position:'fixed', bottom:'24px', right:'24px', zIndex:100 }}>
+      {open && (
+        <div style={{
+          position:'absolute', bottom:'48px', right:0,
+          background:t.card, border:`1px solid ${t.border}`,
+          boxShadow:'0 8px 32px rgba(0,0,0,0.4)'
+        }}>
+          {Object.entries(THEMES).map(([key, th]) => (
+            <button key={key} onClick={() => { setTheme(key); setOpen(false); }} style={{
+              display:'block', width:'100%', padding:'12px 24px',
+              fontSize:'10px', letterSpacing:'0.2em', textTransform:'uppercase',
+              color: theme===key ? t.accent : t.textMuted,
+              textAlign:'left', whiteSpace:'nowrap',
+              borderBottom:`1px solid ${t.border}`
+            }}>
+              {th.name}
+            </button>
+          ))}
+        </div>
+      )}
+      <button onClick={() => setOpen(!open)} style={{
+        width:'38px', height:'38px', borderRadius:'50%',
+        background:t.card, border:`1px solid ${t.border}`,
+        color:t.textMuted, fontSize:'16px',
+        display:'flex', alignItems:'center', justifyContent:'center',
+        boxShadow:'0 2px 12px rgba(0,0,0,0.3)'
+      }}>
+        ◎
+      </button>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════
+// APP ROOT
+// ═══════════════════════════════════════════
+function App() {
+  const [view, setView] = useState('home');
+  const [selectedSign, setSelectedSign] = useState(null);
+  const [theme, setTheme] = useState('dark');
+  const [journalEntries, setJournalEntries] = useState({});
+  const t = THEMES[theme];
+
+  useEffect(() => {
+    try { const s = localStorage.getItem('arcana_journal'); if(s) setJournalEntries(JSON.parse(s)); } catch(e) {}
+  }, []);
+
+  const saveEntry = useCallback((signKey, tab, text) => {
+    setJournalEntries(prev => {
+      const updated = { ...prev, [`${getTodayKey()}_${signKey}_${tab}`]: text };
+      try { localStorage.setItem('arcana_journal', JSON.stringify(updated)); } catch(e) {}
+      return updated;
+    });
+  }, []);
+
+  useEffect(() => { document.body.style.background = t.bg; }, [t.bg]);
+
+  return (
+    <div style={{ background:t.bg, color:t.text, minHeight:'100vh' }}>
+      {view==='home' && (
+        <HomeScreen t={t} onSelectSign={sign => { setSelectedSign(sign); setView('sign'); }} />
+      )}
+      {view==='sign' && selectedSign && (
+        <SignScreen
+          sign={selectedSign} t={t}
+          onBack={() => setView('home')}
+          journalEntries={journalEntries}
+          saveEntry={saveEntry}
+        />
+      )}
+      <ThemeSwitcher theme={theme} setTheme={setTheme} t={t} />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
