@@ -261,15 +261,15 @@ const JOURNAL_TABS=[
 ];
 
 const PROFILE_TABS=[
-  {key:"essence",       label:"Essenza"},
-  {key:"depth",         label:"Profondità"},
-  {key:"wound",         label:"Ferita"},
-  {key:"shadow",        label:"Ombra & Luce"},
-  {key:"relationships", label:"Eros"},
-  {key:"growth",        label:"Crescita"},
-  {key:"karma",         label:"Karma"},
-  {key:"ritual",        label:"Rituale"},
-  {key:"map",           label:"Mappa"}
+  {key:"essence",       icon:"✦", label:"Essenza"},
+  {key:"depth",         icon:"◉", label:"Profondità"},
+  {key:"wound",         icon:"◈", label:"Ferita"},
+  {key:"shadow",        icon:"▲", label:"Ombra & Luce"},
+  {key:"relationships", icon:"◆", label:"Eros"},
+  {key:"growth",        icon:"◎", label:"Crescita"},
+  {key:"karma",         icon:"⊕", label:"Karma"},
+  {key:"ritual",        icon:"✧", label:"Rituale"},
+  {key:"map",           icon:"⊗", label:"Mappa"}
 ];
 
 // ── helpers ──
@@ -318,7 +318,6 @@ function Home({t,onSelect}){
             <div key={sg.key} className="fade-in-up" style={{animationDelay:`${i*.03}s`,opacity:0}} onClick={()=>onSelect(sg)} onMouseEnter={()=>setHov(sg.key)} onMouseLeave={()=>setHov(null)}>
               <div style={{padding:"28px 10px 22px",background:h?`rgba(${sg.rgb},0.14)`:t.card,cursor:"pointer",transition:"all .28s",display:"flex",flexDirection:"column",alignItems:"center",gap:9,borderBottom:`1px solid ${t.border}`,borderRight:`1px solid ${t.border}`,position:"relative",overflow:"hidden"}}>
                 {h&&<div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse at 50% 40%, rgba(${sg.rgb},.2) 0%, transparent 70%)`,pointerEvents:"none"}}/>}
-                <div style={{fontSize:"clamp(26px,5vw,34px)",color:h?sg.colorLight:`${t.text}80`,transition:"all .28s",filter:h?`drop-shadow(0 0 14px ${sg.color}90)`:"none",transform:h?"scale(1.14)":"scale(1)"}}>{sg.symbol}</div>
                 <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(14px,2.5vw,17px)",color:h?sg.colorLight:t.text,transition:"color .28s"}}>{sg.name}</div>
                 <div style={{fontSize:"7px",color:t.muted,letterSpacing:".18em",textTransform:"uppercase",textAlign:"center",lineHeight:1.4}}>{sg.archetype}</div>
                 <div style={{fontSize:"7px",letterSpacing:".14em",color:h?`${sg.colorLight}70`:`${t.muted}50`,textTransform:"uppercase",transition:"all .28s"}}>{sg.element} · {sg.modality}</div>
@@ -336,7 +335,7 @@ function SecretCard({sg,t}){
   const[open,setOpen]=useState(false);
   return !open?(
     <button onClick={()=>setOpen(true)} style={{width:"100%",marginTop:36,padding:"20px 24px",border:`1px solid ${t.border}`,background:t.surface,color:t.muted,fontSize:"9px",letterSpacing:".28em",textTransform:"uppercase",transition:"all .3s",display:"flex",alignItems:"center",justifyContent:"center",gap:14}}>
-      il segreto che l'astrologia non dice
+      <span style={{opacity:.35,animation:"pulse 3s ease-in-out infinite"}}>◉</span>il segreto che l'astrologia non dice<span style={{opacity:.35}}>◉</span>
     </button>
   ):(
     <div className="fade-in" style={{marginTop:36,padding:"28px",border:`1px solid ${sg.color}40`,background:`rgba(${sg.rgb},.07)`}}>
@@ -383,15 +382,15 @@ function ProfileContent({tab,sg,t}){
         ))}
       </div>
       <div style={{padding:"24px 26px",border:`1px solid ${sg.color}30`,background:`rgba(${sg.rgb},.05)`,marginBottom:28}}>
-        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>Voce Archetipica</div>
+        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>◆ Voce Archetipica</div>
         <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",fontStyle:"italic",color:t.text,lineHeight:1.8}}>{sg.voice}</div>
       </div>
       <div style={{padding:"24px 26px",border:`1px solid ${t.border}`,background:t.surface}}>
-        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>Affinità & Tensioni</div>
+        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>⟷ Affinità & Tensioni</div>
         <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:t.text,lineHeight:1.85}}>{sg.compatibility}</div>
       </div>
       <div style={{padding:"24px 26px",border:`1px solid ${t.border}`,background:t.surface,marginTop:16}}>
-        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>Il Simbolo</div>
+        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>⊗ Il Simbolo</div>
         <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:t.text,lineHeight:1.85}}>{sg.symbol_meaning}</div>
       </div>
     </div>
@@ -482,7 +481,6 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
         <div style={{position:"absolute",top:"30%",left:"50%",transform:"translate(-50%,-50%)",width:"60vw",height:"60vw",maxWidth:520,maxHeight:520,borderRadius:"50%",background:`radial-gradient(circle,rgba(${sg.rgb},.2) 0%,transparent 65%)`,pointerEvents:"none"}}/>
         <button onClick={onBack} style={{position:"absolute",top:20,left:20,zIndex:20,color:t.muted,fontSize:"10px",letterSpacing:".16em",display:"flex",alignItems:"center",gap:8,padding:"10px 0"}}>← tutti i segni</button>
         <div className="fade-in-up" style={{position:"relative",zIndex:1,textAlign:"center",padding:"0 24px 52px"}}>
-          <div style={{fontSize:"clamp(70px,17vw,108px)",color:sg.color,lineHeight:1,marginBottom:18,filter:`drop-shadow(0 0 44px ${sg.color}65)`,animation:"float 8s ease-in-out infinite"}}>{sg.symbol}</div>
           <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(40px,9vw,68px)",fontWeight:300,color:t.text,letterSpacing:".08em",marginBottom:10,textShadow:`0 0 60px ${sg.color}28`}}>{sg.name}</div>
           <div style={{fontSize:"8px",letterSpacing:".44em",color:sg.colorLight,textTransform:"uppercase",marginBottom:34}}>{sg.archetype}</div>
           <div style={{display:"flex",justifyContent:"center",gap:"clamp(14px,4vw,30px)",flexWrap:"wrap"}}>
@@ -510,13 +508,14 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
         <div className="fade-in">
           <div className="hs" style={{display:"flex",borderBottom:`1px solid ${t.border}`}}>
             {PROFILE_TABS.map(s=>(
-              <button key={s.key} onClick={()=>setPTab(s.key)} style={{padding:"12px 15px",fontSize:"7px",letterSpacing:".2em",textTransform:"uppercase",whiteSpace:"nowrap",color:pTab===s.key?sg.colorLight:t.muted,borderBottom:pTab===s.key?`1px solid ${sg.color}`:"1px solid transparent",transition:"all .2s",marginBottom:-1}}>
-                {s.label}
+              <button key={s.key} onClick={()=>setPTab(s.key)} style={{padding:"12px 15px",fontSize:"7px",letterSpacing:".2em",textTransform:"uppercase",whiteSpace:"nowrap",color:pTab===s.key?sg.colorLight:t.muted,borderBottom:pTab===s.key?`1px solid ${sg.color}`:"1px solid transparent",transition:"all .2s",marginBottom:-1,display:"flex",alignItems:"center",gap:5}}>
+                <span style={{opacity:.45,fontSize:"8px"}}>{s.icon}</span>{s.label}
               </button>
             ))}
           </div>
           <div className="fade-in slide-in" key={pTab} style={{maxWidth:700,margin:"0 auto",padding:"48px 24px 100px"}}>
-            <div style={{marginBottom:8}}>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
+              <span style={{fontSize:"14px",color:`${sg.colorLight}80`}}>{pSec?.icon}</span>
               <div style={{fontSize:"7px",letterSpacing:".44em",color:sg.colorLight,textTransform:"uppercase"}}>{pSec?.label}</div>
             </div>
             <ProfileContent tab={pTab} sg={sg} t={t}/>
@@ -563,7 +562,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
             ))}
           </div>
           <div style={{padding:"24px 26px",border:`1px solid ${sg.color}35`,background:`rgba(${sg.rgb},.06)`}}>
-            <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>Affinità & Tensioni</div>
+            <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>⟷ Affinità & Tensioni</div>
             <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:t.text,lineHeight:1.85}}>{sg.compatibility}</div>
           </div>
         </div>
@@ -584,7 +583,7 @@ function ThemeBtn({theme,setTheme,t}){
           ))}
         </div>
       )}
-      <button onClick={()=>setOpen(!open)} style={{width:40,height:40,borderRadius:"50%",background:t.card,border:`1px solid ${t.border}`,color:t.muted,fontSize:"9px",letterSpacing:".12em",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:`0 4px 24px rgba(0,0,0,.6)`,transition:"all .2s"}}>tema</button>
+      <button onClick={()=>setOpen(!open)} style={{width:40,height:40,borderRadius:"50%",background:t.card,border:`1px solid ${t.border}`,color:t.muted,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:`0 4px 24px rgba(0,0,0,.6)`,transition:"all .2s"}}>◎</button>
     </div>
   );
 }
