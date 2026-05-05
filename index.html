@@ -33,6 +33,8 @@ textarea{font-family:inherit;resize:none;outline:none;border:none;-webkit-appear
 .hs{overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none}
 .hs::-webkit-scrollbar{display:none}
 .screen-h{height:100vh;height:100dvh}
+@keyframes comet-line{from{top:-100px;left:-50px;opacity:0}15%{opacity:.9}85%{opacity:.9}to{top:calc(100% + 40px);left:calc(100% + 20px);opacity:0}}
+.comet-line{animation:comet-line .9s ease-in-out forwards}
 </style>
 </head>
 <body>
@@ -286,9 +288,38 @@ const StarField=memo(({color="#fff",count=80,opacity=.5})=>{
   return <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none",opacity}}>{s.map(x=><div key={x.id} style={{position:"absolute",left:`${x.x}%`,top:`${x.y}%`,width:x.sz,height:x.sz,borderRadius:"50%",background:color,animation:`glow ${x.dur}s ${x.delay}s ease-in-out infinite`}}/>)}</div>;
 });
 
+// ── COMET CARD ──
+const CometCard=memo(({children,accentColor="#fff"})=>{
+  const ref=useRef(null);
+  const[tilt,setTilt]=useState({x:0,y:0});
+  const[active,setActive]=useState(false);
+  const[shoot,setShoot]=useState(0);
+  const onMove=useCallback((cx,cy)=>{
+    const el=ref.current;if(!el)return;
+    const r=el.getBoundingClientRect();
+    setTilt({x:((cy-r.top)/r.height-.5)*-16,y:((cx-r.left)/r.width-.5)*16});
+  },[]);
+  const onEnter=useCallback(()=>{setActive(true);setShoot(s=>s+1)},[]);
+  const onLeave=useCallback(()=>{setActive(false);setTilt({x:0,y:0})},[]);
+  return(
+    <div ref={ref} style={{perspective:700,display:"block"}}
+      onMouseEnter={onEnter} onMouseLeave={onLeave}
+      onMouseMove={e=>onMove(e.clientX,e.clientY)}
+      onTouchStart={onEnter} onTouchMove={e=>onMove(e.touches[0].clientX,e.touches[0].clientY)} onTouchEnd={onLeave}>
+      <div style={{transform:`rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,transformStyle:"preserve-3d",transition:active?"transform .08s":"transform .6s ease-out",position:"relative",overflow:"hidden",borderRadius:16}}>
+        <div key={shoot} className={shoot>0?"comet-line":""}
+          style={{position:"absolute",top:"-100px",left:"-50px",width:"1.5px",height:"70px",
+            background:`linear-gradient(to bottom,transparent,${accentColor},transparent)`,
+            filter:"blur(.5px)",boxShadow:`0 0 5px ${accentColor}`,
+            transform:"rotate(45deg)",zIndex:10,pointerEvents:"none"}}/>
+        {children}
+      </div>
+    </div>
+  );
+});
+
 // ── HOME ──
 function Home({t,onSelect}){
-  const[hov,setHov]=useState(null);
   const[filter,setFilter]=useState("all");
   const elColor={Fuoco:"#e05020",Terra:"#4a9050",Aria:"#c09000",Acqua:"#1880a0"};
   const shown=filter==="all"?SIGNS:SIGNS.filter(s=>s.element===filter);
@@ -312,20 +343,25 @@ function Home({t,onSelect}){
           ))}
         </div>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(140px,1fr))",maxWidth:1000,margin:"0 auto calc(env(safe-area-inset-bottom,0px) + 80px)",border:`1px solid ${t.border}`,position:"relative",zIndex:1}}>
-        {shown.map((sg,i)=>{
-          const h=hov===sg.key;
-          return(
-            <div key={sg.key} className="fade-in-up" style={{animationDelay:`${i*.03}s`,opacity:0}} onClick={()=>onSelect(sg)} onPointerEnter={()=>setHov(sg.key)} onPointerLeave={()=>setHov(null)}>
-              <div style={{padding:"28px 10px 22px",background:h?`rgba(${sg.rgb},0.14)`:t.card,cursor:"pointer",transition:"all .28s",display:"flex",flexDirection:"column",alignItems:"center",gap:9,borderBottom:`1px solid ${t.border}`,borderRight:`1px solid ${t.border}`,position:"relative",overflow:"hidden"}}>
-                {h&&<div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse at 50% 40%, rgba(${sg.rgb},.2) 0%, transparent 70%)`,pointerEvents:"none"}}/>}
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(14px,2.5vw,17px)",color:h?sg.colorLight:t.text,transition:"color .28s"}}>{sg.name}</div>
-                <div style={{fontSize:"7px",color:t.muted,letterSpacing:".18em",textTransform:"uppercase",textAlign:"center",lineHeight:1.4}}>{sg.archetype}</div>
-                <div style={{fontSize:"7px",letterSpacing:".14em",color:h?`${sg.colorLight}70`:`${t.muted}50`,textTransform:"uppercase",transition:"all .28s"}}>{sg.element} · {sg.modality}</div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,padding:"0 10px",maxWidth:800,margin:"0 auto calc(env(safe-area-inset-bottom,0px) + 80px)",position:"relative",zIndex:1}}>
+        {shown.map((sg,i)=>(
+          <div key={sg.key} className="fade-in-up" style={{animationDelay:`${i*.04}s`,opacity:0}} onClick={()=>onSelect(sg)}>
+            <CometCard accentColor={sg.colorLight}>
+              <div style={{background:sg.darkBg,padding:6,cursor:"pointer",border:`1px solid rgba(${sg.rgb},.25)`,borderRadius:16}}>
+                <div style={{position:"relative",aspectRatio:"3/4",borderRadius:11,overflow:"hidden",background:`linear-gradient(160deg,#030303 0%,rgba(${sg.rgb},.45) 55%,#030303 100%)`}}>
+                  {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:11,opacity:.82}}/>}
+                  <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse at 50% 62%,rgba(${sg.rgb},.28) 0%,transparent 68%)`,pointerEvents:"none"}}/>
+                  <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,.55) 0%,transparent 45%)",pointerEvents:"none"}}/>
+                </div>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 11px 3px",color:"#fff"}}>
+                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4.5vw,20px)"}}>{sg.name}</div>
+                  <div style={{fontSize:"8px",fontFamily:"monospace",opacity:.3,letterSpacing:".08em",color:sg.colorLight}}>#{String(sg.number).padStart(2,"0")}</div>
+                </div>
+                <div style={{padding:"0 11px 9px",fontSize:"7px",letterSpacing:".18em",textTransform:"uppercase",color:sg.colorLight,opacity:.5}}>{sg.archetype}</div>
               </div>
-            </div>
-          );
-        })}
+            </CometCard>
+          </div>
+        ))}
       </div>
     </div>
   );
