@@ -407,7 +407,7 @@ function Home({t,onSelect,profile,onSetup}){
           ))}
         </div>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(clamp(150px,44vw,340px),1fr))",gap:"clamp(10px,3vw,18px)",padding:"0 clamp(10px,4vw,24px)",maxWidth:780,margin:"0 auto calc(env(safe-area-inset-bottom,0px) + 80px)",position:"relative",zIndex:1}}>
+      <div style={{display:"flex",flexDirection:"column",gap:"clamp(14px,4vw,24px)",padding:"0 clamp(16px,6vw,48px)",maxWidth:520,margin:"0 auto calc(env(safe-area-inset-bottom,0px) + 80px)",position:"relative",zIndex:1}}>
         {shown.map((sg,i)=>(
           <div key={sg.key} className="fade-in-up" style={{animationDelay:`${i*.04}s`,opacity:0}} onClick={()=>onSelect(sg)}>
             <CometCard accentColor={t.accent}>
