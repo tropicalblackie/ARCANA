@@ -255,10 +255,10 @@ symbol_meaning:"Il simbolo dei Pesci raffigura due pesci legati da un filo che n
 ];
 
 const THEMES={
-  carta:  {name:"Carta",     bg:"#edecea",text:"#0a0010",muted:"#7a7268",card:"#f5f3f0",border:"#d0cbc4",accent:"#c8a868",surface:"#e6e4e1",glass:"rgba(10,0,16,.04)"},
-  notte:  {name:"Notte",     bg:"#0c0a08",text:"#edecea",muted:"#5a5248",card:"#141210",border:"#2a2620",accent:"#c8a868",surface:"#181410",glass:"rgba(237,236,234,.04)"},
-  seppia: {name:"Seppia",    bg:"#f2e8d6",text:"#1a0e06",muted:"#8a7260",card:"#f8f0e2",border:"#d8c8a8",accent:"#9a6830",surface:"#ede0c4",glass:"rgba(26,14,6,.04)"},
-  ossid:  {name:"Ossidiana", bg:"#050403",text:"#e8e4dc",muted:"#4a4440",card:"#0e0b09",border:"#201c18",accent:"#d4b896",surface:"#110e0b",glass:"rgba(232,228,220,.03)"}
+  carta:  {name:"Carta",     bg:"#edecea",text:"#0a0010",muted:"#504840",card:"#f5f3f0",border:"#d0cbc4",accent:"#c49a0a",surface:"#e6e4e1",glass:"rgba(10,0,16,.04)"},
+  notte:  {name:"Notte",     bg:"#0c0a08",text:"#edecea",muted:"#7a7268",card:"#141210",border:"#2a2620",accent:"#d4a818",surface:"#181410",glass:"rgba(237,236,234,.04)"},
+  seppia: {name:"Seppia",    bg:"#f2e8d6",text:"#1a0e06",muted:"#6a5040",card:"#f8f0e2",border:"#d8c8a8",accent:"#b87820",surface:"#ede0c4",glass:"rgba(26,14,6,.04)"},
+  ossid:  {name:"Ossidiana", bg:"#050403",text:"#e8e4dc",muted:"#6a6258",card:"#0e0b09",border:"#201c18",accent:"#c8a020",surface:"#110e0b",glass:"rgba(232,228,220,.03)"}
 };
 
 const JOURNAL_TABS=[
@@ -329,7 +329,7 @@ const CometCard=memo(({children,accentColor="#fff"})=>{
 });
 
 // ── SPLASH ──
-const Splash=memo(function Splash({onDone,bg}){
+const Splash=memo(function Splash({onDone,bg,text}){  // text = t.text
   const[leaving,setLeaving]=useState(false);
   useEffect(()=>{
     const t1=setTimeout(()=>setLeaving(true),2000);
@@ -339,11 +339,11 @@ const Splash=memo(function Splash({onDone,bg}){
   return(
     <div style={{position:"fixed",inset:0,zIndex:9999,background:bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",pointerEvents:leaving?"none":"auto",opacity:leaving?0:1,transform:leaving?"scale(1.06)":"scale(1)",transition:leaving?"opacity .75s cubic-bezier(.4,0,1,1),transform .75s cubic-bezier(.4,0,1,1)":"none"}}>
       <img src={LOGO_SRC} alt="ARCANA" style={{width:"clamp(110px,28vw,180px)",height:"clamp(110px,28vw,180px)",objectFit:"contain",animation:"sp-drop .7s cubic-bezier(.16,1,.3,1) .05s both"}}/>
-      <div className="gold-text" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(48px,12vw,88px)",fontWeight:300,letterSpacing:".3em",paddingLeft:".3em",lineHeight:1,marginTop:"clamp(14px,3vw,20px)",textAlign:"center",opacity:0,animation:"sp-text .5s cubic-bezier(.16,1,.3,1) .55s forwards"}}>
+      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(48px,12vw,88px)",fontWeight:300,letterSpacing:".3em",paddingLeft:".3em",lineHeight:1,marginTop:"clamp(14px,3vw,20px)",textAlign:"center",color:text,opacity:0,animation:"sp-text .5s cubic-bezier(.16,1,.3,1) .55s forwards"}}>
         ARCANA
       </div>
-      <div style={{width:"clamp(36px,8vw,56px)",height:"1px",background:"linear-gradient(to right,transparent,#c8a868,transparent)",marginTop:"clamp(12px,2.5vw,18px)",animation:"sp-line .5s cubic-bezier(.77,0,.18,1) .9s both"}}/>
-      <div style={{fontSize:"clamp(7px,1.8vw,9px)",letterSpacing:".44em",paddingLeft:".44em",color:"#c8a868",textTransform:"uppercase",textAlign:"center",marginTop:"clamp(8px,2vw,13px)",opacity:0,animation:"sp-sub .4s ease 1.2s forwards"}}>
+      <div style={{width:"clamp(36px,8vw,56px)",height:"1px",background:`linear-gradient(to right,transparent,${text}40,transparent)`,marginTop:"clamp(12px,2.5vw,18px)",animation:"sp-line .5s cubic-bezier(.77,0,.18,1) .9s both"}}/>
+      <div style={{fontSize:"clamp(7px,1.8vw,9px)",letterSpacing:".44em",paddingLeft:".44em",color:text,opacity:.55,textTransform:"uppercase",textAlign:"center",marginTop:"clamp(8px,2vw,13px)",opacity:0,animation:"sp-sub .4s ease 1.2s forwards"}}>
         Psicologia Archetipica
       </div>
     </div>
@@ -358,7 +358,7 @@ function Home({t,onSelect,profile,onSetup}){
   return(
     <div style={{minHeight:"100vh",background:t.bg,position:"relative",overflow:"hidden"}}>
       <div className="fade-in-up" style={{textAlign:"center",padding:"calc(clamp(44px,8vw,72px) + env(safe-area-inset-top,0px)) 20px 48px",position:"relative",zIndex:1}}>
-        <div className="gold-text" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(62px,15vw,118px)",fontWeight:300,letterSpacing:".3em",lineHeight:.9}}>ARCANA</div>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(62px,15vw,118px)",fontWeight:300,letterSpacing:".3em",lineHeight:.9,color:t.text}}>ARCANA</div>
         <div style={{width:48,height:1,background:`linear-gradient(to right,transparent,${t.accent},transparent)`,margin:"22px auto",opacity:.8}}/>
         <div style={{fontSize:"8px",letterSpacing:".5em",color:t.muted,textTransform:"uppercase",marginBottom:profile?16:40}}>Psicologia Archetipica</div>
         {profile?(
@@ -786,7 +786,7 @@ function App(){
 
   return(
     <div style={{background:t.bg,color:t.text,minHeight:"100vh"}}>
-      {splash&&<Splash onDone={()=>setSplash(false)} bg={t.bg}/>}
+      {splash&&<Splash onDone={()=>setSplash(false)} bg={t.bg} text={t.text}/>}
       {!splash&&view==="setup"&&<ProfileSetup t={t} onDone={onSetupDone} onBack={()=>setView("home")}/>}
       {!splash&&view==="home"&&<Home t={t} profile={profile} onSelect={s=>{setSelected(s);setView("sign")}} onSetup={()=>setView("setup")}/>}
       {!splash&&view==="sign"&&selected&&<SignScreen sg={selected} t={t} onBack={()=>setView("home")} journal={journal} saveEntry={saveEntry}/>}
