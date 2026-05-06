@@ -739,24 +739,24 @@ function PersonalProfile({t,profile,onEdit,onBack}){
   const WORK_CTX={"Studente":"Fase di accumulo. Il tuo segno solare è la materia prima, non ancora il capolavoro.","Neolaureato/a":"Soglia. Stai entrando nel mondo con la tua prima versione adulta.","In cerca di lavoro":"L'attesa non è vuoto — è fermento. Il tuo pianeta governante apre porte invisibili.","Disoccupato/a":"Il vuoto professionale spesso precede la chiamata più vera. Ascolta cosa manca.","Dipendente pubblico":"Stabilità come radice. Da qui puoi costruire verso qualcosa di più tuo.","Dipendente privato":"Struttura nel movimento. Il tuo archetipo solare chiede più spazio per esprimersi.","Imprenditore/trice":"Creatore. Il tuo cielo natale è anche il cielo del tuo progetto.","Capo":"Guidi gli altri — ma il tuo segno lunare ti dice come ti guidi tu.","Pensionato/a":"Hai guadagnato il diritto alla pienezza. Il tuo segno solare ora può fiorire liberamente.","Casalinga/o":"Il lavoro invisibile è spesso il più vitale. Il tuo archetipo nutre ciò che c'è attorno.","Nessuno di questi":"Non appartieni a nessuna categoria. È un dono travestito da problema."};
 
   const Divider=({label})=>(
-    <div style={{display:"flex",alignItems:"center",gap:14,margin:"56px 0 40px"}}>
-      <div style={{height:"1px",flex:1,background:`linear-gradient(to right,transparent,${t.accent}55)`}}/>
-      <div style={{fontSize:"7px",letterSpacing:".52em",color:t.accent,textTransform:"uppercase",opacity:.85}}>{label}</div>
-      <div style={{height:"1px",flex:1,background:`linear-gradient(to left,transparent,${t.accent}55)`}}/>
+    <div style={{display:"flex",alignItems:"center",gap:14,margin:"64px 0 44px"}}>
+      <div style={{height:"1px",flex:1,background:`linear-gradient(to right,transparent,${t.accent}70)`}}/>
+      <div style={{fontSize:"6px",letterSpacing:".6em",color:t.accent,textTransform:"uppercase",opacity:.9,paddingLeft:".6em"}}>{label}</div>
+      <div style={{height:"1px",flex:1,background:`linear-gradient(to left,transparent,${t.accent}70)`}}/>
     </div>
   );
   const TriadCard=({sg,label,icon,primary})=>(
-    <div style={{flex:`0 0 clamp(145px,40vw,200px)`,borderRadius:14,overflow:"hidden",position:"relative",aspectRatio:"2/3",border:`1px solid ${primary?sg.color+"90":t.border}`,boxShadow:primary?`0 0 48px rgba(${sg.rgb},0.28),0 8px 32px rgba(${sg.rgb},0.15)`:"none",transition:"transform .3s"}}>
-      {sg.img&&<img src={sg.img} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0}}/>}
-      <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(0,0,0,0.15) 0%,transparent 35%,rgba(${sg.rgb},0.85) 100%)`,zIndex:1}}/>
-      <div style={{position:"absolute",top:10,left:0,right:0,textAlign:"center",zIndex:2}}>
-        <div style={{fontSize:"7px",letterSpacing:".38em",color:"rgba(255,255,255,0.65)",textTransform:"uppercase"}}>{icon} {label}</div>
+    <div style={{flex:`0 0 clamp(145px,40vw,200px)`,borderRadius:16,overflow:"hidden",position:"relative",aspectRatio:"2/3",border:`1px solid ${primary?sg.color+"99":t.border+"80"}`,boxShadow:primary?`0 0 60px rgba(${sg.rgb},0.35),0 12px 40px rgba(${sg.rgb},0.2),0 0 0 1px rgba(255,255,255,0.06) inset`:`0 4px 20px rgba(0,0,0,0.25)`}}>
+      {sg.img&&<img src={sg.img} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0,filter:primary?"brightness(0.9)":"brightness(0.65) saturate(0.7)"}}/>}
+      <div style={{position:"absolute",inset:0,background:primary?`linear-gradient(180deg,rgba(0,0,0,0.1) 0%,transparent 30%,rgba(${sg.rgb},0.92) 100%)`:`linear-gradient(180deg,rgba(0,0,0,0.2) 0%,transparent 40%,rgba(0,0,0,0.88) 100%)`,zIndex:1}}/>
+      <div style={{position:"absolute",top:12,left:0,right:0,textAlign:"center",zIndex:2}}>
+        <div style={{fontSize:"6px",letterSpacing:".42em",color:"rgba(255,255,255,0.5)",textTransform:"uppercase"}}>{icon} {label}</div>
       </div>
-      {primary&&<div style={{position:"absolute",top:"35%",left:"50%",transform:"translate(-50%,-50%)",zIndex:2,fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(38px,11vw,56px)",color:"rgba(255,255,255,0.12)",lineHeight:1,pointerEvents:"none"}}>{sg.symbol}</div>}
-      <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"14px 10px",zIndex:2,textAlign:"center"}}>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(24px,7vw,34px)",color:"rgba(255,255,255,0.95)",lineHeight:1}}>{sg.symbol}</div>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.8vw,17px)",color:"white",marginTop:5,fontWeight:300}}>{sg.name}</div>
-        <div style={{fontSize:"6px",letterSpacing:".28em",color:"rgba(255,255,255,0.45)",marginTop:4,textTransform:"uppercase"}}>{sg.element}</div>
+      {primary&&<div style={{position:"absolute",top:"38%",left:"50%",transform:"translate(-50%,-50%)",zIndex:2,fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(50px,14vw,70px)",color:"rgba(255,255,255,0.08)",lineHeight:1,pointerEvents:"none",filter:`drop-shadow(0 0 20px rgba(${sg.rgb},0.6))`}}>{sg.symbol}</div>}
+      <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"16px 12px",zIndex:2,textAlign:"center"}}>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(26px,7.5vw,36px)",color:primary?sg.colorLight:"rgba(255,255,255,0.8)",lineHeight:1,filter:primary?`drop-shadow(0 0 12px rgba(${sg.rgb},0.8))`:"none"}}>{sg.symbol}</div>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.8vw,17px)",color:"white",marginTop:6,fontWeight:300,letterSpacing:".04em"}}>{sg.name}</div>
+        <div style={{fontSize:"6px",letterSpacing:".3em",color:"rgba(255,255,255,0.38)",marginTop:5,textTransform:"uppercase"}}>{sg.element}</div>
       </div>
     </div>
   );
@@ -766,85 +766,97 @@ function PersonalProfile({t,profile,onEdit,onBack}){
 
       {/* ── HERO ── */}
       <div style={{position:"relative",minHeight:"100dvh",display:"flex",flexDirection:"column",justifyContent:"flex-end",overflow:"hidden"}}>
-        {sunSg.img&&<img src={sunSg.img} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0}}/>}
-        <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(0,0,0,0.4) 0%,rgba(${sunSg.rgb},0.08) 40%,${t.bg}e0 75%,${t.bg} 100%)`,zIndex:1}}/>
-        <StarField color={sunSg.starColor} count={55} opacity={0.65}/>
-        <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 16px)",left:16,zIndex:10,color:"rgba(255,255,255,0.6)",fontSize:"10px",letterSpacing:".16em",padding:"12px 14px"}}>← indietro</button>
-        <button onClick={onEdit} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 16px)",right:16,zIndex:10,fontSize:"8px",letterSpacing:".24em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}55`,padding:"10px 16px",background:`${t.accent}12`,backdropFilter:"blur(8px)"}}>modifica</button>
-        <div style={{position:"absolute",top:"42%",left:"50%",transform:"translate(-50%,-50%)",zIndex:2,textAlign:"center",pointerEvents:"none"}}>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(90px,28vw,160px)",color:"rgba(255,255,255,0.06)",lineHeight:1,filter:`drop-shadow(0 0 60px rgba(${sunSg.rgb},0.5))`}}>{sunSg.symbol}</div>
+        {sunSg.img&&<img src={sunSg.img} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0,filter:"brightness(0.75) saturate(1.1)"}}/>}
+        {/* dark overlay — always dark regardless of theme */}
+        <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.1) 38%,rgba(0,0,0,0.7) 72%,rgba(0,0,0,0.96) 100%)",zIndex:1}}/>
+        {/* color haze */}
+        <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 80% 50% at 50% 60%,rgba(${sunSg.rgb},0.22) 0%,transparent 70%)`,zIndex:2,pointerEvents:"none"}}/>
+        <StarField color={sunSg.starColor} count={60} opacity={0.7}/>
+        <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 16px)",left:16,zIndex:10,color:"rgba(255,255,255,0.55)",fontSize:"10px",letterSpacing:".16em",padding:"12px 14px"}}>← indietro</button>
+        <button onClick={onEdit} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 16px)",right:16,zIndex:10,fontSize:"7px",letterSpacing:".28em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}60`,padding:"10px 18px",background:"rgba(0,0,0,0.4)",backdropFilter:"blur(12px)"}}>modifica</button>
+        {/* big symbol watermark */}
+        <div style={{position:"absolute",top:"36%",left:"50%",transform:"translate(-50%,-50%)",zIndex:2,textAlign:"center",pointerEvents:"none",animation:"float 10s ease-in-out infinite"}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(140px,42vw,240px)",color:"rgba(255,255,255,0.04)",lineHeight:1,filter:`drop-shadow(0 0 80px rgba(${sunSg.rgb},0.45)) drop-shadow(0 0 120px rgba(${sunSg.rgb},0.2))`}}>{sunSg.symbol}</div>
         </div>
-        <div className="fade-in-up" style={{position:"relative",zIndex:3,padding:"0 clamp(24px,6vw,48px) clamp(44px,9vw,72px)"}}>
-          <div style={{fontSize:"7px",letterSpacing:".52em",color:"rgba(255,255,255,0.38)",textTransform:"uppercase",marginBottom:16}}>Carta Natale Archetipica</div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(52px,14vw,96px)",fontWeight:300,lineHeight:.88,color:"white",letterSpacing:".02em",marginBottom:18}}>{profile.name}</div>
-          <div style={{display:"flex",gap:16,alignItems:"center",flexWrap:"wrap",marginBottom:28}}>
-            {dateDisplay&&<div style={{fontSize:"9px",letterSpacing:".24em",color:"rgba(255,255,255,0.45)"}}>{dateDisplay}</div>}
-            {profile.birthcity&&<div style={{fontSize:"9px",letterSpacing:".2em",color:"rgba(255,255,255,0.28)"}}>· {profile.birthcity}</div>}
+        <div className="fade-in-up" style={{position:"relative",zIndex:3,padding:"0 clamp(28px,7vw,56px) clamp(48px,10vw,80px)"}}>
+          <div style={{fontSize:"7px",letterSpacing:".55em",color:"rgba(255,255,255,0.32)",textTransform:"uppercase",marginBottom:20,paddingLeft:".55em"}}>Carta Natale Archetipica</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(54px,15vw,104px)",fontWeight:300,lineHeight:.86,color:"rgba(255,255,255,0.95)",letterSpacing:".01em",marginBottom:22,textShadow:`0 4px 40px rgba(${sunSg.rgb},0.4)`}}>{profile.name}</div>
+          <div style={{width:"clamp(32px,7vw,52px)",height:1,background:`linear-gradient(to right,${sunSg.colorLight}90,transparent)`,marginBottom:20}}/>
+          <div style={{display:"flex",gap:20,alignItems:"center",flexWrap:"wrap",marginBottom:32}}>
+            {dateDisplay&&<div style={{fontSize:"9px",letterSpacing:".26em",color:"rgba(255,255,255,0.5)"}}>{dateDisplay}</div>}
+            {profile.birthcity&&<><div style={{width:3,height:3,borderRadius:"50%",background:"rgba(255,255,255,0.2)"}}/><div style={{fontSize:"9px",letterSpacing:".2em",color:"rgba(255,255,255,0.3)"}}>{profile.birthcity}</div></>}
           </div>
-          <div style={{display:"inline-flex",alignItems:"center",gap:14,padding:"11px 22px",border:`1px solid ${sunSg.color}70`,background:`rgba(${sunSg.rgb},0.18)`,backdropFilter:"blur(16px)",borderRadius:2}}>
-            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:sunSg.colorLight}}>{sunSg.symbol}</span>
-            <span style={{fontSize:"8px",letterSpacing:".34em",color:"rgba(255,255,255,0.85)",textTransform:"uppercase"}}>{sunSg.name}</span>
-            <span style={{width:1,height:16,background:"rgba(255,255,255,0.2)"}}/>
-            <span style={{fontSize:"7px",color:"rgba(255,255,255,0.4)",letterSpacing:".2em",textTransform:"uppercase"}}>{sunSg.archetype}</span>
+          <div style={{display:"inline-flex",alignItems:"center",gap:16,padding:"13px 24px",border:`1px solid rgba(${sunSg.rgb},0.55)`,background:`rgba(${sunSg.rgb},0.22)`,backdropFilter:"blur(20px)",borderRadius:2,boxShadow:`0 0 30px rgba(${sunSg.rgb},0.15)`}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:sunSg.colorLight,filter:`drop-shadow(0 0 8px rgba(${sunSg.rgb},0.9))`}}>{sunSg.symbol}</span>
+            <span style={{width:1,height:18,background:"rgba(255,255,255,0.15)"}}/>
+            <span style={{fontSize:"8px",letterSpacing:".38em",color:"rgba(255,255,255,0.88)",textTransform:"uppercase"}}>{sunSg.name}</span>
+            <span style={{width:1,height:18,background:"rgba(255,255,255,0.1)"}}/>
+            <span style={{fontSize:"6px",color:"rgba(255,255,255,0.38)",letterSpacing:".24em",textTransform:"uppercase"}}>{sunSg.archetype}</span>
           </div>
         </div>
       </div>
+      {/* bridge from black hero to t.bg */}
+      <div style={{height:48,background:`linear-gradient(to bottom,rgba(0,0,0,0.96),${t.bg})`,marginTop:-2}}/>
 
       <div style={{maxWidth:680,margin:"0 auto",padding:"0 clamp(20px,5vw,40px)"}}>
 
         {/* ── TRINITÀ ── */}
-        <div style={{paddingTop:52}}>
-          <div style={{fontSize:"7px",letterSpacing:".52em",color:t.muted,textTransform:"uppercase",textAlign:"center",marginBottom:28}}>La tua trinità celeste</div>
-          <div className="hs" style={{display:"flex",gap:14,paddingBottom:6}}>
+        <div style={{paddingTop:12}}>
+          <div style={{fontSize:"6px",letterSpacing:".56em",color:t.muted,textTransform:"uppercase",textAlign:"center",marginBottom:32,paddingLeft:".56em"}}>La tua trinità celeste</div>
+          <div className="hs" style={{display:"flex",gap:16,paddingBottom:8}}>
             <TriadCard sg={sunSg} label="Segno Solare" icon="☀" primary={true}/>
             <TriadCard sg={moonSg} label="Segno Lunare" icon="☽" primary={false}/>
             {ascSg
               ?<TriadCard sg={ascSg} label="Ascendente" icon="↑" primary={false}/>
-              :<div style={{flex:"0 0 clamp(145px,40vw,200px)",borderRadius:14,border:`1px dashed ${t.border}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:10,padding:24,opacity:.3}}>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:44,color:t.muted,lineHeight:1}}>↑</div>
-                <div style={{fontSize:"7px",letterSpacing:".3em",color:t.muted,textTransform:"uppercase",textAlign:"center"}}>Ascendente</div>
-                <div style={{fontSize:"9px",color:t.muted,textAlign:"center",lineHeight:1.6}}>inserisci l'ora di nascita</div>
+              :<div style={{flex:"0 0 clamp(145px,40vw,200px)",borderRadius:16,border:`1px dashed ${t.border}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:12,padding:24,opacity:.28}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:48,color:t.muted,lineHeight:1}}>↑</div>
+                <div style={{fontSize:"6px",letterSpacing:".3em",color:t.muted,textTransform:"uppercase",textAlign:"center"}}>Ascendente</div>
+                <div style={{fontSize:"9px",color:t.muted,textAlign:"center",lineHeight:1.7}}>inserisci l'ora di nascita</div>
               </div>
             }
           </div>
         </div>
 
         {/* ── MAPPA ── */}
-        <Divider label="La Tua Mappa"/>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:1,background:t.border,border:`1px solid ${t.border}`}}>
-          {[{l:"Elemento",v:sunSg.element,c:sunSg.colorLight},{l:"Polarità",v:sp.polarity,c:t.text},{l:"Modalità",v:sunSg.modality,c:t.text},{l:"Pianeta",v:sunSg.planet,c:t.accent},{l:"Numero",v:sunSg.number,c:t.accent},{l:"Giorno fortunato",v:sunSg.day,c:t.muted}].map(d=>(
-            <div key={d.l} style={{padding:"22px 10px",background:t.card,textAlign:"center"}}>
-              <div style={{fontSize:"6px",letterSpacing:".28em",color:t.muted,textTransform:"uppercase",marginBottom:8}}>{d.l}</div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.8vw,18px)",color:d.c,fontWeight:300}}>{d.v}</div>
+        <Divider label="La Tua Mappa Celeste"/>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:1,background:t.border}}>
+          {[{l:"Elemento",v:sunSg.element,c:sunSg.colorLight},{l:"Polarità",v:sp.polarity,c:t.text},{l:"Modalità",v:sunSg.modality,c:t.text},{l:"Pianeta",v:sunSg.planet,c:t.accent},{l:"Numero fortunato",v:sunSg.number,c:t.accent},{l:"Giorno fortunato",v:sunSg.day,c:t.muted}].map(d=>(
+            <div key={d.l} style={{padding:"24px 10px",background:t.card,textAlign:"center",position:"relative",overflow:"hidden"}}>
+              <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse at 50% 100%,rgba(${sunSg.rgb},0.04),transparent 70%)`,pointerEvents:"none"}}/>
+              <div style={{fontSize:"6px",letterSpacing:".3em",color:t.muted,textTransform:"uppercase",marginBottom:10}}>{d.l}</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(14px,4vw,19px)",color:d.c,fontWeight:300}}>{d.v}</div>
             </div>
           ))}
         </div>
 
         {/* ── PERSONALITÀ ── */}
         <Divider label="Personalità"/>
-        <div style={{position:"relative",paddingLeft:24}}>
-          <div style={{position:"absolute",left:-8,top:-10,fontFamily:"'Cormorant Garamond',serif",fontSize:"100px",lineHeight:.7,color:sunSg.colorLight,opacity:.15,userSelect:"none"}}>"</div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,4.5vw,24px)",fontStyle:"italic",color:t.text,lineHeight:1.9}}>{sp.personality}</div>
+        <div style={{position:"relative",padding:"36px 32px",border:`1px solid ${t.border}`,background:t.card,overflow:"hidden"}}>
+          <div style={{position:"absolute",right:-10,top:-20,fontFamily:"'Cormorant Garamond',serif",fontSize:"160px",lineHeight:.7,color:sunSg.colorLight,opacity:.06,userSelect:"none",pointerEvents:"none"}}>{sunSg.symbol}</div>
+          <div style={{position:"absolute",left:0,top:0,bottom:0,width:3,background:`linear-gradient(to bottom,transparent,${sunSg.color},transparent)`}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,4.5vw,24px)",fontStyle:"italic",color:t.text,lineHeight:2,position:"relative"}}>{sp.personality}</div>
         </div>
 
         {/* ── LUCE & OMBRA ── */}
         <Divider label="Luce & Ombra"/>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:1,background:t.border}}>
-          <div style={{background:t.card,padding:"28px 20px"}}>
-            <div style={{fontSize:"7px",letterSpacing:".38em",color:sunSg.colorLight,textTransform:"uppercase",marginBottom:22}}>✦ Forza</div>
+          <div style={{background:t.card,padding:"30px 22px",position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",top:0,left:0,right:0,height:2,background:`linear-gradient(to right,${sunSg.color}80,transparent)`}}/>
+            <div style={{fontSize:"7px",letterSpacing:".4em",color:sunSg.colorLight,textTransform:"uppercase",marginBottom:24}}>✦ Forza</div>
             {sp.strengths.map((s,i)=>(
-              <div key={s} style={{display:"flex",gap:12,marginBottom:15,alignItems:"flex-start"}}>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"10px",color:sunSg.colorLight,opacity:.4,marginTop:3,flexShrink:0,minWidth:18}}>0{i+1}</div>
-                <div style={{fontSize:"13px",color:t.text,lineHeight:1.5}}>{s}</div>
+              <div key={s} style={{display:"flex",gap:14,marginBottom:18,alignItems:"flex-start"}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"11px",color:sunSg.colorLight,opacity:.35,marginTop:2,flexShrink:0,minWidth:20,lineHeight:1}}>0{i+1}</div>
+                <div style={{fontSize:"13px",color:t.text,lineHeight:1.55,borderBottom:`1px solid ${t.border}`,paddingBottom:14,width:"100%"}}>{s}</div>
               </div>
             ))}
           </div>
-          <div style={{background:t.surface,padding:"28px 20px"}}>
-            <div style={{fontSize:"7px",letterSpacing:".38em",color:t.muted,textTransform:"uppercase",marginBottom:22}}>◈ Ombra</div>
+          <div style={{background:t.surface,padding:"30px 22px",position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",top:0,left:0,right:0,height:2,background:`linear-gradient(to right,${t.muted}40,transparent)`}}/>
+            <div style={{fontSize:"7px",letterSpacing:".4em",color:t.muted,textTransform:"uppercase",marginBottom:24}}>◈ Ombra</div>
             {sp.weaknesses.map((w,i)=>(
-              <div key={w} style={{display:"flex",gap:12,marginBottom:15,alignItems:"flex-start"}}>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"10px",color:t.muted,opacity:.4,marginTop:3,flexShrink:0,minWidth:18}}>0{i+1}</div>
-                <div style={{fontSize:"13px",color:t.muted,lineHeight:1.5}}>{w}</div>
+              <div key={w} style={{display:"flex",gap:14,marginBottom:18,alignItems:"flex-start"}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"11px",color:t.muted,opacity:.35,marginTop:2,flexShrink:0,minWidth:20,lineHeight:1}}>0{i+1}</div>
+                <div style={{fontSize:"13px",color:t.muted,lineHeight:1.55,borderBottom:`1px solid ${t.border}`,paddingBottom:14,width:"100%"}}>{w}</div>
               </div>
             ))}
           </div>
@@ -853,8 +865,10 @@ function PersonalProfile({t,profile,onEdit,onBack}){
         {/* ── CARISMA ── */}
         <Divider label="Tratti Carismatici"/>
         {sp.charismatic.map((c,i)=>(
-          <div key={i} style={{marginBottom:14,padding:"26px 28px",background:i===0?`rgba(${sunSg.rgb},0.1)`:i===1?`rgba(${sunSg.rgb},0.05)`:t.card,border:`1px solid rgba(${sunSg.rgb},${i===0?0.4:i===1?0.2:0.08})`}}>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,20px)",color:t.text,lineHeight:1.8,fontStyle:"italic"}}>{c}</div>
+          <div key={i} style={{marginBottom:12,padding:"28px 30px",background:t.card,border:`1px solid ${i===0?sunSg.color+"70":i===1?sunSg.color+"35":t.border}`,position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",top:0,left:0,bottom:0,width:2,background:i===0?sunSg.color:i===1?sunSg.color+"60":t.border}}/>
+            <div style={{position:"absolute",right:20,top:"50%",transform:"translateY(-50%)",fontFamily:"'Cormorant Garamond',serif",fontSize:"44px",color:sunSg.colorLight,opacity:i===0?.1:.05,lineHeight:1,userSelect:"none"}}>{i===0?"I":i===1?"II":"III"}</div>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4vw,21px)",color:t.text,lineHeight:1.85,fontStyle:"italic",position:"relative"}}>{c}</div>
           </div>
         ))}
 
@@ -862,35 +876,37 @@ function PersonalProfile({t,profile,onEdit,onBack}){
         <Divider label="Il Regalo Perfetto"/>
         <div style={{display:"grid",gridTemplateColumns:profile.gender==="Donna"||profile.gender==="Uomo"?"1fr":"1fr 1fr",gap:14}}>
           {profile.gender!=="Donna"&&(
-            <div style={{padding:"28px 26px",border:`1px solid ${t.accent}40`,background:`${t.accent}07`,position:"relative",overflow:"hidden"}}>
-              <div style={{position:"absolute",top:14,right:18,fontFamily:"'Cormorant Garamond',serif",fontSize:"48px",color:t.accent,opacity:.07,lineHeight:1,userSelect:"none"}}>♂</div>
-              <div style={{fontSize:"7px",letterSpacing:".4em",color:t.accent,textTransform:"uppercase",marginBottom:16}}>Per lui</div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,18px)",color:t.text,lineHeight:1.8}}>{sp.gift_him}</div>
+            <div style={{padding:"30px 28px",border:`1px solid ${t.accent}45`,background:`${t.accent}06`,position:"relative",overflow:"hidden"}}>
+              <div style={{position:"absolute",top:0,right:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${t.accent}60,transparent)`}}/>
+              <div style={{position:"absolute",top:12,right:20,fontFamily:"'Cormorant Garamond',serif",fontSize:"52px",color:t.accent,opacity:.07,lineHeight:1,userSelect:"none"}}>♂</div>
+              <div style={{fontSize:"6px",letterSpacing:".44em",color:t.accent,textTransform:"uppercase",marginBottom:18}}>Per lui</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,19px)",color:t.text,lineHeight:1.85}}>{sp.gift_him}</div>
             </div>
           )}
           {profile.gender!=="Uomo"&&(
-            <div style={{padding:"28px 26px",border:`1px solid ${t.accent}40`,background:`${t.accent}07`,position:"relative",overflow:"hidden"}}>
-              <div style={{position:"absolute",top:14,right:18,fontFamily:"'Cormorant Garamond',serif",fontSize:"48px",color:t.accent,opacity:.07,lineHeight:1,userSelect:"none"}}>♀</div>
-              <div style={{fontSize:"7px",letterSpacing:".4em",color:t.accent,textTransform:"uppercase",marginBottom:16}}>Per lei</div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,18px)",color:t.text,lineHeight:1.8}}>{sp.gift_her}</div>
+            <div style={{padding:"30px 28px",border:`1px solid ${t.accent}45`,background:`${t.accent}06`,position:"relative",overflow:"hidden"}}>
+              <div style={{position:"absolute",top:0,left:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${t.accent}60,transparent)`}}/>
+              <div style={{position:"absolute",top:12,right:20,fontFamily:"'Cormorant Garamond',serif",fontSize:"52px",color:t.accent,opacity:.07,lineHeight:1,userSelect:"none"}}>♀</div>
+              <div style={{fontSize:"6px",letterSpacing:".44em",color:t.accent,textTransform:"uppercase",marginBottom:18}}>Per lei</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,19px)",color:t.text,lineHeight:1.85}}>{sp.gift_her}</div>
             </div>
           )}
         </div>
 
         {/* ── COMPATIBILITÀ ── */}
-        <Divider label="Compatibilità"/>
-        <div style={{marginBottom:32}}>
-          <div style={{fontSize:"7px",letterSpacing:".38em",color:"#6aaa6a",textTransform:"uppercase",marginBottom:18}}>✦ Anime affini</div>
-          <div className="hs" style={{display:"flex",gap:12,paddingBottom:4}}>
+        <Divider label="Affinità & Tensioni"/>
+        <div style={{marginBottom:36}}>
+          <div style={{fontSize:"7px",letterSpacing:".4em",color:"#6aaa6a",textTransform:"uppercase",marginBottom:20}}>✦ Anime affini</div>
+          <div className="hs" style={{display:"flex",gap:14,paddingBottom:8}}>
             {sp.best_compat.map(k=>{
               const s=SIGNS.find(x=>x.key===k);
               return s&&(
-                <div key={k} style={{flex:`0 0 clamp(88px,26vw,115px)`,borderRadius:10,overflow:"hidden",position:"relative",aspectRatio:"2/3",border:`1px solid ${s.color}65`,boxShadow:`0 4px 24px rgba(${s.rgb},0.18)`}}>
+                <div key={k} style={{flex:`0 0 clamp(90px,27vw,120px)`,borderRadius:12,overflow:"hidden",position:"relative",aspectRatio:"2/3",border:`1px solid ${s.color}70`,boxShadow:`0 6px 28px rgba(${s.rgb},0.25)`}}>
                   {s.img&&<img src={s.img} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0}}/>}
-                  <div style={{position:"absolute",inset:0,background:`linear-gradient(to top,rgba(${s.rgb},0.88) 0%,transparent 55%)`,zIndex:1}}/>
-                  <div style={{position:"absolute",bottom:0,left:0,right:0,textAlign:"center",padding:"10px 6px",zIndex:2}}>
-                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"white"}}>{s.symbol}</div>
-                    <div style={{fontSize:"6px",color:"rgba(255,255,255,0.75)",letterSpacing:".22em",marginTop:3,textTransform:"uppercase"}}>{s.name}</div>
+                  <div style={{position:"absolute",inset:0,background:`linear-gradient(to top,rgba(${s.rgb},0.92) 0%,transparent 55%)`,zIndex:1}}/>
+                  <div style={{position:"absolute",bottom:0,left:0,right:0,textAlign:"center",padding:"12px 6px",zIndex:2}}>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",color:"white",filter:`drop-shadow(0 0 8px rgba(${s.rgb},0.9))`}}>{s.symbol}</div>
+                    <div style={{fontSize:"6px",color:"rgba(255,255,255,0.7)",letterSpacing:".24em",marginTop:4,textTransform:"uppercase"}}>{s.name}</div>
                   </div>
                 </div>
               );
@@ -898,17 +914,17 @@ function PersonalProfile({t,profile,onEdit,onBack}){
           </div>
         </div>
         <div>
-          <div style={{fontSize:"7px",letterSpacing:".38em",color:"#aa6a6a",textTransform:"uppercase",marginBottom:18}}>◈ Maggiore tensione</div>
-          <div className="hs" style={{display:"flex",gap:12,paddingBottom:4}}>
+          <div style={{fontSize:"7px",letterSpacing:".4em",color:"#aa6a6a",textTransform:"uppercase",marginBottom:20}}>◈ Maggiore tensione</div>
+          <div className="hs" style={{display:"flex",gap:14,paddingBottom:8}}>
             {sp.worst_compat.map(k=>{
               const s=SIGNS.find(x=>x.key===k);
               return s&&(
-                <div key={k} style={{flex:`0 0 clamp(88px,26vw,115px)`,borderRadius:10,overflow:"hidden",position:"relative",aspectRatio:"2/3",border:`1px solid ${t.border}`,filter:"saturate(0.3) brightness(0.75)"}}>
+                <div key={k} style={{flex:`0 0 clamp(90px,27vw,120px)`,borderRadius:12,overflow:"hidden",position:"relative",aspectRatio:"2/3",border:`1px solid ${t.border}`,filter:"saturate(0.2) brightness(0.6)"}}>
                   {s.img&&<img src={s.img} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0}}/>}
-                  <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.8) 0%,transparent 55%)",zIndex:1}}/>
-                  <div style={{position:"absolute",bottom:0,left:0,right:0,textAlign:"center",padding:"10px 6px",zIndex:2}}>
-                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"rgba(255,255,255,0.55)"}}>{s.symbol}</div>
-                    <div style={{fontSize:"6px",color:"rgba(255,255,255,0.4)",letterSpacing:".22em",marginTop:3,textTransform:"uppercase"}}>{s.name}</div>
+                  <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.88) 0%,transparent 55%)",zIndex:1}}/>
+                  <div style={{position:"absolute",bottom:0,left:0,right:0,textAlign:"center",padding:"12px 6px",zIndex:2}}>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",color:"rgba(255,255,255,0.45)"}}>{s.symbol}</div>
+                    <div style={{fontSize:"6px",color:"rgba(255,255,255,0.3)",letterSpacing:".24em",marginTop:4,textTransform:"uppercase"}}>{s.name}</div>
                   </div>
                 </div>
               );
@@ -920,7 +936,10 @@ function PersonalProfile({t,profile,onEdit,onBack}){
         <Divider label="Stessa Energia"/>
         <div style={{display:"flex",flexWrap:"wrap",gap:10}}>
           {sp.famous.map((name,i)=>(
-            <div key={name} style={{padding:"12px 22px",border:`1px solid ${i===0?sunSg.color+"70":t.border}`,background:i===0?`rgba(${sunSg.rgb},0.12)`:t.card,fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.5vw,16px)",color:i===0?sunSg.colorLight:t.text,letterSpacing:".07em"}}>{name}</div>
+            <div key={name} style={{padding:"13px 24px",border:`1px solid ${i===0?sunSg.color+"80":t.border}`,background:i===0?`rgba(${sunSg.rgb},0.12)`:t.card,fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(14px,3.8vw,17px)",color:i===0?sunSg.colorLight:t.text,letterSpacing:".08em",position:"relative",overflow:"hidden"}}>
+              {i===0&&<div style={{position:"absolute",bottom:-10,right:-4,fontFamily:"'Cormorant Garamond',serif",fontSize:"36px",color:sunSg.colorLight,opacity:.1,lineHeight:1}}>✦</div>}
+              {name}
+            </div>
           ))}
         </div>
 
@@ -929,15 +948,17 @@ function PersonalProfile({t,profile,onEdit,onBack}){
           <div>
             <Divider label="Il Tuo Momento"/>
             {profile.relationship&&REL_CTX[profile.relationship]&&(
-              <div style={{marginBottom:14,padding:"28px 28px",border:`1px solid ${t.accent}45`,background:`${t.accent}09`}}>
-                <div style={{fontSize:"7px",letterSpacing:".4em",color:t.accent,textTransform:"uppercase",marginBottom:14}}>Cuore · {profile.relationship}</div>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4vw,20px)",color:t.text,lineHeight:1.9,fontStyle:"italic"}}>{REL_CTX[profile.relationship]}</div>
+              <div style={{marginBottom:14,padding:"30px 30px",border:`1px solid ${t.accent}40`,background:`${t.accent}07`,position:"relative",overflow:"hidden"}}>
+                <div style={{position:"absolute",top:0,left:0,right:0,height:1,background:`linear-gradient(to right,${t.accent}60,transparent)`}}/>
+                <div style={{fontSize:"6px",letterSpacing:".44em",color:t.accent,textTransform:"uppercase",marginBottom:16}}>Cuore · {profile.relationship}</div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4vw,21px)",color:t.text,lineHeight:1.95,fontStyle:"italic"}}>{REL_CTX[profile.relationship]}</div>
               </div>
             )}
             {profile.work&&WORK_CTX[profile.work]&&(
-              <div style={{padding:"28px 28px",border:`1px solid ${t.border}`,background:t.surface}}>
-                <div style={{fontSize:"7px",letterSpacing:".4em",color:t.muted,textTransform:"uppercase",marginBottom:14}}>Percorso · {profile.work}</div>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4vw,20px)",color:t.text,lineHeight:1.9,fontStyle:"italic"}}>{WORK_CTX[profile.work]}</div>
+              <div style={{padding:"30px 30px",border:`1px solid ${t.border}`,background:t.surface,position:"relative",overflow:"hidden"}}>
+                <div style={{position:"absolute",top:0,left:0,right:0,height:1,background:`linear-gradient(to right,${t.muted}40,transparent)`}}/>
+                <div style={{fontSize:"6px",letterSpacing:".44em",color:t.muted,textTransform:"uppercase",marginBottom:16}}>Percorso · {profile.work}</div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4vw,21px)",color:t.text,lineHeight:1.95,fontStyle:"italic"}}>{WORK_CTX[profile.work]}</div>
               </div>
             )}
           </div>
