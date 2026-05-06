@@ -944,10 +944,11 @@ function PersonalProfile({t,profile,onEdit,onBack}){
       {sg.img&&<img src={sg.img} loading="lazy" decoding="async" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0,filter:primary?"brightness(0.9)":"brightness(0.65) saturate(0.7)"}}/>}
       <div style={{position:"absolute",inset:0,background:primary?`linear-gradient(180deg,rgba(0,0,0,0.1) 0%,transparent 30%,rgba(${sg.rgb},0.92) 100%)`:`linear-gradient(180deg,rgba(0,0,0,0.2) 0%,transparent 40%,rgba(0,0,0,0.88) 100%)`,zIndex:1}}/>
       <div style={{position:"absolute",top:12,left:0,right:0,textAlign:"center",zIndex:2}}>
-        <div style={{fontSize:"6px",letterSpacing:".42em",color:"rgba(255,255,255,0.5)",textTransform:"uppercase"}}>{label}</div>
+        <div style={{fontSize:"6px",letterSpacing:".42em",color:"rgba(255,255,255,0.5)",textTransform:"uppercase"}}>{icon} {label}</div>
       </div>
-
+      {primary&&<div style={{position:"absolute",top:"38%",left:"50%",transform:"translate(-50%,-50%)",zIndex:2,fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(50px,14vw,70px)",color:"rgba(255,255,255,0.08)",lineHeight:1,pointerEvents:"none",filter:`drop-shadow(0 0 20px rgba(${sg.rgb},0.6))`}}>{sg.symbol}</div>}
       <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"16px 12px",zIndex:2,textAlign:"center"}}>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(26px,7.5vw,36px)",color:primary?sg.colorLight:"rgba(255,255,255,0.8)",lineHeight:1,filter:primary?`drop-shadow(0 0 12px rgba(${sg.rgb},0.8))`:"none"}}>{sg.symbol}</div>
         <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.8vw,17px)",color:"white",marginTop:6,fontWeight:300,letterSpacing:".04em"}}>{sg.name}</div>
         <div style={{fontSize:"6px",letterSpacing:".3em",color:"rgba(255,255,255,0.38)",marginTop:5,textTransform:"uppercase"}}>{sg.element}</div>
       </div>
@@ -967,7 +968,10 @@ function PersonalProfile({t,profile,onEdit,onBack}){
         <StarField color={sunSg.starColor} count={60} opacity={0.7}/>
         <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 16px)",left:16,zIndex:10,color:"rgba(255,255,255,0.55)",fontSize:"10px",letterSpacing:".16em",padding:"12px 14px"}}>← indietro</button>
         <button onClick={onEdit} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 16px)",right:16,zIndex:10,fontSize:"7px",letterSpacing:".28em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}60`,padding:"10px 18px",background:"rgba(0,0,0,0.4)",backdropFilter:"blur(12px)"}}>modifica</button>
-
+        {/* big symbol watermark */}
+        <div style={{position:"absolute",top:"36%",left:"50%",transform:"translate(-50%,-50%)",zIndex:2,textAlign:"center",pointerEvents:"none",animation:"float 10s ease-in-out infinite"}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(140px,42vw,240px)",color:"rgba(255,255,255,0.04)",lineHeight:1,filter:`drop-shadow(0 0 80px rgba(${sunSg.rgb},0.45)) drop-shadow(0 0 120px rgba(${sunSg.rgb},0.2))`}}>{sunSg.symbol}</div>
+        </div>
         <div className="fade-in-up" style={{position:"relative",zIndex:3,padding:"0 clamp(28px,7vw,56px) clamp(48px,10vw,80px)"}}>
           <div style={{fontSize:"7px",letterSpacing:".55em",color:"rgba(255,255,255,0.32)",textTransform:"uppercase",marginBottom:20,paddingLeft:".55em"}}>Carta Natale Archetipica</div>
           <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(54px,15vw,104px)",fontWeight:300,lineHeight:.86,color:"rgba(255,255,255,0.95)",letterSpacing:".01em",marginBottom:22,textShadow:`0 4px 40px rgba(${sunSg.rgb},0.4)`}}>{profile.name}</div>
@@ -977,6 +981,8 @@ function PersonalProfile({t,profile,onEdit,onBack}){
             {profile.birthcity&&<><div style={{width:3,height:3,borderRadius:"50%",background:"rgba(255,255,255,0.2)"}}/><div style={{fontSize:"9px",letterSpacing:".2em",color:"rgba(255,255,255,0.3)"}}>{profile.birthcity}</div></>}
           </div>
           <div style={{display:"inline-flex",alignItems:"center",gap:16,padding:"13px 24px",border:`1px solid rgba(${sunSg.rgb},0.55)`,background:`rgba(${sunSg.rgb},0.22)`,backdropFilter:"blur(20px)",borderRadius:2,boxShadow:`0 0 30px rgba(${sunSg.rgb},0.15)`}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:sunSg.colorLight,filter:`drop-shadow(0 0 8px rgba(${sunSg.rgb},0.9))`}}>{sunSg.symbol}</span>
+            <span style={{width:1,height:18,background:"rgba(255,255,255,0.15)"}}/>
             <span style={{fontSize:"8px",letterSpacing:".38em",color:"rgba(255,255,255,0.88)",textTransform:"uppercase"}}>{sunSg.name}</span>
             <span style={{width:1,height:18,background:"rgba(255,255,255,0.1)"}}/>
             <span style={{fontSize:"6px",color:"rgba(255,255,255,0.38)",letterSpacing:".24em",textTransform:"uppercase"}}>{sunSg.archetype}</span>
@@ -997,6 +1003,7 @@ function PersonalProfile({t,profile,onEdit,onBack}){
             {ascSg
               ?<TriadCard sg={ascSg} label="Ascendente" icon="↑" primary={false}/>
               :<div style={{flex:"0 0 clamp(145px,40vw,200px)",borderRadius:16,border:`1px dashed ${t.border}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:12,padding:24,opacity:.28}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:48,color:t.muted,lineHeight:1}}>↑</div>
                 <div style={{fontSize:"6px",letterSpacing:".3em",color:t.muted,textTransform:"uppercase",textAlign:"center"}}>Ascendente</div>
                 <div style={{fontSize:"9px",color:t.muted,textAlign:"center",lineHeight:1.7}}>inserisci l'ora di nascita</div>
               </div>
@@ -1019,7 +1026,7 @@ function PersonalProfile({t,profile,onEdit,onBack}){
         {/* ── PERSONALITÀ ── */}
         <Divider label="Personalità"/>
         <div style={{position:"relative",padding:"36px 32px",border:`1px solid ${t.border}`,background:t.card,overflow:"hidden"}}>
-
+          <div style={{position:"absolute",right:-10,top:-20,fontFamily:"'Cormorant Garamond',serif",fontSize:"160px",lineHeight:.7,color:sunSg.colorLight,opacity:.06,userSelect:"none",pointerEvents:"none"}}>{sunSg.symbol}</div>
           <div style={{position:"absolute",left:0,top:0,bottom:0,width:3,background:`linear-gradient(to bottom,transparent,${sunSg.color},transparent)`}}/>
           <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,4.5vw,24px)",fontStyle:"italic",color:t.text,lineHeight:2,position:"relative"}}>{sp.personality}</div>
         </div>
@@ -1029,7 +1036,7 @@ function PersonalProfile({t,profile,onEdit,onBack}){
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:1,background:t.border}}>
           <div style={{background:t.card,padding:"30px 22px",position:"relative",overflow:"hidden"}}>
             <div style={{position:"absolute",top:0,left:0,right:0,height:2,background:`linear-gradient(to right,${sunSg.color}80,transparent)`}}/>
-            <div style={{fontSize:"7px",letterSpacing:".4em",color:sunSg.colorLight,textTransform:"uppercase",marginBottom:24}}>Forza</div>
+            <div style={{fontSize:"7px",letterSpacing:".4em",color:sunSg.colorLight,textTransform:"uppercase",marginBottom:24}}>✦ Forza</div>
             {sp.strengths.map((s,i)=>(
               <div key={s} style={{display:"flex",gap:14,marginBottom:18,alignItems:"flex-start"}}>
                 <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"11px",color:sunSg.colorLight,opacity:.35,marginTop:2,flexShrink:0,minWidth:20,lineHeight:1}}>0{i+1}</div>
@@ -1039,7 +1046,7 @@ function PersonalProfile({t,profile,onEdit,onBack}){
           </div>
           <div style={{background:t.surface,padding:"30px 22px",position:"relative",overflow:"hidden"}}>
             <div style={{position:"absolute",top:0,left:0,right:0,height:2,background:`linear-gradient(to right,${t.muted}40,transparent)`}}/>
-            <div style={{fontSize:"7px",letterSpacing:".4em",color:t.muted,textTransform:"uppercase",marginBottom:24}}>Ombra</div>
+            <div style={{fontSize:"7px",letterSpacing:".4em",color:t.muted,textTransform:"uppercase",marginBottom:24}}>◈ Ombra</div>
             {sp.weaknesses.map((w,i)=>(
               <div key={w} style={{display:"flex",gap:14,marginBottom:18,alignItems:"flex-start"}}>
                 <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"11px",color:t.muted,opacity:.35,marginTop:2,flexShrink:0,minWidth:20,lineHeight:1}}>0{i+1}</div>
@@ -1065,7 +1072,7 @@ function PersonalProfile({t,profile,onEdit,onBack}){
           {profile.gender!=="Donna"&&(
             <div style={{padding:"30px 28px",border:`1px solid ${t.accent}45`,background:`${t.accent}06`,position:"relative",overflow:"hidden"}}>
               <div style={{position:"absolute",top:0,right:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${t.accent}60,transparent)`}}/>
-
+              <div style={{position:"absolute",top:12,right:20,fontFamily:"'Cormorant Garamond',serif",fontSize:"52px",color:t.accent,opacity:.07,lineHeight:1,userSelect:"none"}}>♂</div>
               <div style={{fontSize:"6px",letterSpacing:".44em",color:t.accent,textTransform:"uppercase",marginBottom:18}}>Per lui</div>
               <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,19px)",color:t.text,lineHeight:1.85}}>{sp.gift_him}</div>
             </div>
@@ -1073,7 +1080,7 @@ function PersonalProfile({t,profile,onEdit,onBack}){
           {profile.gender!=="Uomo"&&(
             <div style={{padding:"30px 28px",border:`1px solid ${t.accent}45`,background:`${t.accent}06`,position:"relative",overflow:"hidden"}}>
               <div style={{position:"absolute",top:0,left:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${t.accent}60,transparent)`}}/>
-
+              <div style={{position:"absolute",top:12,right:20,fontFamily:"'Cormorant Garamond',serif",fontSize:"52px",color:t.accent,opacity:.07,lineHeight:1,userSelect:"none"}}>♀</div>
               <div style={{fontSize:"6px",letterSpacing:".44em",color:t.accent,textTransform:"uppercase",marginBottom:18}}>Per lei</div>
               <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,19px)",color:t.text,lineHeight:1.85}}>{sp.gift_her}</div>
             </div>
@@ -1083,7 +1090,7 @@ function PersonalProfile({t,profile,onEdit,onBack}){
         {/* ── COMPATIBILITÀ ── */}
         <Divider label="Affinità & Tensioni"/>
         <div style={{marginBottom:36}}>
-          <div style={{fontSize:"7px",letterSpacing:".4em",color:"#6aaa6a",textTransform:"uppercase",marginBottom:20}}>Anime affini</div>
+          <div style={{fontSize:"7px",letterSpacing:".4em",color:"#6aaa6a",textTransform:"uppercase",marginBottom:20}}>✦ Anime affini</div>
           <div className="hs" style={{display:"flex",gap:14,paddingBottom:8}}>
             {sp.best_compat.map(k=>{
               const s=SIGNS.find(x=>x.key===k);
@@ -1092,6 +1099,7 @@ function PersonalProfile({t,profile,onEdit,onBack}){
                   {s.img&&<img src={s.img} loading="lazy" decoding="async" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0}}/>}
                   <div style={{position:"absolute",inset:0,background:`linear-gradient(to top,rgba(${s.rgb},0.92) 0%,transparent 55%)`,zIndex:1}}/>
                   <div style={{position:"absolute",bottom:0,left:0,right:0,textAlign:"center",padding:"12px 6px",zIndex:2}}>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",color:"white",filter:`drop-shadow(0 0 8px rgba(${s.rgb},0.9))`}}>{s.symbol}</div>
                     <div style={{fontSize:"6px",color:"rgba(255,255,255,0.7)",letterSpacing:".24em",marginTop:4,textTransform:"uppercase"}}>{s.name}</div>
                   </div>
                 </div>
@@ -1100,7 +1108,7 @@ function PersonalProfile({t,profile,onEdit,onBack}){
           </div>
         </div>
         <div>
-          <div style={{fontSize:"7px",letterSpacing:".4em",color:"#aa6a6a",textTransform:"uppercase",marginBottom:20}}>Maggiore tensione</div>
+          <div style={{fontSize:"7px",letterSpacing:".4em",color:"#aa6a6a",textTransform:"uppercase",marginBottom:20}}>◈ Maggiore tensione</div>
           <div className="hs" style={{display:"flex",gap:14,paddingBottom:8}}>
             {sp.worst_compat.map(k=>{
               const s=SIGNS.find(x=>x.key===k);
@@ -1109,6 +1117,7 @@ function PersonalProfile({t,profile,onEdit,onBack}){
                   {s.img&&<img src={s.img} loading="lazy" decoding="async" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0}}/>}
                   <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.88) 0%,transparent 55%)",zIndex:1}}/>
                   <div style={{position:"absolute",bottom:0,left:0,right:0,textAlign:"center",padding:"12px 6px",zIndex:2}}>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",color:"rgba(255,255,255,0.45)"}}>{s.symbol}</div>
                     <div style={{fontSize:"6px",color:"rgba(255,255,255,0.3)",letterSpacing:".24em",marginTop:4,textTransform:"uppercase"}}>{s.name}</div>
                   </div>
                 </div>
@@ -1122,7 +1131,7 @@ function PersonalProfile({t,profile,onEdit,onBack}){
         <div style={{display:"flex",flexWrap:"wrap",gap:10}}>
           {sp.famous.map((name,i)=>(
             <div key={name} style={{padding:"13px 24px",border:`1px solid ${i===0?sunSg.color+"80":t.border}`,background:i===0?`rgba(${sunSg.rgb},0.12)`:t.card,fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(14px,3.8vw,17px)",color:i===0?sunSg.colorLight:t.text,letterSpacing:".08em",position:"relative",overflow:"hidden"}}>
-
+              {i===0&&<div style={{position:"absolute",bottom:-10,right:-4,fontFamily:"'Cormorant Garamond',serif",fontSize:"36px",color:sunSg.colorLight,opacity:.1,lineHeight:1}}>✦</div>}
               {name}
             </div>
           ))}
@@ -1275,7 +1284,7 @@ const HORO={
 function getLuckyNumbers(sgKey,dateStr){
   const r=mkrand(dailySeed(dateStr,sgKey)+7777777);
   const nums=new Set();
-  while(nums.size<5)nums.add(1+Math.floor(r()*90));
+  while(nums.size<6)nums.add(1+Math.floor(r()*90));
   return[...nums].sort((a,b)=>a-b);
 }
 
