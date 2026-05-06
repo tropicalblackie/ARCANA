@@ -600,14 +600,10 @@ function Home({t,onSelect,profile,onSetup}){
         {profile?(
           <button onClick={onSetup} style={{fontSize:"8px",letterSpacing:".28em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}30`,padding:"8px 18px",marginBottom:32,background:`${t.accent}08`}}>{profile.name} — il mio profilo ✦</button>
         ):(
-          <button onClick={onSetup} style={{fontSize:"9px",letterSpacing:".32em",textTransform:"uppercase",color:t.text,border:`1px solid ${t.border}`,padding:"14px 28px",marginBottom:40,background:t.surface}}>✦ Crea il tuo profilo</button>
+          <button onClick={onSetup} style={{display:"block",margin:"0 auto 40px",padding:"18px 44px",fontSize:"13px",fontFamily:"'Inter',sans-serif",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:t.bg,background:`linear-gradient(135deg,${t.accent},${t.accent}cc)`,border:"none",borderRadius:3,boxShadow:`0 8px 32px ${t.accent}55,0 2px 8px rgba(0,0,0,0.28)`,cursor:"pointer"}}>✦ Crea il tuo profilo</button>
         )}
-        <div style={{display:"flex",justifyContent:"center",gap:"clamp(14px,4vw,36px)",flexWrap:"wrap",marginBottom:48}}>
+        <div style={{display:"flex",justifyContent:"center",gap:"clamp(14px,4vw,36px)",flexWrap:"wrap",marginBottom:36}}>
           {[lunarPhase(),planetDay(),season()].map((v,i)=><div key={i} style={{fontSize:"11px",letterSpacing:".14em",color:t.muted}}>{v}</div>)}
-        </div>
-        <div style={{maxWidth:380,margin:"0 auto 44px",padding:"20px 26px",border:`1px solid ${t.accent}40`,background:t.glass,backdropFilter:"blur(8px)",boxShadow:`0 0 0 1px ${t.accent}10 inset`}}>
-          <div style={{fontSize:"7px",letterSpacing:".42em",color:t.accent,textTransform:"uppercase",marginBottom:10,opacity:.8}}>il portale si apre su</div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",fontStyle:"italic",color:t.text,lineHeight:1.55}}>{entryAngle()}</div>
         </div>
         <div style={{display:"flex",justifyContent:"center",gap:8,flexWrap:"wrap"}}>
           {["all","Fuoco","Terra","Aria","Acqua"].map(el=>(
