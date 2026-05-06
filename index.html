@@ -349,7 +349,7 @@ const Splash=memo(function Splash({onDone,bg}){
 });
 
 // ── HOME ──
-function Home({t,onSelect,profile}){
+function Home({t,onSelect,profile,onSetup}){
   const[filter,setFilter]=useState("all");
   const elColor={Fuoco:"#b04a18",Terra:"#4a7a38",Aria:"#8a7010",Acqua:"#1860a0"};
   const shown=filter==="all"?SIGNS:SIGNS.filter(s=>s.element===filter);
@@ -358,8 +358,12 @@ function Home({t,onSelect,profile}){
       <div className="fade-in-up" style={{textAlign:"center",padding:"calc(clamp(44px,8vw,72px) + env(safe-area-inset-top,0px)) 20px 48px",position:"relative",zIndex:1}}>
         <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(62px,15vw,118px)",fontWeight:300,letterSpacing:".3em",color:t.text,lineHeight:.9}}>ARCANA</div>
         <div style={{width:36,height:1,background:t.accent,margin:"20px auto",opacity:.35}}/>
-        {profile?.name&&<div style={{fontSize:"9px",letterSpacing:".32em",color:t.muted,textTransform:"uppercase",marginBottom:6}}>benvenuta, {profile.name}</div>}
-        <div style={{fontSize:"8px",letterSpacing:".5em",color:t.muted,textTransform:"uppercase",marginBottom:40}}>Psicologia Archetipica</div>
+        <div style={{fontSize:"8px",letterSpacing:".5em",color:t.muted,textTransform:"uppercase",marginBottom:profile?16:40}}>Psicologia Archetipica</div>
+        {profile?(
+          <button onClick={onSetup} style={{fontSize:"8px",letterSpacing:".28em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}30`,padding:"8px 18px",marginBottom:32,background:`${t.accent}08`}}>{profile.name} — modifica profilo</button>
+        ):(
+          <button onClick={onSetup} style={{fontSize:"9px",letterSpacing:".32em",textTransform:"uppercase",color:t.text,border:`1px solid ${t.border}`,padding:"14px 28px",marginBottom:40,background:t.surface}}>✦ Crea il tuo profilo</button>
+        )}
         <div style={{display:"flex",justifyContent:"center",gap:"clamp(14px,4vw,36px)",flexWrap:"wrap",marginBottom:48}}>
           {[lunarPhase(),planetDay(),season()].map((v,i)=><div key={i} style={{fontSize:"11px",letterSpacing:".14em",color:t.muted}}>{v}</div>)}
         </div>
@@ -669,7 +673,7 @@ const SETUP_STEPS=[
   {key:"work",         q:"Come descriveresti la tua situazione lavorativa?",   type:"choice", options:["Studente","Neolaureato/a","In cerca di lavoro","Disoccupato/a","Dipendente pubblico","Dipendente privato","Imprenditore/trice","Capo","Pensionato/a","Casalinga/o","Nessuno di questi"]},
 ];
 
-function ProfileSetup({t,onDone}){
+function ProfileSetup({t,onDone,onBack}){
   const[step,setStep]=useState(0);
   const[data,setData]=useState({});
   const[val,setVal]=useState("");
@@ -690,7 +694,7 @@ function ProfileSetup({t,onDone}){
   return(
     <div className="screen-h" style={{background:t.bg,display:"flex",flexDirection:"column",padding:"env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)"}}>
       <div style={{padding:"clamp(16px,4vw,28px) 24px 0",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-        {step>0?<button onClick={back} style={{color:t.muted,fontSize:"10px",letterSpacing:".16em"}}>← indietro</button>:<div/>}
+        {step>0?<button onClick={back} style={{color:t.muted,fontSize:"10px",letterSpacing:".16em"}}>← indietro</button>:<button onClick={onBack} style={{color:t.muted,fontSize:"10px",letterSpacing:".16em"}}>← annulla</button>}
         <div style={{fontSize:"8px",letterSpacing:".32em",color:t.muted,textTransform:"uppercase"}}>{step+1} / {total}</div>
       </div>
       <div style={{display:"flex",gap:4,justifyContent:"center",padding:"16px 0 0"}}>
@@ -757,7 +761,7 @@ function App(){
   const[splash,setSplash]=useState(true);
   const[journal,setJournal]=useState({});
   const[profile,setProfile]=useState(null);
-  const[setupDone,setSetupDone]=useState(false);
+  const[setupDone,setSetupDone]=useState(false); // kept for compat
   const t=THEMES[theme];
 
   useEffect(()=>{
@@ -776,17 +780,15 @@ function App(){
     });
   },[]);
 
-  const onSetupDone=useCallback((p)=>{setProfile(p);setSetupDone(true);},[]);
-
-  const showSetup=!splash&&!setupDone;
+  const onSetupDone=useCallback((p)=>{setProfile(p);setSetupDone(true);setView("home");},[]);
 
   return(
     <div style={{background:t.bg,color:t.text,minHeight:"100vh"}}>
       {splash&&<Splash onDone={()=>setSplash(false)} bg={t.bg}/>}
-      {showSetup&&<ProfileSetup t={t} onDone={onSetupDone}/>}
-      {!splash&&setupDone&&view==="home"&&<Home t={t} profile={profile} onSelect={s=>{setSelected(s);setView("sign")}}/>}
-      {!splash&&setupDone&&view==="sign"&&selected&&<SignScreen sg={selected} t={t} onBack={()=>setView("home")} journal={journal} saveEntry={saveEntry}/>}
-      {!splash&&setupDone&&<ThemeBtn theme={theme} setTheme={setTheme} t={t}/>}
+      {!splash&&view==="setup"&&<ProfileSetup t={t} onDone={onSetupDone} onBack={()=>setView("home")}/>}
+      {!splash&&view==="home"&&<Home t={t} profile={profile} onSelect={s=>{setSelected(s);setView("sign")}} onSetup={()=>setView("setup")}/>}
+      {!splash&&view==="sign"&&selected&&<SignScreen sg={selected} t={t} onBack={()=>setView("home")} journal={journal} saveEntry={saveEntry}/>}
+      {!splash&&view!=="setup"&&<ThemeBtn theme={theme} setTheme={setTheme} t={t}/>}
     </div>
   );
 }
