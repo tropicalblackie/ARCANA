@@ -1,9 +1,9 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>ARCANA ‚Äî Psicologia Archetipica</title>
+<title>ARCANA ó Psicologia Archetipica</title>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -49,209 +49,209 @@ textarea{font-family:inherit;resize:none;outline:none;border:none;-webkit-appear
 const{useState,useEffect,useRef,useCallback,useMemo,memo}=React;
 
 const SIGNS=[
-{key:"ariete",name:"Ariete",symbol:"‚ôà",element:"Fuoco",modality:"Cardinale",archetype:"Il Guerriero",planet:"Marte",stone:"Rubino",metal:"Ferro",color:"#c83010",colorLight:"#ff6b40",darkBg:"#110202",rgb:[200,48,16],starColor:"#ff8a65",day:"Marted√¨",number:9,season:"Equinozio di Primavera",tarot:"L'Imperatore",myth:"Ares, dio della guerra",body:"Testa, cervello, occhi",img:"./ariete.jpeg",
-shadow:"L'aggressivit√† come armatura. L'impulso come fuga dall'intimit√†.",
-light:"Il coraggio che apre porte che nessuno osa toccare. Inizia ci√≤ che gli altri temono di sognare.",
+{key:"ariete",name:"Ariete",symbol:"?",element:"Fuoco",modality:"Cardinale",archetype:"Il Guerriero",planet:"Marte",stone:"Rubino",metal:"Ferro",color:"#c83010",colorLight:"#ff6b40",darkBg:"#110202",rgb:[200,48,16],starColor:"#ff8a65",day:"MartedÏ",number:9,season:"Equinozio di Primavera",tarot:"L'Imperatore",myth:"Ares, dio della guerra",body:"Testa, cervello, occhi",img:"./ariete.jpeg?v=2",
+shadow:"L'aggressivit‡ come armatura. L'impulso come fuga dall'intimit‡.",
+light:"Il coraggio che apre porte che nessuno osa toccare. Inizia ciÚ che gli altri temono di sognare.",
 wound:"La paura di essere inutile, di non lasciare traccia. Il terrore che la propria fiamma si consumi nel vuoto.",
-vision:"Un guerriero con la fronte insanguinata che avanza verso un muro di fuoco ‚Äî non per vincere, ma per dimostrare a se stesso che esiste.",
+vision:"Un guerriero con la fronte insanguinata che avanza verso un muro di fuoco ó non per vincere, ma per dimostrare a se stesso che esiste.",
 voice:"Voce tagliente, ritmata come un tamburo di guerra. Frasi corte. Nessuna punteggiatura emotiva.",
-secret:"L'astrologia ti dice che sei impulsivo. La verit√† √® che hai paura del vuoto tra un impulso e l'altro. Il tuo fuoco brucia pi√π forte quando nessuno guarda.",
-essence:"Ariete √® il primo respiro dopo il lungo inverno. Non √® violenza ‚Äî √® l'urgenza pura della vita che si afferma. Vive nell'eterno adesso dell'azione perch√© aspettare sembra tradimento di ci√≤ che √®. Ha inventato il coraggio prima che il coraggio avesse un nome.",
-depth:"Sotto l'armatura di Ariete vive uno dei cuori pi√π vulnerabili dello zodiaco. La ferocit√† √® proporzionale alla sensibilit√† nascosta. Ama con l'intensit√† di chi sa che ogni cosa pu√≤ finire, e agisce con l'urgenza di chi non ha imparato ad aspettare senza soffrire.",
-relationships:"In amore √® un fuoco che pu√≤ scaldare o bruciare. Ama con tutto il corpo, senza strategie n√© giochi. Il problema √® che conquista con la stessa intensit√† con cui si annoia ‚Äî non per leggerezza, ma perch√© ha bisogno di sentire che qualcosa √® ancora vivo. L'antidoto √® trovare qualcuno che sappia come riaccenderlo.",
-growth:"Imparare che la forza vera non √® nella velocit√† ma nella profondit√†. Che alcune battaglie si vincono stando fermi. Che il silenzio non √® resa ma presenza. Che si pu√≤ iniziare senza dover sempre finire per dimostrare qualcosa.",
-karma:"Ariete porta nel sangue il karma del guerriero senza causa ‚Äî colui che combatte per combattere, non per vincere qualcosa di reale. La lezione √® usare la forza in servizio di qualcosa pi√π grande di s√©, senza perdere il proprio fuoco.",
-ritual:"All'alba, accendi una candela rossa. Scrivi su carta ci√≤ che vuoi bruciare via ‚Äî il rimpianto, la rabbia, la paura. Guarda la fiamma. Quando senti il calore sul viso, sai di essere ancora vivo.",
-compatibility:"Si accende con Leone e Sagittario, che capiscono il fuoco. Trova stimolo con Gemelli e Acquario. Si scontra con Cancro e Capricorno ‚Äî ma spesso √® da questi scontri che nasce la vera crescita.",
-affirmation:"La mia velocit√† √® un dono, non un difetto. Posso agire e anche sentire. Posso essere forte e anche morbido.",
-symbol_meaning:"Il simbolo di Ariete raffigura le corna del montone ‚Äî e la fiamma che sale. √à il glifo del movimento verso l'alto, dell'io che si proietta nel mondo senza chiedere permesso."},
+secret:"L'astrologia ti dice che sei impulsivo. La verit‡ Ë che hai paura del vuoto tra un impulso e l'altro. Il tuo fuoco brucia pi˘ forte quando nessuno guarda.",
+essence:"Ariete Ë il primo respiro dopo il lungo inverno. Non Ë violenza ó Ë l'urgenza pura della vita che si afferma. Vive nell'eterno adesso dell'azione perchÈ aspettare sembra tradimento di ciÚ che Ë. Ha inventato il coraggio prima che il coraggio avesse un nome.",
+depth:"Sotto l'armatura di Ariete vive uno dei cuori pi˘ vulnerabili dello zodiaco. La ferocit‡ Ë proporzionale alla sensibilit‡ nascosta. Ama con l'intensit‡ di chi sa che ogni cosa puÚ finire, e agisce con l'urgenza di chi non ha imparato ad aspettare senza soffrire.",
+relationships:"In amore Ë un fuoco che puÚ scaldare o bruciare. Ama con tutto il corpo, senza strategie nÈ giochi. Il problema Ë che conquista con la stessa intensit‡ con cui si annoia ó non per leggerezza, ma perchÈ ha bisogno di sentire che qualcosa Ë ancora vivo. L'antidoto Ë trovare qualcuno che sappia come riaccenderlo.",
+growth:"Imparare che la forza vera non Ë nella velocit‡ ma nella profondit‡. Che alcune battaglie si vincono stando fermi. Che il silenzio non Ë resa ma presenza. Che si puÚ iniziare senza dover sempre finire per dimostrare qualcosa.",
+karma:"Ariete porta nel sangue il karma del guerriero senza causa ó colui che combatte per combattere, non per vincere qualcosa di reale. La lezione Ë usare la forza in servizio di qualcosa pi˘ grande di sÈ, senza perdere il proprio fuoco.",
+ritual:"All'alba, accendi una candela rossa. Scrivi su carta ciÚ che vuoi bruciare via ó il rimpianto, la rabbia, la paura. Guarda la fiamma. Quando senti il calore sul viso, sai di essere ancora vivo.",
+compatibility:"Si accende con Leone e Sagittario, che capiscono il fuoco. Trova stimolo con Gemelli e Acquario. Si scontra con Cancro e Capricorno ó ma spesso Ë da questi scontri che nasce la vera crescita.",
+affirmation:"La mia velocit‡ Ë un dono, non un difetto. Posso agire e anche sentire. Posso essere forte e anche morbido.",
+symbol_meaning:"Il simbolo di Ariete raffigura le corna del montone ó e la fiamma che sale. » il glifo del movimento verso l'alto, dell'io che si proietta nel mondo senza chiedere permesso."},
 
-{key:"toro",name:"Toro",symbol:"‚ôâ",element:"Terra",modality:"Fisso",archetype:"Il Costruttore",planet:"Venere",stone:"Smeraldo",metal:"Rame",color:"#1a6228",colorLight:"#4caf50",darkBg:"#010d04",rgb:[26,98,40],starColor:"#81c784",day:"Venerd√¨",number:6,season:"Primavera Piena",tarot:"Il Ierofante",myth:"Il Minotauro, Persefone",body:"Gola, collo, tiroide",img:"./toro.jpeg",
-shadow:"Il possesso come amore. La resistenza al cambiamento come identit√†.",
-light:"La fedelt√† come atto rivoluzionario. La cura del corpo come porta al sacro.",
-wound:"La paura che tutto ci√≤ che ha costruito possa svanire in un istante. Il terrore della perdita materiale come perdita di s√©.",
-vision:"Un toro che scalpita la terra, ma le corna sono fatte di radici profonde. Non combatte: ancora. Ogni passo √® una fondamenta.",
+{key:"toro",name:"Toro",symbol:"?",element:"Terra",modality:"Fisso",archetype:"Il Costruttore",planet:"Venere",stone:"Smeraldo",metal:"Rame",color:"#1a6228",colorLight:"#4caf50",darkBg:"#010d04",rgb:[26,98,40],starColor:"#81c784",day:"VenerdÏ",number:6,season:"Primavera Piena",tarot:"Il Ierofante",myth:"Il Minotauro, Persefone",body:"Gola, collo, tiroide",img:"./toro.jpeg?v=2",
+shadow:"Il possesso come amore. La resistenza al cambiamento come identit‡.",
+light:"La fedelt‡ come atto rivoluzionario. La cura del corpo come porta al sacro.",
+wound:"La paura che tutto ciÚ che ha costruito possa svanire in un istante. Il terrore della perdita materiale come perdita di sÈ.",
+vision:"Un toro che scalpita la terra, ma le corna sono fatte di radici profonde. Non combatte: ancora. Ogni passo Ë una fondamenta.",
 voice:"Voce lenta, pesante, come pietre millenarie che rotolano. Frasi che si costruiscono mattone su mattone, senza fretta.",
-secret:"L'astrologia ti dice che sei testardo. La verit√† √® che hai paura che, se cedi anche una volta, tutto crolli. La tua fermezza non √® ottusit√† ‚Äî √® il modo in cui ami.",
-essence:"Toro √® la terra sotto i piedi. La certezza del corpo, il sapore del pane appena sfornato, il calore di ci√≤ che si tiene tra le mani. Esiste per ancorare il mondo alla realt√† sensibile, per ricordare agli altri che esiste anche il qui, anche l'adesso, anche questo.",
-depth:"Toro porta il peso della permanenza come dono e come croce. Il suo dolore nasce dalla consapevolezza che tutto passa ‚Äî e il suo lavoro √® costruire cose abbastanza solide da sopravvivergli. Sotto la calma esterna vive un'intensit√† emotiva che raramente mostra, perch√© mostrare significherebbe essere vulnerabile.",
-relationships:"Ama con una fedelt√† che spaventa chi non √® abituato ad essere amato davvero. Il corpo √® il suo linguaggio ‚Äî il tocco, il cibo condiviso, il ritmo quotidiano costruito insieme. Ha bisogno di tempo per aprirsi, ma una volta aperto non si chiude pi√π. La sfida √® amare senza trattenere.",
-growth:"Imparare che il distacco non √® perdita ma libert√†. Che la sicurezza vera non dipende da ci√≤ che si possiede. Che il cambiamento trasforma, non distrugge. Che lasciare andare pu√≤ essere l'atto di cura pi√π grande.",
-karma:"Toro porta il karma del guardiano che si √® fatto prigioniero di ci√≤ che custodisce. La lezione √® tenere le cose con mani aperte ‚Äî offrirle, non possederle.",
-ritual:"Una volta a settimana, prepara un pasto solo per te. Siediti senza schermi. Mangia lentamente. Senti ogni sapore. Questo √® il tuo rito di fondazione ‚Äî il corpo come tempio.",
+secret:"L'astrologia ti dice che sei testardo. La verit‡ Ë che hai paura che, se cedi anche una volta, tutto crolli. La tua fermezza non Ë ottusit‡ ó Ë il modo in cui ami.",
+essence:"Toro Ë la terra sotto i piedi. La certezza del corpo, il sapore del pane appena sfornato, il calore di ciÚ che si tiene tra le mani. Esiste per ancorare il mondo alla realt‡ sensibile, per ricordare agli altri che esiste anche il qui, anche l'adesso, anche questo.",
+depth:"Toro porta il peso della permanenza come dono e come croce. Il suo dolore nasce dalla consapevolezza che tutto passa ó e il suo lavoro Ë costruire cose abbastanza solide da sopravvivergli. Sotto la calma esterna vive un'intensit‡ emotiva che raramente mostra, perchÈ mostrare significherebbe essere vulnerabile.",
+relationships:"Ama con una fedelt‡ che spaventa chi non Ë abituato ad essere amato davvero. Il corpo Ë il suo linguaggio ó il tocco, il cibo condiviso, il ritmo quotidiano costruito insieme. Ha bisogno di tempo per aprirsi, ma una volta aperto non si chiude pi˘. La sfida Ë amare senza trattenere.",
+growth:"Imparare che il distacco non Ë perdita ma libert‡. Che la sicurezza vera non dipende da ciÚ che si possiede. Che il cambiamento trasforma, non distrugge. Che lasciare andare puÚ essere l'atto di cura pi˘ grande.",
+karma:"Toro porta il karma del guardiano che si Ë fatto prigioniero di ciÚ che custodisce. La lezione Ë tenere le cose con mani aperte ó offrirle, non possederle.",
+ritual:"Una volta a settimana, prepara un pasto solo per te. Siediti senza schermi. Mangia lentamente. Senti ogni sapore. Questo Ë il tuo rito di fondazione ó il corpo come tempio.",
 compatibility:"Armonia naturale con Vergine e Capricorno. Attrazione magnetica con Scorpione, il suo opposto. Connessione nutriente con Cancro e Pesci.",
-affirmation:"Sono abbastanza solido da permettermi di cedere. Posso tenere e lasciare andare. La mia lentezza √® saggezza.",
-symbol_meaning:"Il simbolo del Toro raffigura la testa con le corna e il cerchio della luna piena tra esse. √à il glifo della materia feconda, del corpo come luogo del sacro."},
+affirmation:"Sono abbastanza solido da permettermi di cedere. Posso tenere e lasciare andare. La mia lentezza Ë saggezza.",
+symbol_meaning:"Il simbolo del Toro raffigura la testa con le corna e il cerchio della luna piena tra esse. » il glifo della materia feconda, del corpo come luogo del sacro."},
 
-{key:"gemelli",name:"Gemelli",symbol:"‚ôä",element:"Aria",modality:"Mutevole",archetype:"Il Messaggero",planet:"Mercurio",stone:"Agata",metal:"Mercurio",color:"#9a7200",colorLight:"#ffd54f",darkBg:"#0e0b00",rgb:[154,114,0],starColor:"#fff176",day:"Mercoled√¨",number:5,season:"Fine Primavera",tarot:"Gli Amanti",myth:"Castore e Polluce, Hermes",body:"Polmoni, braccia, mani, sistema nervoso",img:"./gemelli.jpeg",
-shadow:"La volatilit√† come armatura contro il dolore. La parola usata per non sentire.",
-light:"La mente come organo della libert√†. Il dono di rendere comprensibile l'incomprensibile.",
-wound:"La paura di essere solo una faccia di una moneta mai lanciata. Il terrore che entrambe le versioni di s√© siano false.",
+{key:"gemelli",name:"Gemelli",symbol:"?",element:"Aria",modality:"Mutevole",archetype:"Il Messaggero",planet:"Mercurio",stone:"Agata",metal:"Mercurio",color:"#9a7200",colorLight:"#ffd54f",darkBg:"#0e0b00",rgb:[154,114,0],starColor:"#fff176",day:"MercoledÏ",number:5,season:"Fine Primavera",tarot:"Gli Amanti",myth:"Castore e Polluce, Hermes",body:"Polmoni, braccia, mani, sistema nervoso",img:"./gemelli.jpeg?v=2",
+shadow:"La volatilit‡ come armatura contro il dolore. La parola usata per non sentire.",
+light:"La mente come organo della libert‡. Il dono di rendere comprensibile l'incomprensibile.",
+wound:"La paura di essere solo una faccia di una moneta mai lanciata. Il terrore che entrambe le versioni di sÈ siano false.",
 vision:"Due figure speculari che si guardano attraverso uno specchio frantumato. Non si riconoscono, ma non possono smettere di cercarsi. Tra i frammenti, il riflesso di qualcosa di reale.",
 voice:"Voce che cambia registro ogni tre parole. Rapida, saltellante, piena di pause strategiche e deviazioni volute.",
-secret:"L'astrologia ti dice che sei superficiale. La verit√† √® che hai scavato cos√¨ a fondo nella tua duplicit√† che la superficie √® diventata profondit√†. La tua leggerezza √® allenata ‚Äî non √® assenza di peso, √® il modo in cui lo porti.",
-essence:"Gemelli √® il ponte tra mondi. Vive nel tempo della connessione, dello scambio, della parola che crea realt√†. Non √® mai una sola cosa perch√© il suo dono √® vedere tutto contemporaneamente ‚Äî non come confusione, ma come panorama.",
-depth:"Il dolore di Gemelli nasce dalla molteplicit√† ‚Äî essere tante cose e non sapere quale sia la vera. La verit√† √® che tutte sono vere. La sua ricerca non √® trovare il s√© unico, ma imparare ad abitare la propria natura polifonica senza vergognarsene.",
-relationships:"Ama con la mente prima che con il corpo. Seduce con le idee, con la promessa di mondi nuovi. Ha bisogno di stimolo intellettuale come dell'ossigeno ‚Äî senza, soffoca silenziosamente. La sua paura pi√π profonda √® la solitudine intellettuale: essere con qualcuno che non capisce.",
-growth:"Imparare a scegliere senza perdere. Che la profondit√† non esclude la vastit√†. Che restare non significa smettere di muoversi. Che il silenzio √® anche una forma di comunicazione.",
-karma:"Gemelli porta il karma del messaggero che ha usato le parole per tutto tranne che per dire la verit√† su se stesso. La lezione √® la comunicazione come atto di coraggio, non di intrattenimento.",
-ritual:"Scrivi due lettere: una da parte di chi sei, una da parte di chi vorresti essere. Non inviarle. Rileggile a distanza di un mese. La verit√† √® nello spazio tra le due.",
+secret:"L'astrologia ti dice che sei superficiale. La verit‡ Ë che hai scavato cosÏ a fondo nella tua duplicit‡ che la superficie Ë diventata profondit‡. La tua leggerezza Ë allenata ó non Ë assenza di peso, Ë il modo in cui lo porti.",
+essence:"Gemelli Ë il ponte tra mondi. Vive nel tempo della connessione, dello scambio, della parola che crea realt‡. Non Ë mai una sola cosa perchÈ il suo dono Ë vedere tutto contemporaneamente ó non come confusione, ma come panorama.",
+depth:"Il dolore di Gemelli nasce dalla molteplicit‡ ó essere tante cose e non sapere quale sia la vera. La verit‡ Ë che tutte sono vere. La sua ricerca non Ë trovare il sÈ unico, ma imparare ad abitare la propria natura polifonica senza vergognarsene.",
+relationships:"Ama con la mente prima che con il corpo. Seduce con le idee, con la promessa di mondi nuovi. Ha bisogno di stimolo intellettuale come dell'ossigeno ó senza, soffoca silenziosamente. La sua paura pi˘ profonda Ë la solitudine intellettuale: essere con qualcuno che non capisce.",
+growth:"Imparare a scegliere senza perdere. Che la profondit‡ non esclude la vastit‡. Che restare non significa smettere di muoversi. Che il silenzio Ë anche una forma di comunicazione.",
+karma:"Gemelli porta il karma del messaggero che ha usato le parole per tutto tranne che per dire la verit‡ su se stesso. La lezione Ë la comunicazione come atto di coraggio, non di intrattenimento.",
+ritual:"Scrivi due lettere: una da parte di chi sei, una da parte di chi vorresti essere. Non inviarle. Rileggile a distanza di un mese. La verit‡ Ë nello spazio tra le due.",
 compatibility:"Danza naturale con Bilancia e Acquario. Attrazione complessa con Sagittario, il suo opposto. Stimolo creativo con Ariete e Leone.",
-affirmation:"La mia molteplicit√† √® un dono. Posso essere tutto questo e ancora di pi√π. Scegliere non mi impoverisce ‚Äî mi approfondisce.",
-symbol_meaning:"Il simbolo dei Gemelli raffigura due colonne unite ‚Äî le porte del cielo e della terra, l'io e l'altro. √à il glifo della dualit√† che cerca la propria sintesi."},
+affirmation:"La mia molteplicit‡ Ë un dono. Posso essere tutto questo e ancora di pi˘. Scegliere non mi impoverisce ó mi approfondisce.",
+symbol_meaning:"Il simbolo dei Gemelli raffigura due colonne unite ó le porte del cielo e della terra, l'io e l'altro. » il glifo della dualit‡ che cerca la propria sintesi."},
 
-{key:"cancro",name:"Cancro",symbol:"‚ôã",element:"Acqua",modality:"Cardinale",archetype:"La Madre",planet:"Luna",stone:"Perla",metal:"Argento",color:"#106e8a",colorLight:"#4dd0e1",darkBg:"#000c12",rgb:[16,110,138],starColor:"#b2ebf2",day:"Luned√¨",number:2,season:"Solstizio d'Estate",tarot:"Il Carro",myth:"Selene, Demetra",body:"Seno, stomaco, sistema linfatico",img:"./cancro.jpeg",
+{key:"cancro",name:"Cancro",symbol:"?",element:"Acqua",modality:"Cardinale",archetype:"La Madre",planet:"Luna",stone:"Perla",metal:"Argento",color:"#106e8a",colorLight:"#4dd0e1",darkBg:"#000c12",rgb:[16,110,138],starColor:"#b2ebf2",day:"LunedÏ",number:2,season:"Solstizio d'Estate",tarot:"Il Carro",myth:"Selene, Demetra",body:"Seno, stomaco, sistema linfatico",img:"./cancro.jpeg?v=2",
 shadow:"La cura come controllo. Il passato come rifugio dalla vita presente.",
-light:"La memoria come continuit√† del sacro. L'intuizione come sesto senso affinato dal dolore.",
-wound:"La paura che il guscio non basti. Che il mondo esterno scopra quanto √® fragile ci√≤ che protegge.",
-vision:"Un granchio che cammina all'indietro verso il mare, tenendo in una chela un cuore ancora pulsante. L'acqua sale. Il cuore batte pi√π forte.",
+light:"La memoria come continuit‡ del sacro. L'intuizione come sesto senso affinato dal dolore.",
+wound:"La paura che il guscio non basti. Che il mondo esterno scopra quanto Ë fragile ciÚ che protegge.",
+vision:"Un granchio che cammina all'indietro verso il mare, tenendo in una chela un cuore ancora pulsante. L'acqua sale. Il cuore batte pi˘ forte.",
 voice:"Voce che fluttua come la marea. A volte sommersa, a volte in superficie. Parla in metafore liquide, in immagini che scivolano.",
-secret:"L'astrologia ti dice che sei troppo sensibile. La verit√† √® che hai imparato a sentire ci√≤ che gli altri non osano. Non √® debolezza ‚Äî √® un sistema di percezione cos√¨ raffinato da essere quasi soprannaturale.",
-essence:"Cancro √® la memoria del mondo. Porta con s√© tutto ci√≤ che √® stato amato, perduto, custodito. Il passato non √® nostalgia ‚Äî √® la fondamenta su cui costruisce ogni presente. La casa, per Cancro, non √® un luogo: √® una sensazione.",
-depth:"Il dolore di Cancro √® antico. Viene da lontano ‚Äî spesso dai propri genitori, dall'intera catena di dolori non elaborati che si tramandano nel sangue. La sua sensibilit√† non √® acquisita: √® ereditata. Il lavoro √® sentire tutto questo senza esserne travolto, scegliere cosa tenere e cosa lasciare andare.",
-relationships:"Ama con viscere, con totalit√†, con una devozione che pu√≤ diventare soffocante se non trova il suo centro. Ha bisogno di sicurezza emotiva come condizione fondamentale ‚Äî senza, si chiude nel guscio. La sfida √® fidarsi abbastanza da mostrarsi anche quando fa paura.",
-growth:"Imparare che proteggere non significa trattenere. Che il guscio deve aprirsi almeno una volta per essere vivo. Che essere amati richiede di essere visti ‚Äî non solo la versione gi√† approvata di s√© stessi.",
-karma:"Cancro porta il karma del guaritore che non ha mai imparato a farsi curare. La lezione √® ricevere con la stessa grazia con cui si d√†.",
+secret:"L'astrologia ti dice che sei troppo sensibile. La verit‡ Ë che hai imparato a sentire ciÚ che gli altri non osano. Non Ë debolezza ó Ë un sistema di percezione cosÏ raffinato da essere quasi soprannaturale.",
+essence:"Cancro Ë la memoria del mondo. Porta con sÈ tutto ciÚ che Ë stato amato, perduto, custodito. Il passato non Ë nostalgia ó Ë la fondamenta su cui costruisce ogni presente. La casa, per Cancro, non Ë un luogo: Ë una sensazione.",
+depth:"Il dolore di Cancro Ë antico. Viene da lontano ó spesso dai propri genitori, dall'intera catena di dolori non elaborati che si tramandano nel sangue. La sua sensibilit‡ non Ë acquisita: Ë ereditata. Il lavoro Ë sentire tutto questo senza esserne travolto, scegliere cosa tenere e cosa lasciare andare.",
+relationships:"Ama con viscere, con totalit‡, con una devozione che puÚ diventare soffocante se non trova il suo centro. Ha bisogno di sicurezza emotiva come condizione fondamentale ó senza, si chiude nel guscio. La sfida Ë fidarsi abbastanza da mostrarsi anche quando fa paura.",
+growth:"Imparare che proteggere non significa trattenere. Che il guscio deve aprirsi almeno una volta per essere vivo. Che essere amati richiede di essere visti ó non solo la versione gi‡ approvata di sÈ stessi.",
+karma:"Cancro porta il karma del guaritore che non ha mai imparato a farsi curare. La lezione Ë ricevere con la stessa grazia con cui si d‡.",
 ritual:"La notte di luna piena, scrivi il nome di qualcosa che non riesci a lasciare andare. Immergilo in una ciotola d'acqua salata. Guarda l'inchiostro dissolversi lentamente.",
 compatibility:"Risonanza profonda con Scorpione e Pesci. Armonia con Toro e Vergine. Tensione creativa con Capricorno, il suo opposto.",
-affirmation:"Posso sentire tutto questo e non annegare. La mia profondit√† √® la mia forza. Sono abbastanza al sicuro da aprirmi.",
-symbol_meaning:"Il simbolo del Cancro raffigura due spirali intrecciate ‚Äî le chele del granchio, ma anche i cerchi della luna. √à il glifo della protezione come forma d'amore."},
+affirmation:"Posso sentire tutto questo e non annegare. La mia profondit‡ Ë la mia forza. Sono abbastanza al sicuro da aprirmi.",
+symbol_meaning:"Il simbolo del Cancro raffigura due spirali intrecciate ó le chele del granchio, ma anche i cerchi della luna. » il glifo della protezione come forma d'amore."},
 
-{key:"leone",name:"Leone",symbol:"‚ôå",element:"Fuoco",modality:"Fisso",archetype:"Il Sovrano",planet:"Sole",stone:"Diamante",metal:"Oro",color:"#a86800",colorLight:"#ffd740",darkBg:"#0e0900",rgb:[168,104,0],starColor:"#ffcc80",day:"Domenica",number:1,season:"Cuore dell'Estate",tarot:"La Forza",myth:"Apollo, Eracle, il Re Sole",body:"Cuore, colonna vertebrale, dorso superiore",img:"./leone.jpeg",
-shadow:"Il bisogno di approvazione mascherato da grandiosit√†. La paura del buio dietro la luce.",
-light:"La generosit√† come stato naturale. Il cuore grande come atto politico.",
-wound:"La paura che, se nessuno lo guarda, smetta di esistere. Il terrore dell'invisibilit√† pi√π profondo del terrore della morte.",
-vision:"Un leone che cammina su una savanna bruciata. La criniera √® fatta di raggi di sole spenti. Ma gli occhi ‚Äî gli occhi sono ancora accesi.",
-voice:"Voce che riempie la stanza anche quando sussurra. Teatrale ma mai falsa. Ogni parola √® un atto di presenza.",
-secret:"L'astrologia ti dice che sei vanitoso. La verit√† √® che hai paura che, se non brilli, il buio ti inghiotta. Il tuo bisogno di essere visto non √® egoismo ‚Äî √® sopravvivenza.",
-essence:"Leone √® la presenza che illumina la stanza. Non perch√© si imponga, ma perch√© porta con s√© qualcosa di solare ‚Äî un calore che gli altri riconoscono come necessario alla propria vita. √à il segno della creazione come atto d'amore puro.",
-depth:"Il paradosso di Leone √® che, sotto tutta quella luce, vive una delle paure pi√π profonde dello zodiaco: non essere abbastanza. Non abbastanza speciale, non abbastanza degno di essere amato anche quando non si esibisce. Il suo lavoro √® scoprire che la luce vera non ha bisogno di un pubblico.",
-relationships:"Ama con grandiosit√† e fedelt√† assoluta. Ha bisogno di essere scelto, celebrato, amato in modo visibile ‚Äî l'amore silenzioso lo spaventa perch√© sembra assenza. La sfida √® imparare che qualcuno pu√≤ amarlo anche quando non sta brillando.",
-growth:"Imparare che la luce vera non ha bisogno di un pubblico. Che il valore non dipende dagli applausi. Che brillare per se stessi √® il coraggio pi√π grande ‚Äî e il pi√π raro.",
-karma:"Leone porta il karma del re che governava per se stesso. La lezione √® usare il carisma in servizio degli altri, creare luce per chi non la trova da solo.",
-ritual:"La domenica mattina, fai qualcosa di creativo solo per te ‚Äî non per mostrarlo, non per condividerlo. Tienilo segreto per sette giorni. Questo √® l'amore che non ha bisogno di pubblico.",
+{key:"leone",name:"Leone",symbol:"?",element:"Fuoco",modality:"Fisso",archetype:"Il Sovrano",planet:"Sole",stone:"Diamante",metal:"Oro",color:"#a86800",colorLight:"#ffd740",darkBg:"#0e0900",rgb:[168,104,0],starColor:"#ffcc80",day:"Domenica",number:1,season:"Cuore dell'Estate",tarot:"La Forza",myth:"Apollo, Eracle, il Re Sole",body:"Cuore, colonna vertebrale, dorso superiore",img:"./leone.jpeg?v=2",
+shadow:"Il bisogno di approvazione mascherato da grandiosit‡. La paura del buio dietro la luce.",
+light:"La generosit‡ come stato naturale. Il cuore grande come atto politico.",
+wound:"La paura che, se nessuno lo guarda, smetta di esistere. Il terrore dell'invisibilit‡ pi˘ profondo del terrore della morte.",
+vision:"Un leone che cammina su una savanna bruciata. La criniera Ë fatta di raggi di sole spenti. Ma gli occhi ó gli occhi sono ancora accesi.",
+voice:"Voce che riempie la stanza anche quando sussurra. Teatrale ma mai falsa. Ogni parola Ë un atto di presenza.",
+secret:"L'astrologia ti dice che sei vanitoso. La verit‡ Ë che hai paura che, se non brilli, il buio ti inghiotta. Il tuo bisogno di essere visto non Ë egoismo ó Ë sopravvivenza.",
+essence:"Leone Ë la presenza che illumina la stanza. Non perchÈ si imponga, ma perchÈ porta con sÈ qualcosa di solare ó un calore che gli altri riconoscono come necessario alla propria vita. » il segno della creazione come atto d'amore puro.",
+depth:"Il paradosso di Leone Ë che, sotto tutta quella luce, vive una delle paure pi˘ profonde dello zodiaco: non essere abbastanza. Non abbastanza speciale, non abbastanza degno di essere amato anche quando non si esibisce. Il suo lavoro Ë scoprire che la luce vera non ha bisogno di un pubblico.",
+relationships:"Ama con grandiosit‡ e fedelt‡ assoluta. Ha bisogno di essere scelto, celebrato, amato in modo visibile ó l'amore silenzioso lo spaventa perchÈ sembra assenza. La sfida Ë imparare che qualcuno puÚ amarlo anche quando non sta brillando.",
+growth:"Imparare che la luce vera non ha bisogno di un pubblico. Che il valore non dipende dagli applausi. Che brillare per se stessi Ë il coraggio pi˘ grande ó e il pi˘ raro.",
+karma:"Leone porta il karma del re che governava per se stesso. La lezione Ë usare il carisma in servizio degli altri, creare luce per chi non la trova da solo.",
+ritual:"La domenica mattina, fai qualcosa di creativo solo per te ó non per mostrarlo, non per condividerlo. Tienilo segreto per sette giorni. Questo Ë l'amore che non ha bisogno di pubblico.",
 compatibility:"Fuoco con fuoco con Ariete e Sagittario. Equilibrio magnetico con Bilancia. Connessione intellettuale con Gemelli e Acquario.",
 affirmation:"Sono abbastanza anche nel silenzio. La mia luce non dipende da chi la vede. Posso essere grande senza dover dimostrarlo.",
-symbol_meaning:"Il simbolo del Leone raffigura la criniera solare ‚Äî il glifo dell'io che irradia, del centro che d√† senza svuotarsi."},
+symbol_meaning:"Il simbolo del Leone raffigura la criniera solare ó il glifo dell'io che irradia, del centro che d‡ senza svuotarsi."},
 
-{key:"vergine",name:"Vergine",symbol:"‚ôç",element:"Terra",modality:"Mutevole",archetype:"L'Alchimista",planet:"Mercurio",stone:"Zaffiro",metal:"Mercurio",color:"#2a5e30",colorLight:"#81c784",darkBg:"#010802",rgb:[42,94,48],starColor:"#c8e6c9",day:"Mercoled√¨",number:5,season:"Fine Estate",tarot:"L'Eremita",myth:"Demetra, Astrea",body:"Intestino, sistema digestivo, nervi periferici",img:"./vergine.jpeg",
+{key:"vergine",name:"Vergine",symbol:"?",element:"Terra",modality:"Mutevole",archetype:"L'Alchimista",planet:"Mercurio",stone:"Zaffiro",metal:"Mercurio",color:"#2a5e30",colorLight:"#81c784",darkBg:"#010802",rgb:[42,94,48],starColor:"#c8e6c9",day:"MercoledÏ",number:5,season:"Fine Estate",tarot:"L'Eremita",myth:"Demetra, Astrea",body:"Intestino, sistema digestivo, nervi periferici",img:"./vergine.jpeg?v=2",
 shadow:"Il perfezionismo come fuga dalla vita. La critica come armatura contro la delusione.",
 light:"Il discernimento come forma di saggezza. La cura nei dettagli come atto d'amore.",
 wound:"La paura che il mondo sia irrimediabilmente disordinato e che il proprio ordine sia solo un'illusione patetica.",
-vision:"Una figura che setaccia la sabbia cercando un granello d'oro che sa non esistere. Ma non pu√≤ smettere. Perch√© √® nel processo ‚Äî non nel granello ‚Äî che trova se stessa.",
+vision:"Una figura che setaccia la sabbia cercando un granello d'oro che sa non esistere. Ma non puÚ smettere. PerchÈ Ë nel processo ó non nel granello ó che trova se stessa.",
 voice:"Voce precisa, chirurgica, che pesa ogni parola su una bilancia invisibile. Frasi costruite come dimostrazioni matematiche.",
-secret:"L'astrologia ti dice che sei critico. La verit√† √® che ti critichi mille volte di pi√π di quanto critichi gli altri. La tua esigenza verso il mondo non √® arroganza ‚Äî √® il riflesso del rigore impietoso che rivolgi su te stesso.",
-essence:"Vergine √® il principio dell'ordine che emerge dal caos. La mente che distilla, affina, trasforma. Non √® perfezionismo patologico ‚Äî √® alchimia autentica. La vocazione di Vergine √® il servizio inteso come arte: fare le cose bene perch√© il bene fatto √® gi√† una forma di bellezza.",
-depth:"Il dolore di Vergine nasce dall'impossibilit√† di essere abbastanza ‚Äî non per gli altri, ma per se stessa. Il suo sistema nervoso √® calibrato sulla sottile differenza tra ci√≤ che potrebbe essere e ci√≤ che √®. Questa percezione la rende eccezionale e la tormenta in uguale misura.",
-relationships:"Ama attraverso gli atti di cura, non le dichiarazioni. Il suo linguaggio d'amore √® fare ‚Äî notare, ricordare, aggiustare, essere l√¨. Fatica a ricevere perch√© ricevere significa dipendere, e dipendere significa rischiare la delusione.",
-growth:"Imparare che non tutto ha bisogno di essere risolto. Che alcune cose sono perfette nella loro imperfezione. Che il corpo ha ragione anche quando la mente non capisce. Che la cura inizia da s√©.",
-karma:"Vergine porta il karma del servitore che ha dimenticato se stesso. La lezione √® che servire gli altri senza servire s√© stessi non √® virt√π ‚Äî √® autoabbandono.",
-ritual:"Ogni sera, scrivi tre cose che hai fatto bene oggi. Non tre imperfezioni ‚Äî tre doni. Continua finch√© non sembrer√† pi√π strano quanto sia facile giudicarsi.",
+secret:"L'astrologia ti dice che sei critico. La verit‡ Ë che ti critichi mille volte di pi˘ di quanto critichi gli altri. La tua esigenza verso il mondo non Ë arroganza ó Ë il riflesso del rigore impietoso che rivolgi su te stesso.",
+essence:"Vergine Ë il principio dell'ordine che emerge dal caos. La mente che distilla, affina, trasforma. Non Ë perfezionismo patologico ó Ë alchimia autentica. La vocazione di Vergine Ë il servizio inteso come arte: fare le cose bene perchÈ il bene fatto Ë gi‡ una forma di bellezza.",
+depth:"Il dolore di Vergine nasce dall'impossibilit‡ di essere abbastanza ó non per gli altri, ma per se stessa. Il suo sistema nervoso Ë calibrato sulla sottile differenza tra ciÚ che potrebbe essere e ciÚ che Ë. Questa percezione la rende eccezionale e la tormenta in uguale misura.",
+relationships:"Ama attraverso gli atti di cura, non le dichiarazioni. Il suo linguaggio d'amore Ë fare ó notare, ricordare, aggiustare, essere lÏ. Fatica a ricevere perchÈ ricevere significa dipendere, e dipendere significa rischiare la delusione.",
+growth:"Imparare che non tutto ha bisogno di essere risolto. Che alcune cose sono perfette nella loro imperfezione. Che il corpo ha ragione anche quando la mente non capisce. Che la cura inizia da sÈ.",
+karma:"Vergine porta il karma del servitore che ha dimenticato se stesso. La lezione Ë che servire gli altri senza servire sÈ stessi non Ë virt˘ ó Ë autoabbandono.",
+ritual:"Ogni sera, scrivi tre cose che hai fatto bene oggi. Non tre imperfezioni ó tre doni. Continua finchÈ non sembrer‡ pi˘ strano quanto sia facile giudicarsi.",
 compatibility:"Terra con terra con Toro e Capricorno. Connessione trasformativa con Pesci, il suo opposto. Armonia intellettuale con Gemelli.",
-affirmation:"Sono abbastanza anche quando non sono perfetto. Il mio corpo sa cose che la mia mente non capisce ancora. Prendersi cura di s√© non √® egoismo.",
-symbol_meaning:"Il simbolo della Vergine raffigura la M con una spirale ‚Äî il glifo della fertilit√† che discrimina, che trasforma il grezzo in prezioso."},
+affirmation:"Sono abbastanza anche quando non sono perfetto. Il mio corpo sa cose che la mia mente non capisce ancora. Prendersi cura di sÈ non Ë egoismo.",
+symbol_meaning:"Il simbolo della Vergine raffigura la M con una spirale ó il glifo della fertilit‡ che discrimina, che trasforma il grezzo in prezioso."},
 
-{key:"bilancia",name:"Bilancia",symbol:"‚ôé",element:"Aria",modality:"Cardinale",archetype:"Il Giudice",planet:"Venere",stone:"Opale",metal:"Rame",color:"#703890",colorLight:"#ce93d8",darkBg:"#0a0212",rgb:[112,56,144],starColor:"#f3e5f5",day:"Venerd√¨",number:6,season:"Equinozio d'Autunno",tarot:"La Giustizia",myth:"Temi, Afrodite",body:"Reni, sistema renale, equilibrio ormonale",img:"./bilancia.jpeg",
+{key:"bilancia",name:"Bilancia",symbol:"?",element:"Aria",modality:"Cardinale",archetype:"Il Giudice",planet:"Venere",stone:"Opale",metal:"Rame",color:"#703890",colorLight:"#ce93d8",darkBg:"#0a0212",rgb:[112,56,144],starColor:"#f3e5f5",day:"VenerdÏ",number:6,season:"Equinozio d'Autunno",tarot:"La Giustizia",myth:"Temi, Afrodite",body:"Reni, sistema renale, equilibrio ormonale",img:"./bilancia.jpeg?v=2",
 shadow:"La dipendenza dall'approvazione altrui. La decisione evitata come forma di controllo.",
-light:"La diplomazia come saggezza. La capacit√† di tenere la complessit√† senza semplificarla.",
+light:"La diplomazia come saggezza. La capacit‡ di tenere la complessit‡ senza semplificarla.",
 wound:"La paura di scegliere e di sbagliare. Il terrore che ogni decisione sia una violenza contro qualcuno.",
-vision:"Due piatti di una bilancia che oscillano nel vuoto cosmico. Non c'√® peso su nessuno dei due. Ma la bilancia stessa √® bellissima.",
+vision:"Due piatti di una bilancia che oscillano nel vuoto cosmico. Non c'Ë peso su nessuno dei due. Ma la bilancia stessa Ë bellissima.",
 voice:"Voce che cerca sempre la giusta nota, come un violino che si accorda all'infinito. Frasi bilanciate, simmetriche.",
-secret:"L'astrologia ti dice che sei indeciso. La verit√† √® che vedi tutte le verit√† contemporaneamente. Non √® debolezza ‚Äî √® un burden cognitivo che la maggior parte non potrebbe sopportare. Stai portando il peso di ogni prospettiva.",
-essence:"Bilancia √® il momento prima della scelta ‚Äî lo spazio in cui tutto √® ancora possibile. Non √® indecisione: √® la capacit√† di abitare la complessit√† senza ridurla. Porta nel mondo la bellezza come principio etico: le cose belle sono quelle in equilibrio.",
-depth:"Il paradosso di Bilancia √® che, per qualcuno con una sensibilit√† cos√¨ acuta per la giustizia, fatica terribilmente a essere giusto con se stesso. Rimanda le proprie esigenze, si appiattisce per mantenere la pace ‚Äî finch√© un giorno non riesce a ricordare cosa voleva davvero.",
-relationships:"Ama con eleganza e ha bisogno di reciprocit√† visibile. Il rapporto √® il suo elemento naturale ‚Äî si realizza nello specchio dell'altro. La sfida √® non perdersi in quello specchio.",
-growth:"Imparare a scegliere anche quando fa male. Che non decidere √® anch'essa una scelta. Che il proprio bisogno ha lo stesso peso di quello degli altri ‚Äî niente di pi√π, niente di meno.",
-karma:"Bilancia porta il karma del mediatore che ha smesso di avere una posizione. La lezione √® che la pace vera richiede prima di tutto onest√† ‚Äî anche quella scomoda.",
+secret:"L'astrologia ti dice che sei indeciso. La verit‡ Ë che vedi tutte le verit‡ contemporaneamente. Non Ë debolezza ó Ë un burden cognitivo che la maggior parte non potrebbe sopportare. Stai portando il peso di ogni prospettiva.",
+essence:"Bilancia Ë il momento prima della scelta ó lo spazio in cui tutto Ë ancora possibile. Non Ë indecisione: Ë la capacit‡ di abitare la complessit‡ senza ridurla. Porta nel mondo la bellezza come principio etico: le cose belle sono quelle in equilibrio.",
+depth:"Il paradosso di Bilancia Ë che, per qualcuno con una sensibilit‡ cosÏ acuta per la giustizia, fatica terribilmente a essere giusto con se stesso. Rimanda le proprie esigenze, si appiattisce per mantenere la pace ó finchÈ un giorno non riesce a ricordare cosa voleva davvero.",
+relationships:"Ama con eleganza e ha bisogno di reciprocit‡ visibile. Il rapporto Ë il suo elemento naturale ó si realizza nello specchio dell'altro. La sfida Ë non perdersi in quello specchio.",
+growth:"Imparare a scegliere anche quando fa male. Che non decidere Ë anch'essa una scelta. Che il proprio bisogno ha lo stesso peso di quello degli altri ó niente di pi˘, niente di meno.",
+karma:"Bilancia porta il karma del mediatore che ha smesso di avere una posizione. La lezione Ë che la pace vera richiede prima di tutto onest‡ ó anche quella scomoda.",
 ritual:"Prendi due oggetti di peso diverso. Tienili nelle palme aperte. Osserva lo squilibrio senza cercare di correggerlo. Resta con quella sensazione per cinque minuti.",
 compatibility:"Aria con aria con Gemelli e Acquario. Tensione magnetica con Ariete, il suo opposto. Connessione artistica con Leone e Sagittario.",
-affirmation:"Posso scegliere anche senza avere tutte le risposte. Il mio bisogno conta quanto quello degli altri. La complessit√† che vedo √® un dono.",
-symbol_meaning:"Il simbolo della Bilancia raffigura il sole che tramonta sull'orizzonte ‚Äî l'unico dei dodici a essere un oggetto. Il glifo dell'equilibrio che divide il giorno dalla notte."},
+affirmation:"Posso scegliere anche senza avere tutte le risposte. Il mio bisogno conta quanto quello degli altri. La complessit‡ che vedo Ë un dono.",
+symbol_meaning:"Il simbolo della Bilancia raffigura il sole che tramonta sull'orizzonte ó l'unico dei dodici a essere un oggetto. Il glifo dell'equilibrio che divide il giorno dalla notte."},
 
-{key:"scorpione",name:"Scorpione",symbol:"‚ôè",element:"Acqua",modality:"Fisso",archetype:"Il Trasformatore",planet:"Plutone",stone:"Ossidiana",metal:"Ferro",color:"#620898",colorLight:"#ba68c8",darkBg:"#060010",rgb:[98,8,152],starColor:"#ce93d8",day:"Marted√¨",number:9,season:"Profondit√† dell'Autunno",tarot:"La Morte",myth:"Ade, Persefone, la Fenice",body:"Organi genitali, sistema riproduttivo, intestino crasso",img:"./scorpione.jpeg",
+{key:"scorpione",name:"Scorpione",symbol:"?",element:"Acqua",modality:"Fisso",archetype:"Il Trasformatore",planet:"Plutone",stone:"Ossidiana",metal:"Ferro",color:"#620898",colorLight:"#ba68c8",darkBg:"#060010",rgb:[98,8,152],starColor:"#ce93d8",day:"MartedÏ",number:9,season:"Profondit‡ dell'Autunno",tarot:"La Morte",myth:"Ade, Persefone, la Fenice",body:"Organi genitali, sistema riproduttivo, intestino crasso",img:"./scorpione.jpeg?v=2",
 shadow:"Il controllo come difesa dall'abbandono. La vendetta come sostituto del lutto.",
-light:"La capacit√† di trasformare il veleno in medicina. La visione che penetra le maschere.",
-wound:"La paura di essere visto nella propria nudit√† pi√π totale. Il terrore che qualcuno scopra quanto √® profondo il pozzo.",
-vision:"Uno scorpione che si punge con il proprio pungiglione. Non √® suicidio: √® alchimia. Il veleno √® anche l'antidoto. Sempre √® stato cos√¨.",
+light:"La capacit‡ di trasformare il veleno in medicina. La visione che penetra le maschere.",
+wound:"La paura di essere visto nella propria nudit‡ pi˘ totale. Il terrore che qualcuno scopra quanto Ë profondo il pozzo.",
+vision:"Uno scorpione che si punge con il proprio pungiglione. Non Ë suicidio: Ë alchimia. Il veleno Ë anche l'antidoto. Sempre Ë stato cosÏ.",
 voice:"Voce che emerge dal sottosuolo. Lenta, intensa. Ogni parola ha un sottotesto, un significato che si porta dietro come un'ombra.",
-secret:"L'astrologia ti dice che sei vendicativo. La verit√† √® che non dimentichi perch√© non puoi. La tua memoria emotiva √® cos√¨ precisa da essere quasi una maledizione. Ma √® anche la fonte del tuo dono pi√π raro: nessuno capisce la trasformazione come te.",
-essence:"Scorpione √® il guardiano della soglia tra la vita e la morte, tra ci√≤ che si vede e ci√≤ che si nasconde. Vive nella profondit√† perch√© solo l√¨ trova la verit√† che conta. Conosce la natura del buio non perch√© lo cerchi ‚Äî ma perch√© √® l'unico posto dove ha trovato la luce vera.",
-depth:"Scorpione porta in s√© la conoscenza del peggio ‚Äî e questa conoscenza lo ha reso capace di una compassione feroce. Ha attraversato il proprio abisso abbastanza volte da sapere la mappa a memoria. Il suo problema non √® il buio: √® imparare a fidarsi della luce.",
-relationships:"Il desiderio di Scorpione √® una questione di vita o di morte. Ama con possessivit√† e devozione assoluta. Vuole fondersi, trasformarsi, rinascere attraverso l'altro. Non tollera le mezze misure. La sfida √® lasciare che l'amore sia anche leggero.",
-growth:"Imparare che il perdono non √® dimenticare, ma liberarsi. Che il controllo √® una forma di paura. Che lasciarsi essere visti √® il vero atto di potere.",
-karma:"Scorpione porta il karma di chi ha usato la conoscenza del dolore per ferire invece che per guarire. La lezione √® trasformare il veleno in medicina ‚Äî per s√© prima che per gli altri.",
-ritual:"Nell'oscurit√† completa, scrivi una cosa che non hai mai detto a nessuno. Chiudila in una busta sigillata. Decidine la data di apertura. Poi dimentica che esiste.",
-compatibility:"Profondit√† con Cancro e Pesci. Polarit√† trasformativa con Toro, il suo opposto. Intensit√† costruttiva con Capricorno e Vergine.",
-affirmation:"La mia profondit√† non fa paura ‚Äî fa luce. Posso mostrare il pozzo senza caderci dentro. Il mio veleno si trasforma. Sempre.",
-symbol_meaning:"Il simbolo dello Scorpione √® la M con la freccia puntata verso il basso e verso l'alto ‚Äî il glifo della morte e della rinascita come unico atto."},
+secret:"L'astrologia ti dice che sei vendicativo. La verit‡ Ë che non dimentichi perchÈ non puoi. La tua memoria emotiva Ë cosÏ precisa da essere quasi una maledizione. Ma Ë anche la fonte del tuo dono pi˘ raro: nessuno capisce la trasformazione come te.",
+essence:"Scorpione Ë il guardiano della soglia tra la vita e la morte, tra ciÚ che si vede e ciÚ che si nasconde. Vive nella profondit‡ perchÈ solo lÏ trova la verit‡ che conta. Conosce la natura del buio non perchÈ lo cerchi ó ma perchÈ Ë l'unico posto dove ha trovato la luce vera.",
+depth:"Scorpione porta in sÈ la conoscenza del peggio ó e questa conoscenza lo ha reso capace di una compassione feroce. Ha attraversato il proprio abisso abbastanza volte da sapere la mappa a memoria. Il suo problema non Ë il buio: Ë imparare a fidarsi della luce.",
+relationships:"Il desiderio di Scorpione Ë una questione di vita o di morte. Ama con possessivit‡ e devozione assoluta. Vuole fondersi, trasformarsi, rinascere attraverso l'altro. Non tollera le mezze misure. La sfida Ë lasciare che l'amore sia anche leggero.",
+growth:"Imparare che il perdono non Ë dimenticare, ma liberarsi. Che il controllo Ë una forma di paura. Che lasciarsi essere visti Ë il vero atto di potere.",
+karma:"Scorpione porta il karma di chi ha usato la conoscenza del dolore per ferire invece che per guarire. La lezione Ë trasformare il veleno in medicina ó per sÈ prima che per gli altri.",
+ritual:"Nell'oscurit‡ completa, scrivi una cosa che non hai mai detto a nessuno. Chiudila in una busta sigillata. Decidine la data di apertura. Poi dimentica che esiste.",
+compatibility:"Profondit‡ con Cancro e Pesci. Polarit‡ trasformativa con Toro, il suo opposto. Intensit‡ costruttiva con Capricorno e Vergine.",
+affirmation:"La mia profondit‡ non fa paura ó fa luce. Posso mostrare il pozzo senza caderci dentro. Il mio veleno si trasforma. Sempre.",
+symbol_meaning:"Il simbolo dello Scorpione Ë la M con la freccia puntata verso il basso e verso l'alto ó il glifo della morte e della rinascita come unico atto."},
 
-{key:"sagittario",name:"Sagittario",symbol:"‚ôê",element:"Fuoco",modality:"Mutevole",archetype:"Il Cercatore",planet:"Giove",stone:"Topazio",metal:"Stagno",color:"#4820a0",colorLight:"#9575cd",darkBg:"#05000e",rgb:[72,32,160],starColor:"#d1c4e9",day:"Gioved√¨",number:3,season:"Inizio Inverno",tarot:"La Temperanza",myth:"Chirone, il Centauro Ferito",body:"Fianchi, cosce, fegato, nervo sciatico",img:"./sagittario.jpeg",
-shadow:"L'ottimismo come fuga dal dolore. La libert√† usata per evitare la responsabilit√†.",
+{key:"sagittario",name:"Sagittario",symbol:"?",element:"Fuoco",modality:"Mutevole",archetype:"Il Cercatore",planet:"Giove",stone:"Topazio",metal:"Stagno",color:"#4820a0",colorLight:"#9575cd",darkBg:"#05000e",rgb:[72,32,160],starColor:"#d1c4e9",day:"GiovedÏ",number:3,season:"Inizio Inverno",tarot:"La Temperanza",myth:"Chirone, il Centauro Ferito",body:"Fianchi, cosce, fegato, nervo sciatico",img:"./sagittario.jpeg?v=2",
+shadow:"L'ottimismo come fuga dal dolore. La libert‡ usata per evitare la responsabilit‡.",
 light:"La visione di un orizzonte sempre aperto. Il significato trovato nel caos.",
-wound:"La paura che la verit√† non esista, e che tutta la ricerca sia una fuga da un vuoto pi√π grande.",
-vision:"Un arciere che scaglia frecce verso l'orizzonte. Le frecce sono fatte di domande. L'orizzonte si ritira di un passo per ogni freccia scagliata. √à comunque la cosa pi√π bella che abbia mai visto.",
+wound:"La paura che la verit‡ non esista, e che tutta la ricerca sia una fuga da un vuoto pi˘ grande.",
+vision:"Un arciere che scaglia frecce verso l'orizzonte. Le frecce sono fatte di domande. L'orizzonte si ritira di un passo per ogni freccia scagliata. » comunque la cosa pi˘ bella che abbia mai visto.",
 voice:"Voce che si espande, esplora, divaga. Frasi lunghe che attraversano continenti, che si perdono e si ritrovano.",
-secret:"L'astrologia ti dice che sei ottimista. La verit√† √® che hai visto l'abisso e hai deciso di correre. Il tuo ottimismo non √® ingenuit√† ‚Äî √® un atto di ribellione consapevole contro il nulla.",
-essence:"Sagittario √® l'orizzonte in movimento perpetuo. Esiste nella tensione tra ci√≤ che √® e ci√≤ che potrebbe essere. La freccia non √® violenza: √® la promessa che un mondo pi√π ampio √® possibile ‚Äî e che vale la pena cercarlo.",
-depth:"Il dolore di Sagittario √® filosofico prima che emotivo. Vive nell'angoscia del significato ‚Äî e quando non riesce a trovarlo, parte. L'errore √® credere che cambiando posto si cambi la domanda. La maturit√† √® scoprire che la risposta era sempre stata interna.",
-relationships:"Ama con avventura e libert√† come condizioni necessarie. Ha pi√π paura di annoiarsi che di essere ferito ‚Äî e questo spaventa le persone che ama. La sfida √® scoprire che la profondit√† √® l'orizzonte verticale.",
-growth:"Imparare che le radici non sono prigioni. Che la profondit√† √® una forma di esplorazione. Che alcune verit√† si trovano solo fermandosi. Che l'intimit√† √® la frontiera pi√π inesplorata.",
-karma:"Sagittario porta il karma del maestro che insegnava tutto tranne come abitare il proprio dolore. La lezione √® che la saggezza vera comincia da dove fa pi√π male.",
+secret:"L'astrologia ti dice che sei ottimista. La verit‡ Ë che hai visto l'abisso e hai deciso di correre. Il tuo ottimismo non Ë ingenuit‡ ó Ë un atto di ribellione consapevole contro il nulla.",
+essence:"Sagittario Ë l'orizzonte in movimento perpetuo. Esiste nella tensione tra ciÚ che Ë e ciÚ che potrebbe essere. La freccia non Ë violenza: Ë la promessa che un mondo pi˘ ampio Ë possibile ó e che vale la pena cercarlo.",
+depth:"Il dolore di Sagittario Ë filosofico prima che emotivo. Vive nell'angoscia del significato ó e quando non riesce a trovarlo, parte. L'errore Ë credere che cambiando posto si cambi la domanda. La maturit‡ Ë scoprire che la risposta era sempre stata interna.",
+relationships:"Ama con avventura e libert‡ come condizioni necessarie. Ha pi˘ paura di annoiarsi che di essere ferito ó e questo spaventa le persone che ama. La sfida Ë scoprire che la profondit‡ Ë l'orizzonte verticale.",
+growth:"Imparare che le radici non sono prigioni. Che la profondit‡ Ë una forma di esplorazione. Che alcune verit‡ si trovano solo fermandosi. Che l'intimit‡ Ë la frontiera pi˘ inesplorata.",
+karma:"Sagittario porta il karma del maestro che insegnava tutto tranne come abitare il proprio dolore. La lezione Ë che la saggezza vera comincia da dove fa pi˘ male.",
 ritual:"Ogni mese, vai in un posto dove non sei mai stato. Siediti in silenzio per un'ora. Non fotografare nulla. Lascia che qualcosa cambi.",
 compatibility:"Fuoco libero con Ariete e Leone. Tensione generativa con Gemelli, il suo opposto. Esplorazione con Bilancia e Acquario.",
-affirmation:"Il mio bisogno di senso √® sacro. Posso cercare l'infinito e avere anche radici. La verit√† si trova anche fermandosi.",
-symbol_meaning:"Il simbolo del Sagittario √® una freccia ‚Äî semplice, diretta, puntata verso l'alto. Il glifo del fuoco che diventa intenzione."},
+affirmation:"Il mio bisogno di senso Ë sacro. Posso cercare l'infinito e avere anche radici. La verit‡ si trova anche fermandosi.",
+symbol_meaning:"Il simbolo del Sagittario Ë una freccia ó semplice, diretta, puntata verso l'alto. Il glifo del fuoco che diventa intenzione."},
 
-{key:"capricorno",name:"Capricorno",symbol:"‚ôë",element:"Terra",modality:"Cardinale",archetype:"Il Maestro",planet:"Saturno",stone:"Onice",metal:"Piombo",color:"#2a3c4e",colorLight:"#78909c",darkBg:"#010408",rgb:[42,60,78],starColor:"#b0bec5",day:"Sabato",number:8,season:"Solstizio d'Inverno",tarot:"Il Diavolo",myth:"Crono/Saturno, Pan",body:"Ossa, denti, ginocchia, sistema scheletrico",img:"./capricorno.jpeg",
-shadow:"Il lavoro come fuga dall'intimit√†. Il controllo come sostituto dell'amore.",
+{key:"capricorno",name:"Capricorno",symbol:"?",element:"Terra",modality:"Cardinale",archetype:"Il Maestro",planet:"Saturno",stone:"Onice",metal:"Piombo",color:"#2a3c4e",colorLight:"#78909c",darkBg:"#010408",rgb:[42,60,78],starColor:"#b0bec5",day:"Sabato",number:8,season:"Solstizio d'Inverno",tarot:"Il Diavolo",myth:"Crono/Saturno, Pan",body:"Ossa, denti, ginocchia, sistema scheletrico",img:"./capricorno.jpeg?v=2",
+shadow:"Il lavoro come fuga dall'intimit‡. Il controllo come sostituto dell'amore.",
 light:"La perseveranza come forma di saggezza. La struttura come atto di cura.",
 wound:"La paura che tutto il lavoro, tutta la disciplina, tutta la rinuncia siano stati inutili.",
-vision:"Una capra che scala una montagna di ossa. Ogni passo √® un sacrificio. In cima c'√® uno specchio. Riflette non il vuoto ‚Äî riflette chi sei diventato nel salire.",
-voice:"Voce secca, essenziale, come pietra su pietra. Frasi che non sprecano nulla. Ogni parola √® gi√† passata attraverso il filtro del tempo.",
-secret:"L'astrologia ti dice che sei freddo. La verit√† √® che hai spento il fuoco per non bruciare. Il ghiaccio √® la tua forma di sopravvivenza, non di indifferenza. Sotto c'√® una lava che non hai ancora il coraggio di mostrare.",
-essence:"Capricorno √® il tempo che si accumula. Non ha fretta perch√© sa che la vetta esiste ‚Äî e sa che ci arriver√†, qualunque cosa accada. Porta nel mondo la saggezza che viene solo da chi ha rinunciato qualcosa di reale per qualcosa di pi√π grande.",
-depth:"Il dolore di Capricorno √® il dolore del tempo. Ha imparato presto che le cose si conquistano, non si ricevono. Questa lezione l'ha reso capace di costruire qualsiasi cosa. Il problema √® che ha smesso di chiedersi se ci√≤ che costruisce √® anche ci√≤ che vuole.",
-relationships:"Mostra la propria vulnerabilit√† solo a chi ha guadagnato la sua fiducia nel tempo. L'eros emerge lentamente, come il disgelo in primavera. Ma quando arriva, √® totale. La sfida √® non far pagare all'altro il prezzo dei muri costruiti prima di lui.",
-growth:"Imparare che il riposo non √® fallimento. Che il piacere non va guadagnato. Che il corpo ha bisogno di calore, non solo di disciplina. Che si pu√≤ essere amati anche senza meritarselo.",
-karma:"Capricorno porta il karma del padre severo che non ha mai imparato a essere figlio. La lezione √® che la maturit√† vera include anche la regressione ‚Äî sedersi per terra, ridere senza motivo, ricevere senza restituire.",
-ritual:"Una volta all'anno, scrivi una lettera a te stesso di dieci anni fa. Non cosa hai ottenuto ‚Äî cosa hai capito. La differenza tra le due liste rivela chi sei diventato.",
+vision:"Una capra che scala una montagna di ossa. Ogni passo Ë un sacrificio. In cima c'Ë uno specchio. Riflette non il vuoto ó riflette chi sei diventato nel salire.",
+voice:"Voce secca, essenziale, come pietra su pietra. Frasi che non sprecano nulla. Ogni parola Ë gi‡ passata attraverso il filtro del tempo.",
+secret:"L'astrologia ti dice che sei freddo. La verit‡ Ë che hai spento il fuoco per non bruciare. Il ghiaccio Ë la tua forma di sopravvivenza, non di indifferenza. Sotto c'Ë una lava che non hai ancora il coraggio di mostrare.",
+essence:"Capricorno Ë il tempo che si accumula. Non ha fretta perchÈ sa che la vetta esiste ó e sa che ci arriver‡, qualunque cosa accada. Porta nel mondo la saggezza che viene solo da chi ha rinunciato qualcosa di reale per qualcosa di pi˘ grande.",
+depth:"Il dolore di Capricorno Ë il dolore del tempo. Ha imparato presto che le cose si conquistano, non si ricevono. Questa lezione l'ha reso capace di costruire qualsiasi cosa. Il problema Ë che ha smesso di chiedersi se ciÚ che costruisce Ë anche ciÚ che vuole.",
+relationships:"Mostra la propria vulnerabilit‡ solo a chi ha guadagnato la sua fiducia nel tempo. L'eros emerge lentamente, come il disgelo in primavera. Ma quando arriva, Ë totale. La sfida Ë non far pagare all'altro il prezzo dei muri costruiti prima di lui.",
+growth:"Imparare che il riposo non Ë fallimento. Che il piacere non va guadagnato. Che il corpo ha bisogno di calore, non solo di disciplina. Che si puÚ essere amati anche senza meritarselo.",
+karma:"Capricorno porta il karma del padre severo che non ha mai imparato a essere figlio. La lezione Ë che la maturit‡ vera include anche la regressione ó sedersi per terra, ridere senza motivo, ricevere senza restituire.",
+ritual:"Una volta all'anno, scrivi una lettera a te stesso di dieci anni fa. Non cosa hai ottenuto ó cosa hai capito. La differenza tra le due liste rivela chi sei diventato.",
 compatibility:"Terra con terra con Toro e Vergine. Tensione costruttiva con Cancro. Rispetto profondo con Scorpione e Pesci.",
-affirmation:"Il riposo non √® resa. Posso ricevere senza guadagnarmelo. La mia durezza mi ha portato fin qui ‚Äî ora posso sciogliermi.",
-symbol_meaning:"Il simbolo del Capricorno raffigura la capra con la coda del pesce ‚Äî la creatura che vive tra la terra e le profondit√† marine."},
+affirmation:"Il riposo non Ë resa. Posso ricevere senza guadagnarmelo. La mia durezza mi ha portato fin qui ó ora posso sciogliermi.",
+symbol_meaning:"Il simbolo del Capricorno raffigura la capra con la coda del pesce ó la creatura che vive tra la terra e le profondit‡ marine."},
 
-{key:"acquario",name:"Acquario",symbol:"‚ôí",element:"Aria",modality:"Fisso",archetype:"Il Visionario",planet:"Urano",stone:"Ametista",metal:"Uranio",color:"#1030a0",colorLight:"#7986cb",darkBg:"#010210",rgb:[16,48,160],starColor:"#c5cae9",day:"Sabato",number:4,season:"Pieno Inverno",tarot:"La Stella",myth:"Prometeo, Ganimede",body:"Polpacci, caviglie, sistema circolatorio",img:"./acquario.jpeg",
-shadow:"Il distacco come fuga dal sentire. La ribellione come identit√† invece che come mezzo.",
-light:"La visione del futuro possibile. La libert√† come dono fatto al mondo intero.",
-wound:"La paura di appartenere. Il terrore che, se si lascia entrare qualcuno, si perda la propria unicit√†.",
-vision:"Una figura che versa acqua da un'anfora rotta. L'acqua non cade: vola verso le stelle. Qualcosa si perde ‚Äî qualcosa arriva pi√π lontano.",
+{key:"acquario",name:"Acquario",symbol:"?",element:"Aria",modality:"Fisso",archetype:"Il Visionario",planet:"Urano",stone:"Ametista",metal:"Uranio",color:"#1030a0",colorLight:"#7986cb",darkBg:"#010210",rgb:[16,48,160],starColor:"#c5cae9",day:"Sabato",number:4,season:"Pieno Inverno",tarot:"La Stella",myth:"Prometeo, Ganimede",body:"Polpacci, caviglie, sistema circolatorio",img:"./acquario.jpeg?v=2",
+shadow:"Il distacco come fuga dal sentire. La ribellione come identit‡ invece che come mezzo.",
+light:"La visione del futuro possibile. La libert‡ come dono fatto al mondo intero.",
+wound:"La paura di appartenere. Il terrore che, se si lascia entrare qualcuno, si perda la propria unicit‡.",
+vision:"Una figura che versa acqua da un'anfora rotta. L'acqua non cade: vola verso le stelle. Qualcosa si perde ó qualcosa arriva pi˘ lontano.",
 voice:"Voce che viene da un altro pianeta. Distaccata ma vivida, brillante, piena di salti logici che all'improvviso hanno senso.",
-secret:"L'astrologia ti dice che sei distaccato. La verit√† √® che senti cos√¨ intensamente che hai dovuto creare distanza per sopravvivere. Il tuo ghiaccio non √® indifferenza ‚Äî √® il modo in cui porti il fuoco senza bruciarti le mani.",
-essence:"Acquario √® il futuro che abita il presente. Vede ci√≤ che non esiste ancora e lo porta nel mondo come visione. La sua stranezza non √® un difetto ‚Äî √® anticipo di ci√≤ che verr√†. Esiste sempre un po' fuori dal proprio tempo.",
-depth:"Il dolore di Acquario √® il dolore dell'incompreso nel senso pi√π profondo: porta idee che il mondo non √® ancora pronto a ricevere. La sua solitudine non √® scelta ma destino. Il lavoro √® trasformare l'isolamento in connessione senza perdere la propria frequenza.",
-relationships:"Il desiderio √® intellettuale prima che fisico. Ama chi sfida il suo pensiero. Ha bisogno di libert√† anche nell'amore ‚Äî non per tradire, ma per non scomparire. La sfida √® lasciare che l'intimit√† sia anche vulnerabilit√†.",
-growth:"Imparare che la connessione non √® perdita di s√©. Che appartenere a qualcuno non significa essere posseduti. Che le emozioni sono dati, non debolezze da correggere.",
-karma:"Acquario porta il karma del rivoluzionario che sapeva cosa rompere ma non cosa costruire. La lezione √® che la libert√† vera ha una forma ‚Äî non √® assenza di struttura ma struttura scelta.",
-ritual:"Una volta al mese, trascorri un'intera giornata senza tecnologia. Non per purificarti ‚Äî per ritrovare il ritmo del tuo pensiero non mediato dagli schermi.",
+secret:"L'astrologia ti dice che sei distaccato. La verit‡ Ë che senti cosÏ intensamente che hai dovuto creare distanza per sopravvivere. Il tuo ghiaccio non Ë indifferenza ó Ë il modo in cui porti il fuoco senza bruciarti le mani.",
+essence:"Acquario Ë il futuro che abita il presente. Vede ciÚ che non esiste ancora e lo porta nel mondo come visione. La sua stranezza non Ë un difetto ó Ë anticipo di ciÚ che verr‡. Esiste sempre un po' fuori dal proprio tempo.",
+depth:"Il dolore di Acquario Ë il dolore dell'incompreso nel senso pi˘ profondo: porta idee che il mondo non Ë ancora pronto a ricevere. La sua solitudine non Ë scelta ma destino. Il lavoro Ë trasformare l'isolamento in connessione senza perdere la propria frequenza.",
+relationships:"Il desiderio Ë intellettuale prima che fisico. Ama chi sfida il suo pensiero. Ha bisogno di libert‡ anche nell'amore ó non per tradire, ma per non scomparire. La sfida Ë lasciare che l'intimit‡ sia anche vulnerabilit‡.",
+growth:"Imparare che la connessione non Ë perdita di sÈ. Che appartenere a qualcuno non significa essere posseduti. Che le emozioni sono dati, non debolezze da correggere.",
+karma:"Acquario porta il karma del rivoluzionario che sapeva cosa rompere ma non cosa costruire. La lezione Ë che la libert‡ vera ha una forma ó non Ë assenza di struttura ma struttura scelta.",
+ritual:"Una volta al mese, trascorri un'intera giornata senza tecnologia. Non per purificarti ó per ritrovare il ritmo del tuo pensiero non mediato dagli schermi.",
 compatibility:"Aria con aria con Gemelli e Bilancia. Tensione generativa con Leone, il suo opposto. Risonanza con Ariete e Sagittario.",
-affirmation:"Posso appartenere senza perdermi. Le mie emozioni sono un dato, non un difetto. Sono del futuro ‚Äî e anche del presente.",
-symbol_meaning:"Il simbolo dell'Acquario sono due onde parallele ‚Äî onde elettriche, onde di pensiero. Il glifo della trasmissione: portare energia da una dimensione all'altra."},
+affirmation:"Posso appartenere senza perdermi. Le mie emozioni sono un dato, non un difetto. Sono del futuro ó e anche del presente.",
+symbol_meaning:"Il simbolo dell'Acquario sono due onde parallele ó onde elettriche, onde di pensiero. Il glifo della trasmissione: portare energia da una dimensione all'altra."},
 
-{key:"pesci",name:"Pesci",symbol:"‚ôì",element:"Acqua",modality:"Mutevole",archetype:"Il Mistico",planet:"Nettuno",stone:"Acquamarina",metal:"Stagno",color:"#1828a0",colorLight:"#7986cb",darkBg:"#01020e",rgb:[24,40,160],starColor:"#c5cae9",day:"Gioved√¨",number:7,season:"Fine Inverno",tarot:"La Luna",myth:"Poseidone, Afrodite, Dioniso",body:"Piedi, sistema linfatico, ghiandola pineale",img:"./pesci.jpeg",
-shadow:"La dissoluzione dei confini come fuga dal s√©. Il sacrificio come identit√†.",
-light:"La compassione come forma di intelligenza. La visione oltre il velo della realt√† ordinaria.",
-wound:"La paura di confondersi con il mare. Il terrore che i propri confini siano cos√¨ permeabili da non esistere pi√π.",
-vision:"Due pesci che nuotano in direzioni opposte, legati da un filo d'argento. Non si allontanano mai ‚Äî e in quella tensione, nascono mondi.",
-voice:"Voce che fluisce, si dissolve, ricompare. Frasi che non finiscono mai davvero ‚Äî si dissolvono in sospensione.",
-secret:"L'astrologia ti dice che sei confuso. La verit√† √® che vedi mille verit√† sovrapposte e non hai parole per contenerle tutte. Non √® confusione ‚Äî √® una forma di percezione che il linguaggio non √® ancora abbastanza grande da descrivere.",
-essence:"Pesci √® la dissoluzione che precede la rinascita. Vive nella porosit√† tra s√© e l'altro, tra il reale e il sognato. L'ultimo segno dello zodiaco porta in s√© la memoria di tutti gli altri ‚Äî e la fatica di tutta quella memoria.",
-depth:"Il dolore di Pesci √® il dolore dell'empaticit√† radicale ‚Äî sentire tutto, di tutti, senza filtro. Il confine tra s√© e l'altro √® cos√¨ permeabile da rendere difficile capire cosa √® suo e cosa √® preso in prestito dall'oceano emotivo. Il lavoro √® costruire una riva senza perdere il mare.",
-relationships:"Ama con la totalit√† dell'oceano ‚Äî senza riserve, senza calcoli. Il rischio √® dissolversi nell'altro. La sfida √® amare senza scomparire, dare senza svuotarsi, restare riconoscibile anche nell'intimit√† pi√π profonda.",
-growth:"Imparare che avere confini √® un atto d'amore, non di egoismo. Che la propria esistenza separata ha valore. Che scegliere s√© stessi non √® abbandonare gli altri.",
-karma:"Pesci porta il karma di tutti i segni ‚Äî √® l'ultimo, porta la memoria. La lezione √® integrare senza dissolversi: essere del mondo senza perdersi nel mondo.",
-ritual:"La mattina, prima di alzarti, rimani cinque minuti nel corpo. Senti il peso, il calore, il confine della tua pelle. Questo sei tu ‚Äî separato, reale, presente. Questo basta.",
+{key:"pesci",name:"Pesci",symbol:"?",element:"Acqua",modality:"Mutevole",archetype:"Il Mistico",planet:"Nettuno",stone:"Acquamarina",metal:"Stagno",color:"#1828a0",colorLight:"#7986cb",darkBg:"#01020e",rgb:[24,40,160],starColor:"#c5cae9",day:"GiovedÏ",number:7,season:"Fine Inverno",tarot:"La Luna",myth:"Poseidone, Afrodite, Dioniso",body:"Piedi, sistema linfatico, ghiandola pineale",img:"./pesci.jpeg?v=2",
+shadow:"La dissoluzione dei confini come fuga dal sÈ. Il sacrificio come identit‡.",
+light:"La compassione come forma di intelligenza. La visione oltre il velo della realt‡ ordinaria.",
+wound:"La paura di confondersi con il mare. Il terrore che i propri confini siano cosÏ permeabili da non esistere pi˘.",
+vision:"Due pesci che nuotano in direzioni opposte, legati da un filo d'argento. Non si allontanano mai ó e in quella tensione, nascono mondi.",
+voice:"Voce che fluisce, si dissolve, ricompare. Frasi che non finiscono mai davvero ó si dissolvono in sospensione.",
+secret:"L'astrologia ti dice che sei confuso. La verit‡ Ë che vedi mille verit‡ sovrapposte e non hai parole per contenerle tutte. Non Ë confusione ó Ë una forma di percezione che il linguaggio non Ë ancora abbastanza grande da descrivere.",
+essence:"Pesci Ë la dissoluzione che precede la rinascita. Vive nella porosit‡ tra sÈ e l'altro, tra il reale e il sognato. L'ultimo segno dello zodiaco porta in sÈ la memoria di tutti gli altri ó e la fatica di tutta quella memoria.",
+depth:"Il dolore di Pesci Ë il dolore dell'empaticit‡ radicale ó sentire tutto, di tutti, senza filtro. Il confine tra sÈ e l'altro Ë cosÏ permeabile da rendere difficile capire cosa Ë suo e cosa Ë preso in prestito dall'oceano emotivo. Il lavoro Ë costruire una riva senza perdere il mare.",
+relationships:"Ama con la totalit‡ dell'oceano ó senza riserve, senza calcoli. Il rischio Ë dissolversi nell'altro. La sfida Ë amare senza scomparire, dare senza svuotarsi, restare riconoscibile anche nell'intimit‡ pi˘ profonda.",
+growth:"Imparare che avere confini Ë un atto d'amore, non di egoismo. Che la propria esistenza separata ha valore. Che scegliere sÈ stessi non Ë abbandonare gli altri.",
+karma:"Pesci porta il karma di tutti i segni ó Ë l'ultimo, porta la memoria. La lezione Ë integrare senza dissolversi: essere del mondo senza perdersi nel mondo.",
+ritual:"La mattina, prima di alzarti, rimani cinque minuti nel corpo. Senti il peso, il calore, il confine della tua pelle. Questo sei tu ó separato, reale, presente. Questo basta.",
 compatibility:"Acqua con acqua con Cancro e Scorpione. Attrazione trasformativa con Vergine, il suo opposto. Armonia con Toro e Capricorno.",
-affirmation:"I miei confini sono sacri quanto il mio amore. Posso sentire tutto questo senza dissolvermi. Sono separato ‚Äî e anche connesso.",
-symbol_meaning:"Il simbolo dei Pesci raffigura due pesci legati da un filo che nuotano in direzioni opposte ‚Äî il glifo del sogno e della veglia, dell'incarnazione e del ritorno al mare."}
+affirmation:"I miei confini sono sacri quanto il mio amore. Posso sentire tutto questo senza dissolvermi. Sono separato ó e anche connesso.",
+symbol_meaning:"Il simbolo dei Pesci raffigura due pesci legati da un filo che nuotano in direzioni opposte ó il glifo del sogno e della veglia, dell'incarnazione e del ritorno al mare."}
 ];
 
 const THEMES={
@@ -264,38 +264,38 @@ const THEMES={
 const JOURNAL_TABS=[
   {key:"psiche", label:"Psiche",  q:"Cosa vedi quando chiudi gli occhi?",          hint:"L'inconscio parla oggi"},
   {key:"eros",   label:"Eros",    q:"Cosa desideri senza osarlo dire?",             hint:"Il desiderio nascosto"},
-  {key:"ombra",  label:"Ombra",   q:"Cosa neghi di essere?",                        hint:"Ci√≤ che proietti sugli altri"},
-  {key:"soma",   label:"Soma",    q:"Dove senti il peso nel corpo oggi?",           hint:"Il corpo ricorda ci√≤ che la mente dimentica"},
-  {key:"oracolo",label:"Oracolo", q:"Una sola frase per oggi ‚Äî senza censura.",     hint:"L'oracolo non chiede permesso"}
+  {key:"ombra",  label:"Ombra",   q:"Cosa neghi di essere?",                        hint:"CiÚ che proietti sugli altri"},
+  {key:"soma",   label:"Soma",    q:"Dove senti il peso nel corpo oggi?",           hint:"Il corpo ricorda ciÚ che la mente dimentica"},
+  {key:"oracolo",label:"Oracolo", q:"Una sola frase per oggi ó senza censura.",     hint:"L'oracolo non chiede permesso"}
 ];
 
 const PROFILE_TABS=[
-  {key:"essence",       icon:"‚ú¶", label:"Essenza"},
-  {key:"depth",         icon:"‚óâ", label:"Profondit√†"},
-  {key:"wound",         icon:"‚óà", label:"Ferita"},
-  {key:"shadow",        icon:"‚ñ≤", label:"Ombra & Luce"},
-  {key:"relationships", icon:"‚óÜ", label:"Eros"},
-  {key:"growth",        icon:"‚óé", label:"Crescita"},
-  {key:"karma",         icon:"‚äï", label:"Karma"},
-  {key:"ritual",        icon:"‚úß", label:"Rituale"},
-  {key:"map",           icon:"‚äó", label:"Mappa"}
+  {key:"essence",       icon:"?", label:"Essenza"},
+  {key:"depth",         icon:"?", label:"Profondit‡"},
+  {key:"wound",         icon:"?", label:"Ferita"},
+  {key:"shadow",        icon:"?", label:"Ombra & Luce"},
+  {key:"relationships", icon:"?", label:"Eros"},
+  {key:"growth",        icon:"?", label:"Crescita"},
+  {key:"karma",         icon:"?", label:"Karma"},
+  {key:"ritual",        icon:"?", label:"Rituale"},
+  {key:"map",           icon:"?", label:"Mappa"}
 ];
 
-// ‚îÄ‚îÄ helpers ‚îÄ‚îÄ
+// -- helpers --
 const toKey=()=>{const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
-const planetDay=()=>["Domenica","Luned√¨","Marted√¨","Mercoled√¨","Gioved√¨","Venerd√¨","Sabato"][new Date().getDay()];
+const planetDay=()=>["Domenica","LunedÏ","MartedÏ","MercoledÏ","GiovedÏ","VenerdÏ","Sabato"][new Date().getDay()];
 const season=()=>{const m=new Date().getMonth()+1;if(m>=3&&m<=5)return"Primavera";if(m>=6&&m<=8)return"Estate";if(m>=9&&m<=11)return"Autunno";return"Inverno"};
 const lunarPhase=()=>{const d=new Date().getDate();return d<=7?"Luna Nuova":d<=14?"Crescente":d<=21?"Luna Piena":"Calante"};
-const entryAngle=()=>{const seed=new Date().getDate()+new Date().getMonth()*31;const a=["il punto di rottura tra ci√≤ che eri e ci√≤ che stai diventando","la ferita che non hai mai mostrato a nessuno","il desiderio che dici di non avere","il ricordo che torna senza avvertire","la paura che ti sveglia alle tre di notte","la forza che non sai di possedere","la verit√† che stai evitando di dire","la versione di te che stai rimandando","l'amore che hai smesso di chiedere","il corpo come luogo del non detto"];return a[seed%a.length]};
+const entryAngle=()=>{const seed=new Date().getDate()+new Date().getMonth()*31;const a=["il punto di rottura tra ciÚ che eri e ciÚ che stai diventando","la ferita che non hai mai mostrato a nessuno","il desiderio che dici di non avere","il ricordo che torna senza avvertire","la paura che ti sveglia alle tre di notte","la forza che non sai di possedere","la verit‡ che stai evitando di dire","la versione di te che stai rimandando","l'amore che hai smesso di chiedere","il corpo come luogo del non detto"];return a[seed%a.length]};
 const LOGO_SRC="./logo.png";
 
-// ‚îÄ‚îÄ StarField ‚îÄ‚îÄ
+// -- StarField --
 const StarField=memo(({color="#fff",count=80,opacity=.5})=>{
   const s=useMemo(()=>Array.from({length:count},(_,i)=>({id:i,x:Math.random()*100,y:Math.random()*100,sz:Math.random()*1.8+.4,delay:Math.random()*6,dur:Math.random()*4+2})),[]);
   return <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none",opacity}}>{s.map(x=><div key={x.id} style={{position:"absolute",left:`${x.x}%`,top:`${x.y}%`,width:x.sz,height:x.sz,borderRadius:"50%",background:color,animation:`glow ${x.dur}s ${x.delay}s ease-in-out infinite`}}/>)}</div>;
 });
 
-// ‚îÄ‚îÄ COMET CARD ‚îÄ‚îÄ
+// -- COMET CARD --
 const CometCard=memo(({children,accentColor="#fff"})=>{
   const ref=useRef(null);
   const[tilt,setTilt]=useState({x:0,y:0});
@@ -328,7 +328,7 @@ const CometCard=memo(({children,accentColor="#fff"})=>{
   );
 });
 
-// ‚îÄ‚îÄ SPLASH ‚îÄ‚îÄ
+// -- SPLASH --
 const Splash=memo(function Splash({onDone,bg,text}){  // text = t.text
   const[leaving,setLeaving]=useState(false);
   useEffect(()=>{
@@ -350,7 +350,7 @@ const Splash=memo(function Splash({onDone,bg,text}){  // text = t.text
   );
 });
 
-// ‚îÄ‚îÄ HOME ‚îÄ‚îÄ
+// -- HOME --
 function Home({t,onSelect,profile,onSetup}){
   const[filter,setFilter]=useState("all");
   const elColor={Fuoco:"#b04a18",Terra:"#4a7a38",Aria:"#8a7010",Acqua:"#1860a0"};
@@ -362,9 +362,9 @@ function Home({t,onSelect,profile,onSetup}){
         <div style={{width:48,height:1,background:`linear-gradient(to right,transparent,${t.accent},transparent)`,margin:"22px auto",opacity:.8}}/>
         <div style={{fontSize:"8px",letterSpacing:".5em",color:t.muted,textTransform:"uppercase",marginBottom:profile?16:40}}>Psicologia Archetipica</div>
         {profile?(
-          <button onClick={onSetup} style={{fontSize:"8px",letterSpacing:".28em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}30`,padding:"8px 18px",marginBottom:32,background:`${t.accent}08`}}>{profile.name} ‚Äî modifica profilo</button>
+          <button onClick={onSetup} style={{fontSize:"8px",letterSpacing:".28em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}30`,padding:"8px 18px",marginBottom:32,background:`${t.accent}08`}}>{profile.name} ó modifica profilo</button>
         ):(
-          <button onClick={onSetup} style={{fontSize:"9px",letterSpacing:".32em",textTransform:"uppercase",color:t.text,border:`1px solid ${t.border}`,padding:"14px 28px",marginBottom:40,background:t.surface}}>‚ú¶ Crea il tuo profilo</button>
+          <button onClick={onSetup} style={{fontSize:"9px",letterSpacing:".32em",textTransform:"uppercase",color:t.text,border:`1px solid ${t.border}`,padding:"14px 28px",marginBottom:40,background:t.surface}}>? Crea il tuo profilo</button>
         )}
         <div style={{display:"flex",justifyContent:"center",gap:"clamp(14px,4vw,36px)",flexWrap:"wrap",marginBottom:48}}>
           {[lunarPhase(),planetDay(),season()].map((v,i)=><div key={i} style={{fontSize:"11px",letterSpacing:".14em",color:t.muted}}>{v}</div>)}
@@ -403,12 +403,12 @@ function Home({t,onSelect,profile,onSetup}){
   );
 }
 
-// ‚îÄ‚îÄ SECRET REVEAL ‚îÄ‚îÄ
+// -- SECRET REVEAL --
 function SecretCard({sg,t}){
   const[open,setOpen]=useState(false);
   return !open?(
     <button onClick={()=>setOpen(true)} style={{width:"100%",marginTop:36,padding:"20px 24px",border:`1px solid ${t.border}`,background:t.surface,color:t.muted,fontSize:"9px",letterSpacing:".28em",textTransform:"uppercase",transition:"all .3s",display:"flex",alignItems:"center",justifyContent:"center",gap:14}}>
-      <span style={{opacity:.35,animation:"pulse 3s ease-in-out infinite"}}>‚óâ</span>il segreto che l'astrologia non dice<span style={{opacity:.35}}>‚óâ</span>
+      <span style={{opacity:.35,animation:"pulse 3s ease-in-out infinite"}}>?</span>il segreto che l'astrologia non dice<span style={{opacity:.35}}>?</span>
     </button>
   ):(
     <div className="fade-in" style={{marginTop:36,padding:"28px",border:`1px solid ${sg.color}40`,background:`rgba(${sg.rgb},.07)`}}>
@@ -418,7 +418,7 @@ function SecretCard({sg,t}){
   );
 }
 
-// ‚îÄ‚îÄ PROFILE CONTENT ‚îÄ‚îÄ
+// -- PROFILE CONTENT --
 function ProfileContent({tab,sg,t}){
   const map={
     essence:sg.essence, depth:sg.depth, wound:sg.wound,
@@ -443,7 +443,7 @@ function ProfileContent({tab,sg,t}){
       {accent}
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:1,background:t.border,marginBottom:28}}>
         {[
-          {l:"Pianeta",v:sg.planet},{l:"Elemento",v:sg.element},{l:"Modalit√†",v:sg.modality},
+          {l:"Pianeta",v:sg.planet},{l:"Elemento",v:sg.element},{l:"Modalit‡",v:sg.modality},
           {l:"Pietra",v:sg.stone},{l:"Metallo",v:sg.metal},{l:"Tarocco",v:sg.tarot},
           {l:"Mito",v:sg.myth},{l:"Corpo",v:sg.body},{l:"Giorno",v:sg.day},
           {l:"Numero",v:sg.number},{l:"Stagione",v:sg.season}
@@ -455,15 +455,15 @@ function ProfileContent({tab,sg,t}){
         ))}
       </div>
       <div style={{padding:"24px 26px",border:`1px solid ${sg.color}30`,background:`rgba(${sg.rgb},.05)`,marginBottom:28}}>
-        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>‚óÜ Voce Archetipica</div>
+        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>? Voce Archetipica</div>
         <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",fontStyle:"italic",color:t.text,lineHeight:1.8}}>{sg.voice}</div>
       </div>
       <div style={{padding:"24px 26px",border:`1px solid ${t.border}`,background:t.surface}}>
-        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>‚ü∑ Affinit√† & Tensioni</div>
+        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>? Affinit‡ & Tensioni</div>
         <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:t.text,lineHeight:1.85}}>{sg.compatibility}</div>
       </div>
       <div style={{padding:"24px 26px",border:`1px solid ${t.border}`,background:t.surface,marginTop:16}}>
-        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>‚äó Il Simbolo</div>
+        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>? Il Simbolo</div>
         <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:t.text,lineHeight:1.85}}>{sg.symbol_meaning}</div>
       </div>
     </div>
@@ -502,7 +502,7 @@ function ProfileContent({tab,sg,t}){
   );
 }
 
-// ‚îÄ‚îÄ JOURNAL ENTRY ‚îÄ‚îÄ
+// -- JOURNAL ENTRY --
 function JournalEntry({sg,tab,t,entry,onSave}){
   const[val,setVal]=useState(entry);
   const[saved,setSaved]=useState(false);
@@ -518,7 +518,7 @@ function JournalEntry({sg,tab,t,entry,onSave}){
         <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(22px,5vw,30px)",fontStyle:"italic",color:t.text,lineHeight:1.45}}>{tab.q}</div>
         <div style={{marginTop:14,height:1,background:`linear-gradient(to right,${sg.color}50,transparent)`}}/>
       </div>
-      <textarea value={val} onChange={onChange} placeholder="‚Ä¶" rows={12}
+      <textarea value={val} onChange={onChange} placeholder="Ö" rows={12}
         style={{width:"100%",background:"transparent",color:t.text,fontSize:"clamp(16px,4vw,18px)",lineHeight:1.9,padding:0,caretColor:sg.colorLight,borderBottom:`1px solid ${t.border}60`}}/>
       <div style={{display:"flex",justifyContent:"space-between",marginTop:12}}>
         <span style={{fontSize:"8px",color:t.muted,letterSpacing:".1em"}}>{wc>0?`${wc} ${wc===1?"parola":"parole"}`:""}</span>
@@ -528,7 +528,7 @@ function JournalEntry({sg,tab,t,entry,onSave}){
   );
 }
 
-// ‚îÄ‚îÄ SIGN SCREEN ‚îÄ‚îÄ
+// -- SIGN SCREEN --
 function SignScreen({sg,t,onBack,journal,saveEntry}){
   const[mode,setMode]=useState("profilo");
   const[pTab,setPTab]=useState("essence");
@@ -552,7 +552,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
       <div style={{position:"relative",minHeight:"68vh",background:`linear-gradient(160deg,rgba(${sg.rgb},.12) 0%,${t.bg} 72%)`,overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
         <StarField color={sg.starColor} count={80} opacity={.75}/>
         <div style={{position:"absolute",top:"30%",left:"50%",transform:"translate(-50%,-50%)",width:"60vw",height:"60vw",maxWidth:520,maxHeight:520,borderRadius:"50%",background:`radial-gradient(circle,rgba(${sg.rgb},.2) 0%,transparent 65%)`,pointerEvents:"none"}}/>
-        <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 10px)",left:16,zIndex:20,color:t.muted,fontSize:"10px",letterSpacing:".16em",display:"flex",alignItems:"center",gap:8,padding:"14px 14px"}}>‚Üê tutti i segni</button>
+        <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 10px)",left:16,zIndex:20,color:t.muted,fontSize:"10px",letterSpacing:".16em",display:"flex",alignItems:"center",gap:8,padding:"14px 14px"}}>? tutti i segni</button>
         <div className="fade-in-up" style={{position:"relative",zIndex:1,textAlign:"center",padding:"0 24px 52px"}}>
           <div style={{display:"flex",justifyContent:"center",marginBottom:16}}>
             <img src={LOGO_SRC} alt="ARCANA crest" loading="lazy" style={{width:"clamp(54px,14vw,86px)",height:"clamp(54px,14vw,86px)",objectFit:"cover",borderRadius:"50%",border:`1px solid ${sg.color}50`,opacity:.72,filter:"grayscale(1) contrast(1.1)",boxShadow:`0 0 24px rgba(${sg.rgb},.22)`}}/>
@@ -560,7 +560,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
           <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(40px,9vw,68px)",fontWeight:300,color:t.text,letterSpacing:".08em",marginBottom:10,textShadow:`0 0 60px ${sg.color}28`}}>{sg.name}</div>
           <div style={{fontSize:"8px",letterSpacing:".44em",color:sg.colorLight,textTransform:"uppercase",marginBottom:34}}>{sg.archetype}</div>
           <div style={{display:"flex",justifyContent:"center",gap:"clamp(14px,4vw,30px)",flexWrap:"wrap"}}>
-            {[{l:"Pianeta",v:sg.planet},{l:"Elemento",v:sg.element},{l:"Modalit√†",v:sg.modality},{l:"Pietra",v:sg.stone},{l:"Tarocco",v:sg.tarot},{l:"Corpo",v:sg.body.split(",")[0]}].map(a=>(
+            {[{l:"Pianeta",v:sg.planet},{l:"Elemento",v:sg.element},{l:"Modalit‡",v:sg.modality},{l:"Pietra",v:sg.stone},{l:"Tarocco",v:sg.tarot},{l:"Corpo",v:sg.body.split(",")[0]}].map(a=>(
               <div key={a.l} style={{textAlign:"center",minWidth:64}}>
                 <div style={{fontSize:"6px",letterSpacing:".28em",color:t.muted,textTransform:"uppercase",marginBottom:5}}>{a.l}</div>
                 <div style={{fontSize:"11px",color:sg.colorLight,fontFamily:"'Cormorant Garamond',serif",lineHeight:1.3}}>{a.v}</div>
@@ -579,7 +579,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
         </div>
       </div>
 
-      {/* ‚îÄ‚îÄ PROFILO ‚îÄ‚îÄ */}
+      {/* -- PROFILO -- */}
       {mode==="profilo"&&(
         <div className="fade-in">
           <div className="hs" style={{display:"flex",borderBottom:`1px solid ${t.border}`}}>
@@ -599,7 +599,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
         </div>
       )}
 
-      {/* ‚îÄ‚îÄ DIARIO ‚îÄ‚îÄ */}
+      {/* -- DIARIO -- */}
       {mode==="diario"&&(
         <div className="fade-in">
           <div className="hs" style={{display:"flex",borderBottom:`1px solid ${t.border}`}}>
@@ -613,7 +613,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
         </div>
       )}
 
-      {/* ‚îÄ‚îÄ MAPPA ‚îÄ‚îÄ */}
+      {/* -- MAPPA -- */}
       {mode==="mappa"&&(
         <div className="fade-in" style={{maxWidth:700,margin:"0 auto",padding:"40px 20px calc(env(safe-area-inset-bottom,0px) + 80px)"}}>
           <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,4vw,24px)",fontStyle:"italic",color:`${t.text}80`,lineHeight:1.65,borderLeft:`2px solid ${sg.color}50`,paddingLeft:22,marginBottom:40}}>{sg.vision}</div>
@@ -627,7 +627,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
           </div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:1,background:t.border,marginBottom:28}}>
             {[
-              {l:"Pianeta",v:sg.planet},{l:"Elemento",v:sg.element},{l:"Modalit√†",v:sg.modality},
+              {l:"Pianeta",v:sg.planet},{l:"Elemento",v:sg.element},{l:"Modalit‡",v:sg.modality},
               {l:"Pietra",v:sg.stone},{l:"Metallo",v:sg.metal},{l:"Tarocco",v:sg.tarot},
               {l:"Mito",v:sg.myth},{l:"Corpo",v:sg.body},{l:"Stagione",v:sg.season},{l:"Numero",v:sg.number}
             ].map(d=>(
@@ -638,7 +638,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
             ))}
           </div>
           <div style={{padding:"24px 26px",border:`1px solid ${sg.color}35`,background:`rgba(${sg.rgb},.06)`}}>
-            <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>‚ü∑ Affinit√† & Tensioni</div>
+            <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>? Affinit‡ & Tensioni</div>
             <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:t.text,lineHeight:1.85}}>{sg.compatibility}</div>
           </div>
         </div>
@@ -647,7 +647,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
   );
 }
 
-// ‚îÄ‚îÄ THEME SWITCHER ‚îÄ‚îÄ
+// -- THEME SWITCHER --
 function ThemeBtn({theme,setTheme,t}){
   const[open,setOpen]=useState(false);
   return(
@@ -659,19 +659,19 @@ function ThemeBtn({theme,setTheme,t}){
           ))}
         </div>
       )}
-      <button onClick={()=>setOpen(!open)} style={{width:48,height:48,borderRadius:"50%",background:t.card,border:`1px solid ${t.border}`,color:t.muted,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:`0 4px 24px rgba(0,0,0,.6)`,transition:"all .2s"}}>‚óé</button>
+      <button onClick={()=>setOpen(!open)} style={{width:48,height:48,borderRadius:"50%",background:t.card,border:`1px solid ${t.border}`,color:t.muted,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:`0 4px 24px rgba(0,0,0,.6)`,transition:"all .2s"}}>?</button>
     </div>
   );
 }
 
-// ‚îÄ‚îÄ PROFILE SETUP ‚îÄ‚îÄ
+// -- PROFILE SETUP --
 const SETUP_STEPS=[
   {key:"name",         q:"Come ti chiami?",                                    type:"text",   placeholder:"Il tuo nome"},
   {key:"gender",       q:"Come ti identifichi?",                               type:"choice", options:["Donna","Uomo","Non binario","Preferisco non dirlo"]},
   {key:"birthday",     q:"Quando sei nato/a?",                                 type:"date"},
-  {key:"birthcity",    q:"In quale citt√† sei nato/a?",                         type:"text",   placeholder:"Citt√† di nascita"},
+  {key:"birthcity",    q:"In quale citt‡ sei nato/a?",                         type:"text",   placeholder:"Citt‡ di nascita"},
   {key:"birthtime",    q:"A che ora sei nato/a?",                              type:"time"},
-  {key:"relationship", q:"Qual √® il tuo stato sentimentale?",                  type:"choice", options:["Single","Impegnato/a","Fidanzato/a","Sposato/a","Flirt","Platonica","Appena separato/a","Divorziato/a","Vedovo/a","√à complicato"]},
+  {key:"relationship", q:"Qual Ë il tuo stato sentimentale?",                  type:"choice", options:["Single","Impegnato/a","Fidanzato/a","Sposato/a","Flirt","Platonica","Appena separato/a","Divorziato/a","Vedovo/a","» complicato"]},
   {key:"work",         q:"Come descriveresti la tua situazione lavorativa?",   type:"choice", options:["Studente","Neolaureato/a","In cerca di lavoro","Disoccupato/a","Dipendente pubblico","Dipendente privato","Imprenditore/trice","Capo","Pensionato/a","Casalinga/o","Nessuno di questi"]},
 ];
 
@@ -696,7 +696,7 @@ function ProfileSetup({t,onDone,onBack}){
   return(
     <div className="screen-h" style={{background:t.bg,display:"flex",flexDirection:"column",padding:"env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)"}}>
       <div style={{padding:"clamp(16px,4vw,28px) 24px 0",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-        {step>0?<button onClick={back} style={{color:t.muted,fontSize:"10px",letterSpacing:".16em"}}>‚Üê indietro</button>:<button onClick={onBack} style={{color:t.muted,fontSize:"10px",letterSpacing:".16em"}}>‚Üê annulla</button>}
+        {step>0?<button onClick={back} style={{color:t.muted,fontSize:"10px",letterSpacing:".16em"}}>? indietro</button>:<button onClick={onBack} style={{color:t.muted,fontSize:"10px",letterSpacing:".16em"}}>? annulla</button>}
         <div style={{fontSize:"8px",letterSpacing:".32em",color:t.muted,textTransform:"uppercase"}}>{step+1} / {total}</div>
       </div>
       <div style={{display:"flex",gap:4,justifyContent:"center",padding:"16px 0 0"}}>
@@ -723,7 +723,7 @@ function ProfileSetup({t,onDone,onBack}){
               style={{background:"transparent",border:"none",borderBottom:`1px solid ${t.border}`,color:t.text,fontSize:"clamp(18px,4.5vw,24px)",fontFamily:"'Cormorant Garamond',serif",padding:"10px 0",outline:"none",width:"100%",colorScheme:isDark?"dark":"light"}}/>
             <div style={{marginTop:28,display:"flex",gap:12,flexWrap:"wrap"}}>
               <button onClick={()=>next(val||"non specificato")} style={{padding:"12px 20px",fontSize:"9px",letterSpacing:".22em",textTransform:"uppercase",border:`1px solid ${t.accent}`,color:t.text,background:`${t.accent}14`}}>
-                {val?"Continua ‚Üí":"Continua ‚Üí"}
+                {val?"Continua ?":"Continua ?"}
               </button>
               <button onClick={()=>next("non specificato")} style={{padding:"12px 20px",fontSize:"9px",letterSpacing:".22em",textTransform:"uppercase",border:`1px solid ${t.border}`,color:t.muted,background:"transparent"}}>
                 Non lo so
@@ -747,7 +747,7 @@ function ProfileSetup({t,onDone,onBack}){
       {(s.type==="text"||s.type==="date")&&(
         <div style={{padding:"20px 24px calc(env(safe-area-inset-bottom,0px) + 20px)"}}>
           <button onClick={()=>canContinue&&next()} style={{width:"100%",padding:"18px",fontSize:"9px",letterSpacing:".3em",textTransform:"uppercase",border:`1px solid ${canContinue?t.accent:t.border}`,color:canContinue?t.text:t.muted,background:canContinue?`${t.accent}14`:"transparent",transition:"all .25s"}}>
-            Continua ‚Üí
+            Continua ?
           </button>
         </div>
       )}
@@ -755,7 +755,7 @@ function ProfileSetup({t,onDone,onBack}){
   );
 }
 
-// ‚îÄ‚îÄ APP ‚îÄ‚îÄ
+// -- APP --
 function App(){
   const[view,setView]=useState("home");
   const[selected,setSelected]=useState(null);
@@ -799,4 +799,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
 </body>
 </html>
+
 
