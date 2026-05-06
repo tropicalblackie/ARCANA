@@ -335,8 +335,8 @@ const Splash=memo(function Splash({onDone}){
     return()=>{clearTimeout(t1);clearTimeout(t2)};
   },[onDone]);
   return(
-    <div style={{position:"fixed",inset:0,zIndex:9999,background:"#ffffff",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",pointerEvents:leaving?"none":"auto",opacity:leaving?0:1,transform:leaving?"scale(1.06)":"scale(1)",transition:leaving?"opacity .75s cubic-bezier(.4,0,1,1),transform .75s cubic-bezier(.4,0,1,1)":"none"}}>
-      <img src={LOGO_SRC} alt="ARCANA" style={{width:"clamp(80px,22vw,130px)",height:"clamp(80px,22vw,130px)",objectFit:"contain",mixBlendMode:"multiply",animation:"sp-drop .7s cubic-bezier(.16,1,.3,1) .05s both"}}/>
+    <div style={{position:"fixed",inset:0,zIndex:9999,background:"#edecea",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",pointerEvents:leaving?"none":"auto",opacity:leaving?0:1,transform:leaving?"scale(1.06)":"scale(1)",transition:leaving?"opacity .75s cubic-bezier(.4,0,1,1),transform .75s cubic-bezier(.4,0,1,1)":"none"}}>
+      <img src={LOGO_SRC} alt="ARCANA" style={{width:"clamp(80px,22vw,130px)",height:"clamp(80px,22vw,130px)",objectFit:"contain",animation:"sp-drop .7s cubic-bezier(.16,1,.3,1) .05s both"}}/>
       <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(48px,12vw,88px)",fontWeight:300,letterSpacing:".3em",color:"#0a0010",lineHeight:1,marginTop:"clamp(18px,4vw,28px)",opacity:0,animation:"sp-text .5s cubic-bezier(.16,1,.3,1) .55s forwards"}}>
         ARCANA
       </div>
@@ -376,7 +376,7 @@ function Home({t,onSelect}){
         {shown.map((sg,i)=>(
           <div key={sg.key} className="fade-in-up" style={{animationDelay:`${i*.04}s`,opacity:0}} onClick={()=>onSelect(sg)}>
             <CometCard accentColor={sg.colorLight}>
-              <div style={{background:`linear-gradient(160deg, rgba(${sg.rgb},.14) 0%, ${t.card} 55%)`,padding:6,cursor:"pointer",border:"1.5px solid rgba(200,168,104,.6)",borderRadius:16}}>
+              <div style={{background:`linear-gradient(160deg, rgba(${sg.rgb},.14) 0%, ${t.card} 55%)`,padding:6,cursor:"pointer",border:"2px solid #c8a868",borderRadius:16}}>
                 <div style={{position:"relative",aspectRatio:"3/4",borderRadius:11,overflow:"hidden",background:t.bg}}>
                   {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:11,opacity:.88,mixBlendMode:"multiply",zIndex:1}}/>}
                   <div style={{position:"absolute",inset:0,background:`linear-gradient(to top, ${t.card} 0%, transparent 40%)`,pointerEvents:"none",zIndex:2}}/>
