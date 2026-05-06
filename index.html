@@ -524,7 +524,7 @@ function SignFlipCard({sg,t,i,onSelect}){
       <div
         style={{perspective:"820px",perspectiveOrigin:"50% 40%",touchAction:"pan-y",userSelect:"none",WebkitUserSelect:"none",cursor}}
         onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onCancel}>
-        <div ref={innerRef} style={{transformStyle:"preserve-3d",transform:"rotateY(0deg)",willChange:"transform",position:"relative"}}>
+        <div ref={innerRef} style={{transformStyle:"preserve-3d",WebkitTransformStyle:"preserve-3d",transform:"rotateY(0deg)",willChange:"transform",position:"relative"}}>
 
           {/* ── FRONT ── */}
           <div style={{backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden"}}>
@@ -541,17 +541,15 @@ function SignFlipCard({sg,t,i,onSelect}){
             </div>
           </div>
 
-          {/* ── BACK ── */}
+          {/* ── BACK ── no backdrop-filter: breaks transform-style:preserve-3d on iOS Safari */}
           <div style={{
             position:"absolute",inset:0,
             backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",
             transform:"rotateY(180deg)",
             borderRadius:16,
-            background:`linear-gradient(155deg,rgba(8,0,15,0.82) 0%,rgba(${sg.rgb},0.20) 48%,rgba(4,0,10,0.88) 100%)`,
-            backdropFilter:"blur(32px) saturate(1.8) brightness(1.06)",
-            WebkitBackdropFilter:"blur(32px) saturate(1.8) brightness(1.06)",
-            border:"1px solid rgba(255,255,255,0.20)",
-            boxShadow:`inset 0 1.5px 0 rgba(255,255,255,0.50),inset 0.5px 0 0 rgba(255,255,255,0.12),inset 0 -1px 0 rgba(255,255,255,0.08),0 0 52px rgba(${sg.rgb},0.28),0 8px 36px rgba(${sg.rgb},0.14)`,
+            background:`linear-gradient(155deg,#08000f 0%,rgba(${sg.rgb},0.32) 48%,#04000a 100%)`,
+            border:"1px solid rgba(255,255,255,0.18)",
+            boxShadow:`inset 0 1.5px 0 rgba(255,255,255,0.44),inset 0.5px 0 0 rgba(255,255,255,0.10),inset 0 -1px 0 rgba(255,255,255,0.07),0 0 52px rgba(${sg.rgb},0.28),0 8px 36px rgba(${sg.rgb},0.14)`,
             display:"flex",
             flexDirection:"column",
             alignItems:"center",
@@ -560,7 +558,10 @@ function SignFlipCard({sg,t,i,onSelect}){
             gap:0,
             overflow:"hidden",
           }}>
-            <GlassOverlay/>
+            {/* glass shimmer — pure CSS, no backdrop-filter */}
+            <div style={{position:"absolute",inset:0,borderRadius:"inherit",pointerEvents:"none",zIndex:4}}>
+              <div style={{position:"absolute",top:0,left:0,right:0,height:"2px",background:"linear-gradient(to right,transparent 4%,rgba(255,255,255,0.55) 32%,rgba(255,255,255,0.72) 58%,rgba(255,255,255,0.38) 80%,transparent 97%)"}}/>              <div style={{position:"absolute",top:0,left:0,right:0,height:"38%",background:"linear-gradient(to bottom,rgba(255,255,255,0.10) 0%,transparent 100%)"}}/>              <div style={{position:"absolute",top:"-10%",left:"-15%",width:"45%",height:"120%",background:"linear-gradient(to right,transparent,rgba(255,255,255,0.04),transparent)",transform:"rotate(-18deg)",filter:"blur(4px)"}}/>              <div style={{position:"absolute",bottom:0,left:"10%",right:"10%",height:"1px",background:`linear-gradient(to right,transparent,rgba(255,255,255,0.22) 40%,rgba(255,255,255,0.30) 60%,transparent)`}}/>
+            </div>
             {/* symbol glow */}
             <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(60px,17vw,82px)",color:sg.colorLight,lineHeight:1,filter:`drop-shadow(0 0 22px rgba(${sg.rgb},1)) drop-shadow(0 0 55px rgba(${sg.rgb},0.5))`,marginBottom:20}}>{sg.symbol}</div>
             {/* divider */}
