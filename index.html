@@ -255,10 +255,10 @@ symbol_meaning:"Il simbolo dei Pesci raffigura due pesci legati da un filo che n
 ];
 
 const THEMES={
-  carta:  {name:"Carta",     bg:"#edecea",text:"#0a0010",muted:"#504840",card:"#f5f3f0",border:"#d0cbc4",accent:"#c49a0a",surface:"#e6e4e1",glass:"rgba(10,0,16,.04)"},
-  notte:  {name:"Notte",     bg:"#0c0a08",text:"#edecea",muted:"#7a7268",card:"#141210",border:"#2a2620",accent:"#d4a818",surface:"#181410",glass:"rgba(237,236,234,.04)"},
-  seppia: {name:"Seppia",    bg:"#f2e8d6",text:"#1a0e06",muted:"#6a5040",card:"#f8f0e2",border:"#d8c8a8",accent:"#b87820",surface:"#ede0c4",glass:"rgba(26,14,6,.04)"},
-  ossid:  {name:"Ossidiana", bg:"#050403",text:"#e8e4dc",muted:"#6a6258",card:"#0e0b09",border:"#201c18",accent:"#c8a020",surface:"#110e0b",glass:"rgba(232,228,220,.03)"}
+  carta:  {name:"Carta",     bg:"#edecea",text:"#0a0010",muted:"#504840",card:"#f5f3f0",cardRgb:"245,243,240",border:"#d0cbc4",accent:"#c49a0a",surface:"#e6e4e1",glass:"rgba(10,0,16,.04)"},
+  notte:  {name:"Notte",     bg:"#0c0a08",text:"#edecea",muted:"#7a7268",card:"#141210",cardRgb:"20,18,16",  border:"#2a2620",accent:"#d4a818",surface:"#181410",glass:"rgba(237,236,234,.04)"},
+  seppia: {name:"Seppia",    bg:"#f2e8d6",text:"#1a0e06",muted:"#6a5040",card:"#f8f0e2",cardRgb:"248,240,226",border:"#d8c8a8",accent:"#b87820",surface:"#ede0c4",glass:"rgba(26,14,6,.04)"},
+  ossid:  {name:"Ossidiana", bg:"#050403",text:"#e8e4dc",muted:"#6a6258",card:"#0e0b09",cardRgb:"14,11,9",   border:"#201c18",accent:"#c8a020",surface:"#110e0b",glass:"rgba(232,228,220,.03)"}
 };
 
 const JOURNAL_TABS=[
@@ -376,16 +376,29 @@ const CometCard=memo(({children,accentColor="#fff"})=>{
 // ── GLASS OVERLAY ──
 const GlassOverlay=memo(function GlassOverlay(){return(
   <div style={{position:"absolute",inset:0,borderRadius:"inherit",overflow:"hidden",pointerEvents:"none",zIndex:4}}>
-    <svg style={{position:"absolute",inset:0,width:"100%",height:"100%",mixBlendMode:"overlay"}} xmlns="http://www.w3.org/2000/svg">
-      <filter id="grain1"><feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
-      <rect width="100%" height="100%" filter="url(#grain1)" opacity="0.18"/>
+    {/* top fresnel — strongest highlight, where glass catches light at steep angle */}
+    <div style={{position:"absolute",top:0,left:0,right:0,height:"3px",background:"linear-gradient(to right,transparent 2%,rgba(255,255,255,0.72) 30%,rgba(255,255,255,0.88) 55%,rgba(255,255,255,0.55) 78%,transparent 98%)"}}/>
+    {/* top fade glow */}
+    <div style={{position:"absolute",top:0,left:0,right:0,height:"40%",background:"linear-gradient(to bottom,rgba(255,255,255,0.13) 0%,rgba(255,255,255,0.04) 40%,transparent 100%)"}}/>
+    {/* left edge catch light */}
+    <div style={{position:"absolute",top:"8%",left:0,bottom:"8%",width:"2px",background:"linear-gradient(to bottom,transparent,rgba(255,255,255,0.32) 25%,rgba(255,255,255,0.18) 75%,transparent)"}}/>
+    {/* diagonal sweep — angled window/light reflection */}
+    <div style={{position:"absolute",top:"-10%",left:"-15%",width:"45%",height:"120%",background:"linear-gradient(to right,transparent,rgba(255,255,255,0.055),transparent)",transform:"rotate(-18deg)",filter:"blur(4px)"}}/>
+    {/* secondary sweep — fainter, offset */}
+    <div style={{position:"absolute",top:"-10%",left:"30%",width:"22%",height:"120%",background:"linear-gradient(to right,transparent,rgba(255,255,255,0.022),transparent)",transform:"rotate(-18deg)",filter:"blur(6px)"}}/>
+    {/* bottom rim — backlit edge */}
+    <div style={{position:"absolute",bottom:0,left:"10%",right:"10%",height:"1.5px",background:"linear-gradient(to right,transparent,rgba(255,255,255,0.28) 30%,rgba(255,255,255,0.34) 70%,transparent)"}}/>
+    {/* right edge subtle catch */}
+    <div style={{position:"absolute",top:"15%",right:0,bottom:"15%",width:"1px",background:"linear-gradient(to bottom,transparent,rgba(255,255,255,0.14) 50%,transparent)"}}/>
+    {/* grain — surface micro-texture */}
+    <svg style={{position:"absolute",inset:0,width:"100%",height:"100%",mixBlendMode:"overlay",opacity:.22}} xmlns="http://www.w3.org/2000/svg">
+      <filter id="gG1"><feTurbulence type="fractalNoise" baseFrequency="0.74" numOctaves="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+      <rect width="100%" height="100%" filter="url(#gG1)"/>
     </svg>
-    <svg style={{position:"absolute",inset:0,width:"100%",height:"100%",mixBlendMode:"soft-light"}} xmlns="http://www.w3.org/2000/svg">
-      <filter id="grain2"><feTurbulence type="fractalNoise" baseFrequency="0.45" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
-      <rect width="100%" height="100%" filter="url(#grain2)" opacity="0.14"/>
+    <svg style={{position:"absolute",inset:0,width:"100%",height:"100%",mixBlendMode:"soft-light",opacity:.10}} xmlns="http://www.w3.org/2000/svg">
+      <filter id="gG2"><feTurbulence type="fractalNoise" baseFrequency="0.46" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+      <rect width="100%" height="100%" filter="url(#gG2)"/>
     </svg>
-    <div style={{position:"absolute",inset:0,background:"linear-gradient(135deg,rgba(255,255,255,0.07) 0%,transparent 55%,rgba(255,255,255,0.03) 100%)"}}/>
-    <div style={{position:"absolute",top:"15%",left:"-20%",width:"80%",height:"30%",background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent)",transform:"rotate(-12deg)",filter:"blur(8px)"}}/>
   </div>
 )});
 
@@ -515,7 +528,7 @@ function SignFlipCard({sg,t,i,onSelect}){
 
           {/* ── FRONT ── */}
           <div style={{backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden"}}>
-            <div style={{background:t.card,padding:8,border:`1.5px solid ${t.accent}55`,borderRadius:16,boxShadow:`0 8px 32px ${t.accent}12,0 1.5px 0 rgba(255,255,255,0.14) inset`,position:"relative",overflow:"hidden"}}>
+            <div style={{background:"linear-gradient(165deg,rgba(255,255,255,0.16) 0%,rgba(255,255,255,0.05) 50%,rgba(255,255,255,0.10) 100%)",padding:8,border:"1px solid rgba(255,255,255,0.26)",borderRadius:16,boxShadow:`inset 0 1.5px 0 rgba(255,255,255,0.62),inset 0.5px 0 0 rgba(255,255,255,0.16),inset -0.5px 0 0 rgba(255,255,255,0.06),inset 0 -1px 0 rgba(255,255,255,0.10),0 24px 60px rgba(0,0,0,0.58),0 6px 20px rgba(0,0,0,0.36),0 0 0 0.5px rgba(${sg.rgb},0.22)`,position:"relative",overflow:"hidden"}}>
               <GlassOverlay/>
               <div style={{position:"relative",aspectRatio:"3/4",borderRadius:11,overflow:"hidden",background:t.surface,zIndex:1}}>
                 {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" decoding="async" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:11,zIndex:1}}/>}
@@ -534,16 +547,20 @@ function SignFlipCard({sg,t,i,onSelect}){
             backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",
             transform:"rotateY(180deg)",
             borderRadius:16,
-            background:`linear-gradient(155deg,#08000f 0%,rgba(${sg.rgb},0.38) 48%,#04000a 100%)`,
-            border:`1.5px solid ${sg.color}75`,
-            boxShadow:`0 0 52px rgba(${sg.rgb},0.32),0 8px 36px rgba(${sg.rgb},0.16)`,
+            background:`linear-gradient(155deg,rgba(8,0,15,0.82) 0%,rgba(${sg.rgb},0.20) 48%,rgba(4,0,10,0.88) 100%)`,
+            backdropFilter:"blur(32px) saturate(1.8) brightness(1.06)",
+            WebkitBackdropFilter:"blur(32px) saturate(1.8) brightness(1.06)",
+            border:"1px solid rgba(255,255,255,0.20)",
+            boxShadow:`inset 0 1.5px 0 rgba(255,255,255,0.50),inset 0.5px 0 0 rgba(255,255,255,0.12),inset 0 -1px 0 rgba(255,255,255,0.08),0 0 52px rgba(${sg.rgb},0.28),0 8px 36px rgba(${sg.rgb},0.14)`,
             display:"flex",
             flexDirection:"column",
             alignItems:"center",
             justifyContent:"center",
             padding:"32px 24px",
             gap:0,
+            overflow:"hidden",
           }}>
+            <GlassOverlay/>
             {/* symbol glow */}
             <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(60px,17vw,82px)",color:sg.colorLight,lineHeight:1,filter:`drop-shadow(0 0 22px rgba(${sg.rgb},1)) drop-shadow(0 0 55px rgba(${sg.rgb},0.5))`,marginBottom:20}}>{sg.symbol}</div>
             {/* divider */}
@@ -1296,7 +1313,8 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
             <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,letterSpacing:".38em",color:"rgba(255,255,255,0.32)",textTransform:"uppercase",marginBottom:10}}>Trinità celeste</div>
             <div style={{display:"flex",gap:8}}>
               {trinity.map(({sg:s,label,icon})=>(
-                <div key={s.key} style={{flex:1,padding:"13px 8px 12px",background:"rgba(0,0,0,0.38)",border:`1px solid rgba(${s.rgb},0.38)`,backdropFilter:"blur(14px)",textAlign:"center",borderRadius:6,minWidth:0}}>
+                <div key={s.key} style={{flex:1,padding:"13px 8px 12px",background:"rgba(0,0,0,0.32)",border:"1px solid rgba(255,255,255,0.18)",backdropFilter:"blur(20px) saturate(1.5)",WebkitBackdropFilter:"blur(20px) saturate(1.5)",boxShadow:`inset 0 1.5px 0 rgba(255,255,255,0.42),inset 0 -1px 0 rgba(255,255,255,0.06),0 4px 16px rgba(0,0,0,0.35),0 0 0 0.5px rgba(${s.rgb},0.20)`,textAlign:"center",borderRadius:6,minWidth:0,overflow:"hidden",position:"relative"}}>
+                  <GlassOverlay/>
                   <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(22px,6vw,30px)",color:s.colorLight,filter:`drop-shadow(0 0 8px rgba(${s.rgb},0.75))`,lineHeight:1,marginBottom:6}}>{s.symbol}</div>
                   <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(11px,3vw,13px)",fontWeight:600,color:"rgba(255,255,255,0.86)",marginBottom:4,letterSpacing:".01em"}}>{s.name}</div>
                   <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:400,letterSpacing:".18em",color:"rgba(255,255,255,0.38)",textTransform:"uppercase"}}>{icon} {label}</div>
@@ -1323,7 +1341,8 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
         {CATS.map(cat=>{
           const d=horo[cat.key];
           return(
-            <div key={cat.key} style={{marginBottom:12,padding:"22px 22px 20px",background:t.card,border:`1px solid ${t.border}`,position:"relative",overflow:"hidden"}}>
+            <div key={cat.key} style={{marginBottom:12,padding:"22px 22px 20px",background:`rgba(${t.cardRgb},0.78)`,backdropFilter:"blur(20px) saturate(1.3) brightness(1.03)",WebkitBackdropFilter:"blur(20px) saturate(1.3) brightness(1.03)",border:"1px solid rgba(255,255,255,0.15)",boxShadow:`inset 0 1.5px 0 rgba(255,255,255,0.38),inset 0 -1px 0 rgba(255,255,255,0.06),0 8px 32px rgba(0,0,0,0.22)`,position:"relative",overflow:"hidden"}}>
+              <GlassOverlay/>
               <div style={{position:"absolute",top:0,left:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${cat.col}70,transparent)`}}/>
               <div style={{position:"absolute",right:0,top:"50%",transform:"translateY(-50%)",fontFamily:"'Cormorant Garamond',serif",fontSize:"88px",color:cat.col,opacity:.038,lineHeight:1,pointerEvents:"none",userSelect:"none"}}>{cat.icon}</div>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:13}}>
