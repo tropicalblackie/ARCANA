@@ -281,7 +281,7 @@ const planetDay=()=>["Domenica","Lunedì","Martedì","Mercoledì","Giovedì","Ve
 const season=()=>{const m=new Date().getMonth()+1;if(m>=3&&m<=5)return"Primavera";if(m>=6&&m<=8)return"Estate";if(m>=9&&m<=11)return"Autunno";return"Inverno"};
 const lunarPhase=()=>{const d=new Date().getDate();return d<=7?"Luna Nuova":d<=14?"Crescente":d<=21?"Luna Piena":"Calante"};
 const entryAngle=()=>{const seed=new Date().getDate()+new Date().getMonth()*31;const a=["il punto di rottura tra ciò che eri e ciò che stai diventando","la ferita che non hai mai mostrato a nessuno","il desiderio che dici di non avere","il ricordo che torna senza avvertire","la paura che ti sveglia alle tre di notte","la forza che non sai di possedere","la verità che stai evitando di dire","la versione di te che stai rimandando","l'amore che hai smesso di chiedere","il corpo come luogo del non detto"];return a[seed%a.length]};
-const LOGO_SRC="./n_ultra-premium,_hyper-precise_app_logo_202605060202.jpeg";
+const LOGO_SRC="./logo.jpeg";
 
 // ── StarField ──
 const StarField=memo(({color="#fff",count=80,opacity=.5})=>{
