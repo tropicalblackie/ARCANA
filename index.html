@@ -253,10 +253,10 @@ symbol_meaning:"Il simbolo dei Pesci raffigura due pesci legati da un filo che n
 ];
 
 const THEMES={
-  dark: {name:"Notte",    bg:"#030008",text:"#ede8f5",muted:"#4a3a5a",card:"#090612",border:"#140e24",accent:"#9060c8",surface:"#0c0918",glass:"rgba(255,255,255,0.025)"},
-  deep: {name:"Abisso",   bg:"#000406",text:"#d0e8f0",muted:"#1e3a4a",card:"#020c12",border:"#081828",accent:"#3080a8",surface:"#040e18",glass:"rgba(255,255,255,0.025)"},
-  dusk: {name:"Tramonto", bg:"#05010e",text:"#f0daf8",muted:"#4a2860",card:"#0a0418",border:"#1c0a2e",accent:"#a050d8",surface:"#0c0620",glass:"rgba(255,255,255,0.025)"},
-  light:{name:"Aurora",   bg:"#f6f2ff",text:"#180828",muted:"#8070a0",card:"#ffffff",border:"#e4d4f8",accent:"#6020a8",surface:"#f2eaff",glass:"rgba(0,0,0,0.02)"}
+  carta:  {name:"Carta",     bg:"#edecea",text:"#0a0010",muted:"#7a7268",card:"#f5f3f0",border:"#d0cbc4",accent:"#c8a868",surface:"#e6e4e1",glass:"rgba(10,0,16,.04)"},
+  notte:  {name:"Notte",     bg:"#0c0a08",text:"#edecea",muted:"#5a5248",card:"#141210",border:"#2a2620",accent:"#c8a868",surface:"#181410",glass:"rgba(237,236,234,.04)"},
+  seppia: {name:"Seppia",    bg:"#f2e8d6",text:"#1a0e06",muted:"#8a7260",card:"#f8f0e2",border:"#d8c8a8",accent:"#9a6830",surface:"#ede0c4",glass:"rgba(26,14,6,.04)"},
+  ossid:  {name:"Ossidiana", bg:"#050403",text:"#e8e4dc",muted:"#4a4440",card:"#0e0b09",border:"#201c18",accent:"#d4b896",surface:"#110e0b",glass:"rgba(232,228,220,.03)"}
 };
 
 const JOURNAL_TABS=[
@@ -351,13 +351,12 @@ const Splash=memo(function Splash({onDone}){
 // ── HOME ──
 function Home({t,onSelect}){
   const[filter,setFilter]=useState("all");
-  const elColor={Fuoco:"#e05020",Terra:"#4a9050",Aria:"#c09000",Acqua:"#1880a0"};
+  const elColor={Fuoco:"#b04a18",Terra:"#4a7a38",Aria:"#8a7010",Acqua:"#1860a0"};
   const shown=filter==="all"?SIGNS:SIGNS.filter(s=>s.element===filter);
   return(
     <div style={{minHeight:"100vh",background:t.bg,position:"relative",overflow:"hidden"}}>
-      <StarField color={t.accent} count={100} opacity={.35}/>
       <div className="fade-in-up" style={{textAlign:"center",padding:"calc(clamp(44px,8vw,72px) + env(safe-area-inset-top,0px)) 20px 48px",position:"relative",zIndex:1}}>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(62px,15vw,118px)",fontWeight:300,letterSpacing:".3em",color:t.text,lineHeight:.9,textShadow:`0 0 80px ${t.accent}28`}}>ARCANA</div>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(62px,15vw,118px)",fontWeight:300,letterSpacing:".3em",color:t.text,lineHeight:.9}}>ARCANA</div>
         <div style={{width:36,height:1,background:t.accent,margin:"20px auto",opacity:.35}}/>
         <div style={{fontSize:"8px",letterSpacing:".5em",color:t.muted,textTransform:"uppercase",marginBottom:40}}>Psicologia Archetipica</div>
         <div style={{display:"flex",justifyContent:"center",gap:"clamp(14px,4vw,36px)",flexWrap:"wrap",marginBottom:48}}>
@@ -542,7 +541,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
   return(
     <div ref={scrollRef} className="screen-h" style={{overflowY:"auto",background:t.bg}}>
       {/* hero */}
-      <div style={{position:"relative",minHeight:"68vh",background:`linear-gradient(155deg,${sg.darkBg} 0%,${t.bg} 80%)`,overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
+      <div style={{position:"relative",minHeight:"68vh",background:`linear-gradient(160deg,rgba(${sg.rgb},.12) 0%,${t.bg} 72%)`,overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
         <StarField color={sg.starColor} count={80} opacity={.75}/>
         <div style={{position:"absolute",top:"30%",left:"50%",transform:"translate(-50%,-50%)",width:"60vw",height:"60vw",maxWidth:520,maxHeight:520,borderRadius:"50%",background:`radial-gradient(circle,rgba(${sg.rgb},.2) 0%,transparent 65%)`,pointerEvents:"none"}}/>
         <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 10px)",left:16,zIndex:20,color:t.muted,fontSize:"10px",letterSpacing:".16em",display:"flex",alignItems:"center",gap:8,padding:"14px 14px"}}>← tutti i segni</button>
@@ -661,7 +660,7 @@ function ThemeBtn({theme,setTheme,t}){
 function App(){
   const[view,setView]=useState("home");
   const[selected,setSelected]=useState(null);
-  const[theme,setTheme]=useState("dark");
+  const[theme,setTheme]=useState("carta");
   const[splash,setSplash]=useState(true);
   const[journal,setJournal]=useState({});
   const t=THEMES[theme];
