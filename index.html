@@ -1198,6 +1198,132 @@ function ProfileSetup({t,onDone,onBack}){
 }
 
 // ── APP ──
+// ── HOROSCOPE ENGINE ──
+function mkrand(seed){let s=seed>>>0||1;return()=>{s=((s*1664525+1013904223)>>>0);return s/4294967296;};}
+function dailySeed(dateStr,sgKey){const d=parseInt(dateStr.replace(/-/g,""),10);const idx=SIGNS.findIndex(s=>s.key===sgKey);return(d+idx*99991)>>>0;}
+const HORO={
+  amore:{
+    a:["Il cuore porta oggi un'energia insolita — qualcosa si sta sciogliendo.","L'attrazione che senti non è casuale. Il cielo ha architettato questo incontro.","Oggi la luna amplifica la sensibilità emotiva. Parla, non trattenere.","C'è una conversazione rimasta a metà. Il momento di completarla è adesso.","Qualcosa di vecchio lascia spazio a qualcosa di vero. Il cuore sa già cosa scegliere.","La vulnerabilità non è debolezza — chi ama davvero la riconosce come coraggio.","Un'energia magnetica attraversa i tuoi legami oggi. Fidati di ciò che senti nel corpo.","Il confine tra amicizia e qualcosa di più si fa sottile come carta.","Le parole non dette pesano più di quelle dette male. Trova il coraggio di parlare.","L'eros di oggi è sottile, non esplicito. Attenzione ai segnali lievi.","Il tuo archetipo solare cerca un rispecchiamento autentico. Non accontentarti.","Qualcuno ti vede più chiaramente di quanto credi. Lascia che succeda.","Oggi potresti ricevere esattamente ciò che hai smesso di chiedere.","Una tensione emotiva trova oggi il suo punto naturale di scioglimento."],
+    b:["Non cercare conferme — cerca connessione vera.","Se c'è qualcosa che non hai detto, il silenzio sta diventando costoso.","Le relazioni che resistono oggi sono quelle costruite su verità, non su abitudine.","Un piccolo gesto autentico vale più di mille promesse.","Hai il permesso di volere di più. Il cielo non giudica il desiderio.","L'intimità si costruisce nel silenzio, non in performance.","Ciò che ti attrae oggi rivela qualcosa di importante su ciò che ti manca.","Non ogni relazione deve durare per essere preziosa — alcune insegnano e passano.","Ascolta il corpo: sa cose che la mente ancora non ha elaborato.","Le aspettative non dette creano fantasmi. Parla chiaro con chi ami.","Oggi potresti incontrare qualcuno che rispecchia una parte di te dimenticata.","L'amore non è un'emergenza — è un atto continuo di scelta quotidiana.","Non confondere intensità con profondità. Il cielo oggi ti insegna la differenza.","Ciò che hai dato senza ricevere torna oggi sotto forma diversa."],
+    c:["Fidati del tuo cuore. Sa già la risposta.","L'amore che cerchi è più vicino di quanto pensi.","Un passo verso l'autenticità vale cento verso l'apparenza.","Il tuo cuore ha più saggezza del tuo piano.","Oggi il cielo sorride a chi ama senza calcolo.","Lascia che la bellezza di un momento sia sufficiente.","Ciò che senti è reale. Onoralo senza doverlo spiegare.","L'amore vero non teme l'imperfezione — abbassare la guardia è il gesto più potente.","Stai andando nella direzione giusta, anche quando non sembra.","Non avere fretta. Le cose vere maturano nel silenzio."]
+  },
+  lavoro:{
+    a:["L'energia professionale oggi è acuta come una lama. Usala con intenzione.","Un'opportunità si presenta in modo obliquo — non quella che aspettavi, ma quella giusta.","La mente è lucida, le idee scorrono. È il momento di costruire, non solo pianificare.","Oggi il lavoro richiede profondità, non velocità. Rallenta per eccellere.","Il tuo talento chiede oggi di essere mostrato, non solo esercitato in silenzio.","Un ostacolo nel percorso professionale è in realtà un cambio di direzione necessario.","La concentrazione oggi è un'arma. Proteggila dalle distrazioni.","Qualcosa che hai seminato mesi fa comincia a dare i primi segnali visibili.","La collaborazione oggi porta più lontano della competizione silenziosa.","Un dettaglio trascurato potrebbe rivelarsi la chiave di tutto il progetto.","Una proposta inattesa merita riflessione, non rifiuto immediato.","L'ambizione oggi è purificata — sai cosa vuoi davvero e perché.","Un collega o superiore vede in te qualcosa che tu ancora non riconosci pienamente.","Il ritmo del tuo lavoro oggi chiede di essere cambiato. Ascolta questo segnale."],
+    b:["Non svenderti. Il tuo contributo vale più di ciò che stai chiedendo.","Il perfezionismo può essere un ostacolo — fatto è meglio di perfetto.","Distingui ciò che è urgente da ciò che è importante. Non sono la stessa cosa.","Le tue idee meritano di uscire dalla testa: mettile su carta, in una proposta.","Un progetto che sembra fermo in realtà sta accumulando energia sottotraccia.","La creatività oggi supera la tecnica. Lascia che l'intuizione guidi il passo.","Un 'no' ricevuto in passato si rivela oggi una protezione, non una sconfitta.","Fai una cosa alla volta. Il multitasking disperde l'energia che il cielo ti offre.","Chi lavora con te può essere un alleato inaspettato — vedi oltre le prime impressioni.","Oggi vale la pena rischiare una conversazione difficile in ambito professionale.","Il lavoro che hai paura di iniziare è spesso quello più allineato con chi sei.","Confida nell'accumulo silenzioso — il tuo lavoro ha più effetto di quanto credi.","Una critica ricevuta oggi contiene un'informazione preziosa se la leggi senza difese.","Il cielo premia chi agisce, non chi aspetta il momento perfetto per farlo."],
+    c:["Agisci mentre la finestra è aperta. Non durerà per sempre.","Il tuo lavoro migliore nasce dall'allineamento tra chi sei e cosa fai.","Oggi hai tutto ciò che ti serve. Il dubbio è solo rumore di fondo.","Un passo coraggioso oggi vale dieci cauti domani.","Confida nel processo — il risultato arriva sempre dopo la semina paziente.","La tua dedizione non passa inosservata, anche quando sembra così.","Finisci ciò che hai iniziato. Il completamento porta potere reale.","Il tuo percorso professionale è unico — smetti di confrontarlo con gli altri.","Oggi ogni azione verso il tuo obiettivo ha un peso doppio.","Merita. Ricorda perché hai scelto questo cammino."]
+  },
+  salute:{
+    a:["Il corpo porta oggi un messaggio — impara ad ascoltarlo prima che si faccia più insistente.","L'energia fisica segue oggi ritmi irregolari. Rispettali invece di combatterli.","Il sistema nervoso è sensibile oggi. Riduci il rumore intorno a te, aumenta il silenzio.","Una piccola tensione accumulata chiede di essere sciolta — il corpo è paziente, ma non eterno.","Dormi quanto ti chiede il corpo, non quanto ti permette la sveglia.","L'equilibrio tra attività e recupero è oggi più importante del semplice rendimento.","Il corpo reagisce oggi alle emozioni con più sensibilità del solito — ascoltalo.","L'aria aperta, la luce naturale: il tuo corpo cerca oggi il suo ambiente originale.","Idratati. Muoviti. Respira. Tre azioni semplici, effetto diretto sulla chiarezza mentale.","La salute non è l'assenza di sintomi — è la presenza di vitalità. Come stai davvero?","Il tuo corpo ha una saggezza antica. Oggi è un buon giorno per onorarla.","Non ignorare la stanchezza. È informazione, non debolezza da nascondere.","Ciò che mangi oggi nutre non solo il fisico ma anche la mente — scegli con attenzione.","Un segnale fisico sottile potrebbe essere più significativo di quanto sembri oggi."],
+    b:["Una pausa consapevole oggi vale più di un'ora di produttività forzata.","Il respiro è il regolatore più potente che possiedi. Usalo come ancora.","Il corpo accumula ciò che la mente non elabora. Cosa stai portando senza saperlo?","Cammina, nuota, muoviti — qualunque movimento che non sia performance è terapeutico.","La mente e il corpo comunicano in modo continuo. Sei un buon traduttore?","Non ogni sintomo è un problema — alcuni sono il corpo che si ripulisce naturalmente.","Oggi il sistema immunitario è più responsivo. Un piccolo extra di cura ripaga.","Una notte di sonno profondo fa più di molti rimedi. Crea le condizioni per averla.","Il confine tra impegno fisico e sovraccarico è sottile oggi. Stai attento/a.","La salute mentale è salute fisica. Non separare mai i due piani dell'essere.","Un rituale di cura di sé questa sera — piccolo, semplice, completamente tuo.","Qualcosa nel tuo stile di vita chiede oggi una piccola revisione consapevole.","L'energia fisica è influenzata oggi dai cicli lunari. Segui i cicli, non le aspettative.","Oggi potresti sentirti più vulnerabile fisicamente. È normale. Prenditi cura."],
+    c:["Prenditi cura del corpo come se fosse il tuo strumento più prezioso — lo è.","Un piccolo atto di cura oggi ha effetti profondi e duraturi.","Stai bene quando ti permetti di stare male senza amplificarlo.","La salute è un atto quotidiano, non un obiettivo lontano da raggiungere.","Ascolta il corpo prima che diventi insistente nel farlo.","Oggi il riposo è produttivo quanto l'azione più intensa.","Il tuo benessere è la base di tutto il resto. Proteggilo con cura.","Un respiro profondo prima di ogni decisione importante — inizia sempre da lì.","La tua vitalità è un dono — onorarla è un atto di rispetto verso te stesso/a.","Oggi corpo e mente trovano un equilibrio naturale se glielo permetti."]
+  },
+  soldi:{
+    a:["Il flusso finanziario di oggi rivela schemi che non avevi visto con chiarezza.","Un'opportunità economica si presenta oggi — la domanda è se sei pronto/a a riconoscerla.","I soldi seguono l'energia. Dove stai investendo la tua — davvero?","Il tuo rapporto con il denaro rispecchia il tuo rapporto con il valore di te stesso/a.","Oggi è favorevole per le decisioni finanziarie ponderate, non per quelle d'impulso.","Un conto in sospeso — materiale o emotivo — chiede oggi di essere finalmente chiuso.","La generosità oggi non impoverisce: chi dà con cuore aperto riceve in modo inatteso.","Un investimento nel tuo futuro, anche piccolo, ha oggi un significato simbolico potente.","Le finanze non sono solo numeri — sono scelte cristallizzate in forma materiale.","Qualcosa che hai costruito finanziariamente inizia a mostrare la sua vera solidità.","Il denaro che ti spaventa di solito nasconde una credenza profonda sul meritare.","Una conversazione su soldi che rimandi da tempo ha oggi il suo momento giusto.","Un nuovo flusso di entrate potrebbe manifestarsi da una direzione del tutto inaspettata.","Finanziariamente, oggi è il momento di costruire fondamenta, non di espandersi."],
+    b:["Non ogni guadagno si misura in denaro — conta anche il tempo recuperato.","Rivedi il budget non come limitazione ma come atto di rispetto verso te stesso/a.","Una piccola economia oggi si trasforma in libertà concreta domani.","Il valore di ciò che offri è determinato da te prima che dal mercato esterno.","Investi in qualcosa che cresce nel tempo: conoscenza, relazioni, salute.","La sicurezza finanziaria vera non viene dall'accumulo ma dall'indipendenza reale.","Un'abitudine di spesa inconsapevole chiede oggi di essere vista con lucidità.","Il denaro è uno strumento — chi lo controlla? Tu o lui?","Oggi potresti scoprire un modo più intelligente di usare ciò che hai già.","Un accordo o contratto merita oggi una rilettura attenta prima di procedere.","Non aspettare di avere 'abbastanza' per iniziare — inizia con ciò che hai ora.","Il tuo valore professionale ed economico è più alto di quanto dichiari agli altri.","Una perdita finanziaria del passato porta oggi una lezione finalmente digerita.","Il cielo supporta chi pianifica con visione, non chi reagisce con paura."],
+    c:["La prosperità inizia dalla convinzione di meritarla davvero.","Un passo verso la stabilità finanziaria vale più di un sogno lontano.","Oggi puoi fare una scelta che il tuo futuro ringrazierà.","Il denaro segue la chiarezza — sii preciso/a su cosa vuoi.","La generosità torna sempre, in forme e tempi che non sapevi immaginare.","Il flusso si riapre quando smetti di trattenerlo per paura di perderlo.","Ogni decisione finanziaria consapevole è un atto di rispetto verso te stesso/a.","Stai costruendo qualcosa di reale — anche se ancora non si vede in superficie.","La pazienza finanziaria è una delle forme più potenti di strategia a lungo termine.","Il cielo supporta chi investe nell'invisibile: nell'istruzione, nella crescita, nella fiducia."]
+  }
+};
+function generateHoroscope(sg,dateStr){
+  const r=mkrand(dailySeed(dateStr,sg.key));
+  const pick=arr=>arr[Math.floor(r()*arr.length)];
+  const stars=()=>Math.floor(r()*4)+2;
+  return{
+    amore:{stars:stars(),text:`${pick(HORO.amore.a)} ${pick(HORO.amore.b)} ${pick(HORO.amore.c)}`},
+    lavoro:{stars:stars(),text:`${pick(HORO.lavoro.a)} ${pick(HORO.lavoro.b)} ${pick(HORO.lavoro.c)}`},
+    salute:{stars:stars(),text:`${pick(HORO.salute.a)} ${pick(HORO.salute.b)} ${pick(HORO.salute.c)}`},
+    soldi:{stars:stars(),text:`${pick(HORO.soldi.a)} ${pick(HORO.soldi.b)} ${pick(HORO.soldi.c)}`},
+  };
+}
+
+// ── DAILY HOROSCOPE ──
+function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
+  const sunKey=getSunSignKey(profile.birthday);
+  const moonKey=getMoonSignKey(profile.birthday);
+  const ascKey=getAscendantKey(profile.birthday,profile.birthtime);
+  const sunSg=SIGNS.find(s=>s.key===sunKey)||SIGNS[0];
+  const moonSg=SIGNS.find(s=>s.key===moonKey)||SIGNS[0];
+  const ascSg=ascKey?SIGNS.find(s=>s.key===ascKey):null;
+  const today=new Date();
+  const dateStr=today.toISOString().slice(0,10);
+  const dateIt=today.toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long"});
+  const h=today.getHours();
+  const greeting=h<12?"Buongiorno":h<18?"Buon pomeriggio":"Buonasera";
+  const horo=useMemo(()=>generateHoroscope(sunSg,dateStr),[sunSg.key,dateStr]);
+  const CATS=[
+    {key:"amore",label:"Amore",icon:"♥",col:"#c07878"},
+    {key:"lavoro",label:"Lavoro",icon:"✦",col:t.accent},
+    {key:"salute",label:"Salute",icon:"◎",col:"#78c090"},
+    {key:"soldi",label:"Soldi",icon:"◈",col:"#c8a84a"},
+  ];
+  const trinity=[{sg:sunSg,label:"Solare",icon:"☀"},{sg:moonSg,label:"Lunare",icon:"☽"},...(ascSg?[{sg:ascSg,label:"Ascendente",icon:"↑"}]:[])];
+  return(
+    <div style={{minHeight:"100vh",background:t.bg,color:t.text,overflowY:"auto"}}>
+      {/* ── HERO ── */}
+      <div style={{position:"relative",height:"52dvh",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
+        {sunSg.img&&<img src={sunSg.img} loading="eager" decoding="async" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",filter:"brightness(0.58) saturate(1.1)"}}/>}
+        <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(0,0,0,0.52) 0%,rgba(0,0,0,0) 36%,rgba(0,0,0,0.74) 68%,rgba(0,0,0,0.97) 100%)"}}/>
+        <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 65% 42% at 50% 58%,rgba(${sunSg.rgb},0.18) 0%,transparent 70%)`,pointerEvents:"none"}}/>
+        <StarField color={sunSg.starColor} count={36} opacity={0.55}/>
+        <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 14px)",left:14,zIndex:10,color:"rgba(255,255,255,0.48)",fontSize:"10px",letterSpacing:".16em",padding:"12px 14px"}}>← indietro</button>
+        <button onClick={onEdit} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 14px)",right:14,zIndex:10,fontSize:"7px",letterSpacing:".24em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}50`,padding:"9px 15px",background:"rgba(0,0,0,0.35)",backdropFilter:"blur(10px)"}}>modifica</button>
+        <div className="fade-in-up" style={{position:"relative",zIndex:2,padding:"0 clamp(22px,6vw,44px) clamp(26px,5.5vw,40px)"}}>
+          <div style={{fontSize:"6px",letterSpacing:".52em",color:"rgba(255,255,255,0.24)",textTransform:"uppercase",marginBottom:12,paddingLeft:".52em"}}>{dateIt} · oroscopo del giorno</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(34px,9.5vw,58px)",fontWeight:300,lineHeight:.88,color:"rgba(255,255,255,0.93)",marginBottom:18,textShadow:`0 3px 24px rgba(${sunSg.rgb},0.35)`}}>{greeting},<br/>{profile.name}</div>
+          <div style={{display:"inline-flex",alignItems:"center",gap:12,padding:"9px 16px",border:`1px solid rgba(${sunSg.rgb},0.48)`,background:`rgba(${sunSg.rgb},0.16)`,backdropFilter:"blur(14px)",borderRadius:2}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:sunSg.colorLight,filter:`drop-shadow(0 0 5px rgba(${sunSg.rgb},0.8))`}}>{sunSg.symbol}</span>
+            <span style={{width:1,height:14,background:"rgba(255,255,255,0.15)"}}/>
+            <span style={{fontSize:"7px",letterSpacing:".32em",color:"rgba(255,255,255,0.78)",textTransform:"uppercase"}}>{sunSg.name}</span>
+          </div>
+        </div>
+      </div>
+      <div style={{height:28,background:`linear-gradient(to bottom,rgba(0,0,0,0.97),${t.bg})`,marginTop:-2}}/>
+      <div style={{maxWidth:640,margin:"0 auto",padding:"0 clamp(16px,5vw,32px)"}}>
+        {/* ── 4 CATEGORIE ── */}
+        {CATS.map(cat=>{
+          const d=horo[cat.key];
+          return(
+            <div key={cat.key} style={{marginBottom:12,padding:"24px 24px 22px",background:t.card,border:`1px solid ${t.border}`,position:"relative",overflow:"hidden"}}>
+              <div style={{position:"absolute",top:0,left:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${cat.col}75,transparent)`}}/>
+              <div style={{position:"absolute",right:-4,top:"50%",transform:"translateY(-50%)",fontFamily:"'Cormorant Garamond',serif",fontSize:"90px",color:cat.col,opacity:.04,lineHeight:1,pointerEvents:"none",userSelect:"none"}}>{cat.icon}</div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+                <div style={{display:"flex",alignItems:"center",gap:10}}>
+                  <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:cat.col,lineHeight:1}}>{cat.icon}</span>
+                  <span style={{fontSize:"7px",letterSpacing:".42em",color:cat.col,textTransform:"uppercase"}}>{cat.label}</span>
+                </div>
+                <div style={{display:"flex",gap:4}}>
+                  {[1,2,3,4,5].map(n=>(
+                    <div key={n} style={{width:6,height:6,borderRadius:"50%",background:n<=d.stars?cat.col:"transparent",border:`1px solid ${n<=d.stars?cat.col:cat.col+"44"}`}}/>
+                  ))}
+                </div>
+              </div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,18px)",color:t.text,lineHeight:1.88,fontStyle:"italic"}}>{d.text}</div>
+            </div>
+          );
+        })}
+        {/* ── TRINITÀ MINI ── */}
+        <div style={{margin:"28px 0 24px"}}>
+          <div style={{fontSize:"6px",letterSpacing:".5em",color:t.muted,textTransform:"uppercase",textAlign:"center",marginBottom:16,paddingLeft:".5em"}}>Trinità celeste</div>
+          <div style={{display:"flex",gap:8}}>
+            {trinity.map(({sg:s,label,icon})=>(
+              <div key={s.key} style={{flex:1,padding:"14px 8px",background:t.surface,border:`1px solid ${s.color}45`,textAlign:"center",borderRadius:8,minWidth:0}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(20px,5.5vw,28px)",color:s.colorLight,filter:`drop-shadow(0 0 7px rgba(${s.rgb},0.7))`,lineHeight:1,marginBottom:5}}>{s.symbol}</div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(10px,3vw,13px)",color:t.text,marginBottom:3}}>{s.name}</div>
+                <div style={{fontSize:"5px",letterSpacing:".24em",color:t.muted,textTransform:"uppercase"}}>{icon} {label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* ── CTA ── */}
+        <div style={{textAlign:"center",padding:"16px 0 calc(env(safe-area-inset-bottom,0px) + 72px)"}}>
+          <div style={{width:36,height:"1px",background:`linear-gradient(to right,transparent,${t.accent}55,transparent)`,margin:"0 auto 26px"}}/>
+          <button onClick={onProfile} style={{padding:"15px 44px",border:`1px solid ${t.accent}65`,background:`${t.accent}10`,color:t.accent,fontSize:"8px",letterSpacing:".4em",textTransform:"uppercase"}}>Maggiori dettagli</button>
+          <div style={{marginTop:12,fontSize:"6px",letterSpacing:".3em",color:t.muted,textTransform:"uppercase",opacity:.55}}>carta natale archetipica</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function App(){
   const[view,setView]=useState("home");
   const[selected,setSelected]=useState(null);
@@ -1224,14 +1350,15 @@ function App(){
     });
   },[]);
 
-  const onSetupDone=useCallback((p)=>{setProfile(p);setSetupDone(true);setView("profile");},[]);
+  const onSetupDone=useCallback((p)=>{setProfile(p);setSetupDone(true);setView("daily");},[]);
 
   return(
     <div style={{background:t.bg,color:t.text,minHeight:"100vh"}}>
       {splash&&<Splash onDone={()=>setSplash(false)} bg={t.bg} text={t.text}/>}
-      {!splash&&view==="setup"&&<ProfileSetup t={t} onDone={onSetupDone} onBack={()=>setView(profile?"profile":"home")}/>}
-      {!splash&&view==="home"&&<Home t={t} profile={profile} onSelect={s=>{setSelected(s);setView("sign")}} onSetup={()=>setView(profile?"profile":"setup")}/>}
-      {!splash&&view==="profile"&&profile&&<PersonalProfile t={t} profile={profile} onEdit={()=>setView("setup")} onBack={()=>setView("home")}/>}
+      {!splash&&view==="setup"&&<ProfileSetup t={t} onDone={onSetupDone} onBack={()=>setView(profile?"daily":"home")}/>}
+      {!splash&&view==="home"&&<Home t={t} profile={profile} onSelect={s=>{setSelected(s);setView("sign")}} onSetup={()=>setView(profile?"daily":"setup")}/>}
+      {!splash&&view==="daily"&&profile&&<DailyHoroscope t={t} profile={profile} onBack={()=>setView("home")} onProfile={()=>setView("profile")} onEdit={()=>setView("setup")}/>}
+      {!splash&&view==="profile"&&profile&&<PersonalProfile t={t} profile={profile} onEdit={()=>setView("setup")} onBack={()=>setView("daily")}/>}
       {!splash&&view==="sign"&&selected&&<SignScreen sg={selected} t={t} onBack={()=>setView("home")} journal={journal} saveEntry={saveEntry}/>}
       {!splash&&view!=="setup"&&<ThemeBtn theme={theme} setTheme={setTheme} t={t}/>}
     </div>
