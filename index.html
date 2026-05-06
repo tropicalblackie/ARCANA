@@ -376,9 +376,8 @@ function Home({t,onSelect}){
         {shown.map((sg,i)=>(
           <div key={sg.key} className="fade-in-up" style={{animationDelay:`${i*.04}s`,opacity:0}} onClick={()=>onSelect(sg)}>
             <CometCard accentColor={sg.colorLight}>
-              <div style={{background:t.card,padding:6,cursor:"pointer",border:`1px solid rgba(${sg.rgb},.18)`,borderRadius:16}}>
+              <div style={{background:`linear-gradient(160deg, rgba(${sg.rgb},.14) 0%, ${t.card} 55%)`,padding:6,cursor:"pointer",border:`1px solid rgba(${sg.rgb},.18)`,borderRadius:16}}>
                 <div style={{position:"relative",aspectRatio:"3/4",borderRadius:11,overflow:"hidden",background:t.bg}}>
-                  <div style={{position:"absolute",inset:0,background:`linear-gradient(155deg, rgba(${sg.rgb},.13) 0%, rgba(${sg.rgb},.04) 50%, ${t.bg} 100%)`,borderRadius:11,pointerEvents:"none",zIndex:0}}/>
                   {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:11,opacity:.88,mixBlendMode:"multiply",zIndex:1}}/>}
                   <div style={{position:"absolute",inset:0,background:`linear-gradient(to top, ${t.card} 0%, transparent 40%)`,pointerEvents:"none",zIndex:2}}/>
                   <div style={{position:"absolute",bottom:10,left:11,zIndex:3,width:20,height:1,background:sg.colorLight,opacity:.55}}/>
