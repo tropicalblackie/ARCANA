@@ -417,76 +417,93 @@ const SIGN_DATES={ariete:"21 mar – 19 apr",toro:"20 apr – 20 mag",gemelli:"2
 // ── SIGN FLIP CARD ──
 function SignFlipCard({sg,t,i,onSelect}){
   const innerRef=useRef(null);
-  const wrapRef=useRef(null);
   const angle=useRef(0);
-  const drag=useRef({active:false,locked:false,sx:0,sy:0,sa:0,lx:0,ly:0,vel:0,moved:0,lt:0});
   const raf=useRef(null);
+  const idleBase=useRef(0);
+  const idleT0=useRef(0);
+  const drag=useRef({active:false,locked:false,sx:0,sy:0,sa:0,lx:0,vel:0,moved:0,lt:0});
   const[cursor,setCursor]=useState("grab");
 
-  // Write transform directly to DOM — no React re-render per frame
   const applyAngle=useCallback(a=>{
     angle.current=a;
     if(innerRef.current) innerRef.current.style.transform=`rotateY(${a}deg)`;
   },[]);
 
-  const stopMomentum=useCallback(()=>{if(raf.current){cancelAnimationFrame(raf.current);raf.current=null;}},[]);
+  const stopAnim=useCallback(()=>{
+    if(raf.current){cancelAnimationFrame(raf.current);raf.current=null;}
+  },[]);
+
+  // gentle pendulum oscillation — hints that card is rotatable
+  const startIdle=useCallback(()=>{
+    stopAnim();
+    idleBase.current=angle.current;
+    idleT0.current=performance.now();
+    const tick=now=>{
+      applyAngle(idleBase.current+Math.sin((now-idleT0.current)*0.00160)*15);
+      raf.current=requestAnimationFrame(tick);
+    };
+    raf.current=requestAnimationFrame(tick);
+  },[applyAngle,stopAnim]);
+
+  // start idle after card fades in
+  useEffect(()=>{
+    const timer=setTimeout(startIdle,i*60+750);
+    return()=>{clearTimeout(timer);stopAnim();};
+  },[i,startIdle,stopAnim]);
 
   const onDown=useCallback(e=>{
     if(e.button!==0)return;
-    stopMomentum();
+    stopAnim();
     const d=drag.current;
     d.active=true;d.locked=false;
     d.sx=e.clientX;d.sy=e.clientY;d.sa=angle.current;
-    d.lx=e.clientX;d.ly=e.clientY;d.vel=0;d.moved=0;d.lt=performance.now();
+    d.lx=e.clientX;d.vel=0;d.moved=0;d.lt=performance.now();
     setCursor("grabbing");
-  },[stopMomentum]);
+  },[stopAnim]);
 
   const onMove=useCallback(e=>{
     const d=drag.current;
     if(!d.active)return;
-    const totalDx=e.clientX-d.sx, totalDy=e.clientY-d.sy;
+    const totalDx=e.clientX-d.sx,totalDy=e.clientY-d.sy;
     if(!d.locked){
       const adx=Math.abs(totalDx),ady=Math.abs(totalDy);
       if(adx<3&&ady<3)return;
-      if(ady>adx){d.active=false;setCursor("grab");return;} // vertical → scroll
+      if(ady>adx){d.active=false;setCursor("grab");startIdle();return;}
       d.locked=true;
       try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}
     }
-    const now=performance.now();
-    const dx=e.clientX-d.lx, dt=Math.max(now-d.lt,1);
-    // velocity in deg/ms, scaled to 60fps
+    const now=performance.now(),dx=e.clientX-d.lx,dt=Math.max(now-d.lt,1);
     d.vel=(dx/dt)*16*0.65;
     d.moved+=Math.abs(dx);
     d.lx=e.clientX;d.lt=now;
-    // 0.72 deg per pixel — high sensitivity, consistent 3D feel
-    applyAngle(d.sa+totalDx*0.72);
-  },[applyAngle]);
+    applyAngle(d.sa+totalDx*0.78);
+  },[applyAngle,startIdle]);
 
-  const onUp=useCallback(e=>{
+  const onUp=useCallback(()=>{
     const d=drag.current;
     if(!d.active)return;
     d.active=false;
     setCursor("grab");
     if(d.moved<6){onSelect(sg);return;}
-    // momentum with friction
     let vel=d.vel;
-    const decay=0.94; // higher = glides longer
     const tick=()=>{
-      vel*=decay;
-      if(Math.abs(vel)<0.08){raf.current=null;return;}
+      vel*=0.94;
+      if(Math.abs(vel)<0.08){startIdle();return;}
       applyAngle(angle.current+vel);
       raf.current=requestAnimationFrame(tick);
     };
     raf.current=requestAnimationFrame(tick);
-  },[onSelect,sg,applyAngle]);
+  },[applyAngle,onSelect,sg,startIdle]);
 
-  const onCancel=useCallback(()=>{drag.current.active=false;setCursor("grab");},[]);
+  const onCancel=useCallback(()=>{
+    drag.current.active=false;setCursor("grab");startIdle();
+  },[startIdle]);
 
-  useEffect(()=>()=>stopMomentum(),[stopMomentum]);
+  useEffect(()=>()=>stopAnim(),[stopAnim]);
 
   return(
     <div className="fade-in-up" style={{animationDelay:`${i*.06}s`,opacity:0}}>
-      <div ref={wrapRef}
+      <div
         style={{perspective:"1000px",perspectiveOrigin:"50% 40%",touchAction:"pan-y",userSelect:"none",WebkitUserSelect:"none",cursor}}
         onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onCancel}>
         <div ref={innerRef} style={{transformStyle:"preserve-3d",transform:"rotateY(0deg)",willChange:"transform",position:"relative"}}>
