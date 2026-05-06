@@ -416,15 +416,71 @@ const SIGN_DATES={ariete:"21 mar – 19 apr",toro:"20 apr – 20 mag",gemelli:"2
 
 // ── SIGN FLIP CARD ──
 function SignFlipCard({sg,t,i,onSelect}){
-  const[flipped,setFlipped]=useState(false);
+  const aRef=useRef(0);
+  const[angle,setAngle]=useState(0);
+  const[grabbing,setGrabbing]=useState(false);
+  const isDown=useRef(false);
+  const drag=useRef({sx:0,sy:0,sa:0,lx:0,vel:0,moved:0,lt:0,locked:false});
+  const raf=useRef(null);
+
+  const setA=useCallback(a=>{aRef.current=a;setAngle(a);},[]);
+
+  const onDown=useCallback(e=>{
+    raf.current&&cancelAnimationFrame(raf.current);
+    isDown.current=true;
+    setGrabbing(true);
+    const d=drag.current;
+    d.sx=e.clientX;d.sy=e.clientY;d.sa=aRef.current;
+    d.lx=e.clientX;d.vel=0;d.moved=0;d.lt=performance.now();d.locked=false;
+  },[]);
+
+  const onMove=useCallback(e=>{
+    if(!isDown.current)return;
+    const d=drag.current;
+    const totalDx=e.clientX-d.sx, totalDy=e.clientY-d.sy;
+    if(!d.locked){
+      if(Math.abs(totalDx)<4&&Math.abs(totalDy)<4)return;
+      // vertical intent → release, let browser scroll
+      if(Math.abs(totalDy)>Math.abs(totalDx)){isDown.current=false;setGrabbing(false);return;}
+      d.locked=true;
+      e.currentTarget.setPointerCapture(e.pointerId);
+    }
+    const now=performance.now(),dx=e.clientX-d.lx,dt=Math.max(now-d.lt,1);
+    d.vel=dx/dt*16; // px/frame @60fps
+    d.moved+=Math.abs(dx);
+    d.lx=e.clientX;d.lt=now;
+    setA(d.sa+totalDx*0.55);
+  },[setA]);
+
+  const onUp=useCallback(()=>{
+    if(!isDown.current)return;
+    isDown.current=false;
+    setGrabbing(false);
+    const d=drag.current;
+    if(d.moved<6){onSelect(sg);return;}
+    let vel=d.vel*0.6;
+    const spin=()=>{
+      vel*=0.90;
+      if(Math.abs(vel)<0.1)return;
+      setA(aRef.current+vel);
+      raf.current=requestAnimationFrame(spin);
+    };
+    raf.current=requestAnimationFrame(spin);
+  },[onSelect,sg,setA]);
+
+  const onCancel=useCallback(()=>{isDown.current=false;setGrabbing(false);},[]);
+
+  useEffect(()=>()=>{raf.current&&cancelAnimationFrame(raf.current);},[]);
+
   return(
-    <div className="fade-in-up" style={{animationDelay:`${i*.06}s`,opacity:0,perspective:"900px",cursor:"pointer"}}
-      onClick={()=>flipped?onSelect(sg):setFlipped(true)}>
-      <div style={{position:"relative",transformStyle:"preserve-3d",transition:"transform .72s cubic-bezier(.4,0,.2,1)",transform:flipped?"rotateY(180deg)":"rotateY(0)"}}>
-        {/* ── FRONT ── */}
-        <div style={{backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden"}}>
-          <CometCard accentColor={t.accent}>
-            <div style={{background:t.card,padding:8,cursor:"pointer",border:`1.5px solid ${t.accent}55`,borderRadius:16,boxShadow:`0 8px 32px ${t.accent}12,0 1.5px 0 rgba(255,255,255,0.14) inset`,position:"relative",overflow:"hidden"}}>
+    <div className="fade-in-up" style={{animationDelay:`${i*.06}s`,opacity:0}}>
+      <div style={{perspective:"1100px",touchAction:"pan-y",userSelect:"none",WebkitUserSelect:"none",cursor:grabbing?"grabbing":"grab"}}
+        onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onCancel}>
+        <div style={{transformStyle:"preserve-3d",transform:`rotateY(${angle}deg)`,willChange:"transform",position:"relative"}}>
+
+          {/* ── FRONT ── */}
+          <div style={{backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden"}}>
+            <div style={{background:t.card,padding:8,border:`1.5px solid ${t.accent}55`,borderRadius:16,boxShadow:`0 8px 32px ${t.accent}12,0 1.5px 0 rgba(255,255,255,0.14) inset`,position:"relative",overflow:"hidden"}}>
               <GlassOverlay/>
               <div style={{position:"relative",aspectRatio:"3/4",borderRadius:11,overflow:"hidden",background:t.surface,zIndex:1}}>
                 {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" decoding="async" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:11,zIndex:1}}/>}
@@ -435,22 +491,38 @@ function SignFlipCard({sg,t,i,onSelect}){
               </div>
               <div style={{padding:"0 13px 11px",fontSize:"7px",letterSpacing:".2em",textTransform:"uppercase",color:t.accent,opacity:.7,position:"relative",zIndex:1}}>{sg.archetype}</div>
             </div>
-          </CometCard>
-        </div>
-        {/* ── BACK ── */}
-        <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",transform:"rotateY(180deg)",borderRadius:16,overflow:"hidden",border:`1.5px solid ${sg.color}80`,boxShadow:`0 0 52px rgba(${sg.rgb},0.35),0 8px 36px rgba(${sg.rgb},0.18)`}}>
-          {sg.img&&<img src={sg.img} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",filter:"brightness(0.18) saturate(1.8)",transform:"scale(1.06)"}}/>}
-          <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 85% 55% at 50% 35%,rgba(${sg.rgb},0.45) 0%,rgba(0,0,0,0.8) 100%)`}}/>
-          <div style={{position:"relative",zIndex:2,height:"100%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 24px",gap:0}}>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(64px,19vw,94px)",color:sg.colorLight,lineHeight:1,filter:`drop-shadow(0 0 30px rgba(${sg.rgb},1)) drop-shadow(0 0 70px rgba(${sg.rgb},0.45))`}}>{sg.symbol}</div>
-            <div style={{width:"clamp(24px,6vw,36px)",height:1,background:`linear-gradient(to right,transparent,${sg.colorLight}70,transparent)`,margin:"18px auto 14px"}}/>
-            <div style={{fontSize:"6px",letterSpacing:".56em",color:"rgba(255,255,255,0.32)",textTransform:"uppercase",paddingLeft:".56em",marginBottom:10}}>Periodo</div>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(20px,5.5vw,28px)",color:"rgba(255,255,255,0.92)",fontStyle:"italic",textAlign:"center",letterSpacing:".04em",lineHeight:1.3}}>{SIGN_DATES[sg.key]}</div>
-            <div style={{width:"clamp(32px,8vw,46px)",height:1,background:`${sg.color}45`,margin:"18px auto 14px"}}/>
-            <div style={{fontSize:"7px",letterSpacing:".38em",color:sg.colorLight,textTransform:"uppercase",opacity:.8,marginBottom:6}}>{sg.element} · {sg.modality}</div>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"12px",letterSpacing:".22em",color:"rgba(255,255,255,0.22)"}}>{sg.planet}</div>
-            <div style={{position:"absolute",bottom:18,left:0,right:0,textAlign:"center",fontSize:"6px",letterSpacing:".34em",color:"rgba(255,255,255,0.16)",textTransform:"uppercase",paddingLeft:".34em"}}>tocca · scopri</div>
           </div>
+
+          {/* ── BACK ── */}
+          <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",transform:"rotateY(180deg)",borderRadius:16,overflow:"hidden",border:`1.5px solid ${sg.color}90`,boxShadow:`0 0 56px rgba(${sg.rgb},0.4),0 8px 40px rgba(${sg.rgb},0.2)`}}>
+            {sg.img&&<img src={sg.img} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",filter:"brightness(0.13) saturate(2.2)",transform:"scale(1.1)"}}/>}
+            <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 90% 60% at 50% 38%,rgba(${sg.rgb},0.55) 0%,rgba(0,0,0,0.92) 100%)`}}/>
+            {/* grain texture */}
+            <svg style={{position:"absolute",inset:0,width:"100%",height:"100%",opacity:.07,mixBlendMode:"overlay",pointerEvents:"none"}} xmlns="http://www.w3.org/2000/svg"><filter id={`gb${sg.key}`}><feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter={`url(#gb${sg.key})`}/></svg>
+            <div style={{position:"relative",zIndex:2,height:"100%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"28px 20px"}}>
+              {/* symbol */}
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(58px,17vw,84px)",color:sg.colorLight,lineHeight:1,filter:`drop-shadow(0 0 24px rgba(${sg.rgb},1)) drop-shadow(0 0 60px rgba(${sg.rgb},0.55))`}}>{sg.symbol}</div>
+              {/* top line */}
+              <div style={{width:40,height:"1px",background:`linear-gradient(to right,transparent,${sg.colorLight}80,transparent)`,margin:"18px auto 20px"}}/>
+              {/* label */}
+              <div style={{fontSize:"6px",letterSpacing:".58em",color:"rgba(255,255,255,0.25)",textTransform:"uppercase",paddingLeft:".58em",marginBottom:10}}>Periodo</div>
+              {/* dates */}
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(19px,5.2vw,26px)",color:"rgba(255,255,255,0.93)",fontStyle:"italic",textAlign:"center",letterSpacing:".04em",lineHeight:1.25}}>{SIGN_DATES[sg.key]}</div>
+              {/* bottom line */}
+              <div style={{width:32,height:"1px",background:`${sg.color}55`,margin:"18px auto 14px"}}/>
+              {/* element · modality */}
+              <div style={{fontSize:"7px",letterSpacing:".4em",color:sg.colorLight,textTransform:"uppercase",opacity:.85,marginBottom:6}}>{sg.element} · {sg.modality}</div>
+              {/* planet */}
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"11px",letterSpacing:".28em",color:"rgba(255,255,255,0.2)"}}>{sg.planet}</div>
+              {/* hint */}
+              <div style={{position:"absolute",bottom:14,left:0,right:0,textAlign:"center"}}>
+                <div style={{display:"inline-flex",alignItems:"center",gap:8,fontSize:"6px",letterSpacing:".32em",color:"rgba(255,255,255,0.12)",textTransform:"uppercase"}}>
+                  <span style={{width:14,height:"1px",background:"rgba(255,255,255,0.1)"}}/>tocca · scopri<span style={{width:14,height:"1px",background:"rgba(255,255,255,0.1)"}}/>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
