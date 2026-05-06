@@ -411,6 +411,52 @@ const Splash=memo(function Splash({onDone,bg,text}){  // text = t.text
   );
 });
 
+// ── SIGN DATES ──
+const SIGN_DATES={ariete:"21 mar – 19 apr",toro:"20 apr – 20 mag",gemelli:"21 mag – 20 giu",cancro:"21 giu – 22 lug",leone:"23 lug – 22 ago",vergine:"23 ago – 22 set",bilancia:"23 set – 22 ott",scorpione:"23 ott – 21 nov",sagittario:"22 nov – 21 dic",capricorno:"22 dic – 19 gen",acquario:"20 gen – 18 feb",pesci:"19 feb – 20 mar"};
+
+// ── SIGN FLIP CARD ──
+function SignFlipCard({sg,t,i,onSelect}){
+  const[flipped,setFlipped]=useState(false);
+  return(
+    <div className="fade-in-up" style={{animationDelay:`${i*.06}s`,opacity:0,perspective:"900px",cursor:"pointer"}}
+      onClick={()=>flipped?onSelect(sg):setFlipped(true)}>
+      <div style={{position:"relative",transformStyle:"preserve-3d",transition:"transform .72s cubic-bezier(.4,0,.2,1)",transform:flipped?"rotateY(180deg)":"rotateY(0)"}}>
+        {/* ── FRONT ── */}
+        <div style={{backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden"}}>
+          <CometCard accentColor={t.accent}>
+            <div style={{background:t.card,padding:8,cursor:"pointer",border:`1.5px solid ${t.accent}55`,borderRadius:16,boxShadow:`0 8px 32px ${t.accent}12,0 1.5px 0 rgba(255,255,255,0.14) inset`,position:"relative",overflow:"hidden"}}>
+              <GlassOverlay/>
+              <div style={{position:"relative",aspectRatio:"3/4",borderRadius:11,overflow:"hidden",background:t.surface,zIndex:1}}>
+                {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" decoding="async" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:11,zIndex:1}}/>}
+              </div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 13px 4px",color:t.text,position:"relative",zIndex:1}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(20px,5.5vw,28px)"}}>{sg.name}</div>
+                <div style={{fontSize:"8px",fontFamily:"monospace",letterSpacing:".08em",color:t.accent,opacity:.7}}>#{String(sg.number).padStart(2,"0")}</div>
+              </div>
+              <div style={{padding:"0 13px 11px",fontSize:"7px",letterSpacing:".2em",textTransform:"uppercase",color:t.accent,opacity:.7,position:"relative",zIndex:1}}>{sg.archetype}</div>
+            </div>
+          </CometCard>
+        </div>
+        {/* ── BACK ── */}
+        <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",transform:"rotateY(180deg)",borderRadius:16,overflow:"hidden",border:`1.5px solid ${sg.color}80`,boxShadow:`0 0 52px rgba(${sg.rgb},0.35),0 8px 36px rgba(${sg.rgb},0.18)`}}>
+          {sg.img&&<img src={sg.img} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",filter:"brightness(0.18) saturate(1.8)",transform:"scale(1.06)"}}/>}
+          <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 85% 55% at 50% 35%,rgba(${sg.rgb},0.45) 0%,rgba(0,0,0,0.8) 100%)`}}/>
+          <div style={{position:"relative",zIndex:2,height:"100%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 24px",gap:0}}>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(64px,19vw,94px)",color:sg.colorLight,lineHeight:1,filter:`drop-shadow(0 0 30px rgba(${sg.rgb},1)) drop-shadow(0 0 70px rgba(${sg.rgb},0.45))`}}>{sg.symbol}</div>
+            <div style={{width:"clamp(24px,6vw,36px)",height:1,background:`linear-gradient(to right,transparent,${sg.colorLight}70,transparent)`,margin:"18px auto 14px"}}/>
+            <div style={{fontSize:"6px",letterSpacing:".56em",color:"rgba(255,255,255,0.32)",textTransform:"uppercase",paddingLeft:".56em",marginBottom:10}}>Periodo</div>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(20px,5.5vw,28px)",color:"rgba(255,255,255,0.92)",fontStyle:"italic",textAlign:"center",letterSpacing:".04em",lineHeight:1.3}}>{SIGN_DATES[sg.key]}</div>
+            <div style={{width:"clamp(32px,8vw,46px)",height:1,background:`${sg.color}45`,margin:"18px auto 14px"}}/>
+            <div style={{fontSize:"7px",letterSpacing:".38em",color:sg.colorLight,textTransform:"uppercase",opacity:.8,marginBottom:6}}>{sg.element} · {sg.modality}</div>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"12px",letterSpacing:".22em",color:"rgba(255,255,255,0.22)"}}>{sg.planet}</div>
+            <div style={{position:"absolute",bottom:18,left:0,right:0,textAlign:"center",fontSize:"6px",letterSpacing:".34em",color:"rgba(255,255,255,0.16)",textTransform:"uppercase",paddingLeft:".34em"}}>tocca · scopri</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── HOME ──
 function Home({t,onSelect,profile,onSetup}){
   const[filter,setFilter]=useState("all");
@@ -441,23 +487,7 @@ function Home({t,onSelect,profile,onSetup}){
         </div>
       </div>
       <div style={{display:"flex",flexDirection:"column",gap:20,padding:"0 clamp(16px,6vw,48px)",maxWidth:520,margin:"0 auto calc(env(safe-area-inset-bottom,0px) + 80px)",position:"relative",zIndex:1}}>
-        {shown.map((sg,i)=>(
-          <div key={sg.key} className="fade-in-up" style={{animationDelay:`${i*.06}s`,opacity:0}} onClick={()=>onSelect(sg)}>
-            <CometCard accentColor={t.accent}>
-              <div style={{background:t.card,padding:8,cursor:"pointer",border:`1.5px solid ${t.accent}55`,borderRadius:16,boxShadow:`0 8px 32px ${t.accent}12,0 1.5px 0 rgba(255,255,255,0.14) inset`,position:"relative",overflow:"hidden"}}>
-                <GlassOverlay/>
-                <div style={{position:"relative",aspectRatio:"3/4",borderRadius:11,overflow:"hidden",background:t.surface,zIndex:1}}>
-                  {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:11,zIndex:1}}/>}
-                </div>
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 13px 4px",color:t.text,position:"relative",zIndex:1}}>
-                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(20px,5.5vw,28px)"}}>{sg.name}</div>
-                  <div style={{fontSize:"8px",fontFamily:"monospace",letterSpacing:".08em",color:t.accent,opacity:.7}}>#{String(sg.number).padStart(2,"0")}</div>
-                </div>
-                <div style={{padding:"0 13px 11px",fontSize:"7px",letterSpacing:".2em",textTransform:"uppercase",color:t.accent,opacity:.7,position:"relative",zIndex:1}}>{sg.archetype}</div>
-              </div>
-            </CometCard>
-          </div>
-        ))}
+        {shown.map((sg,i)=><SignFlipCard key={sg.key} sg={sg} t={t} i={i} onSelect={onSelect}/>)}
       </div>
     </div>
   );
