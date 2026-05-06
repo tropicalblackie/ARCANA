@@ -289,6 +289,51 @@ const lunarPhase=()=>{const d=new Date().getDate();return d<=7?"Luna Nuova":d<=1
 const entryAngle=()=>{const seed=new Date().getDate()+new Date().getMonth()*31;const a=["il punto di rottura tra ciò che eri e ciò che stai diventando","la ferita che non hai mai mostrato a nessuno","il desiderio che dici di non avere","il ricordo che torna senza avvertire","la paura che ti sveglia alle tre di notte","la forza che non sai di possedere","la verità che stai evitando di dire","la versione di te che stai rimandando","l'amore che hai smesso di chiedere","il corpo come luogo del non detto"];return a[seed%a.length]};
 const LOGO_SRC="./logo.png";
 
+// ── BIRTH CHART ──
+const SIGN_ORDER=["ariete","toro","gemelli","cancro","leone","vergine","bilancia","scorpione","sagittario","capricorno","acquario","pesci"];
+const SIGN_PROFILES={
+  ariete:{polarity:"Maschile",personality:"Ariete è fuoco puro — inizia, osa, brucia. Vive nel presente con una forza magnetica che trascina gli altri. Ha bisogno di sentire che la vita è ancora un'avventura.",strengths:["Coraggio senza limiti","Iniziativa naturale","Energia contagiosa","Onestà diretta","Passione autentica"],weaknesses:["Impulsività","Impazienza cronica","Difficoltà a finire ciò che inizia","Egotismo inconsapevole","Esplosività emotiva"],charismatic:["L'energia che riempie la stanza prima ancora di aprire bocca","Lo sguardo diretto che non teme nulla","La capacità di trascinare gli altri verso l'azione"],gift_him:"Un'esperienza adrenalinica — karting, arrampicata, boxe. Un coltello da collezione o accessorio sportivo di lusso.",gift_her:"Gioielli in oro rosso o rubino. Un weekend avventura. Qualcosa di unico che nessuno le ha ancora regalato.",best_compat:["leone","sagittario","gemelli","acquario"],worst_compat:["cancro","capricorno"],famous:["Lady Gaga","Marlon Brando","Vincent van Gogh","Emma Watson","Robert Downey Jr."]},
+  toro:{polarity:"Femminile",personality:"Toro costruisce il mondo con le mani. Ama con fedeltà assoluta e apprezza ciò che dura. Ha un rapporto fisico e sensuale con la realtà che pochi segni capiscono.",strengths:["Affidabilità totale","Pazienza profonda","Gusto raffinato","Lealtà incondizionata","Tenacia"],weaknesses:["Resistenza al cambiamento","Possessività","Cocciutaggine","Materialismo","Lentezza decisionale"],charismatic:["La voce calda e rassicurante","Il gusto impeccabile in ogni cosa","La capacità di far sentire gli altri completamente al sicuro"],gift_him:"Vino pregiato, accessori in pelle artigianale, una cena stellata. Qualcosa di bello che dura.",gift_her:"Profumo di lusso, seta o cachemire, fiori rari. Gioielli in oro giallo con smeraldo o turchese.",best_compat:["vergine","capricorno","cancro","pesci"],worst_compat:["acquario","leone"],famous:["Adele","George Clooney","Audrey Hepburn","David Beckham","Cher"]},
+  gemelli:{polarity:"Maschile",personality:"Gemelli vive in due corpi: l'intelletto brillante e l'anima irrequieta. Comunica con una velocità e un fascino che lascia senza fiato. Ha bisogno di stimoli mentali come l'aria.",strengths:["Intelligenza versatile","Comunicazione brillante","Adattabilità","Curiosità insaziabile","Umorismo sottile"],weaknesses:["Incostanza","Ansia mentale","Difficoltà a impegnarsi","Superficialità difensiva","Doppiezza inconsapevole"],charismatic:["La conversazione che non annoia mai","La mente che salta da un'idea all'altra in modo ipnotico","Il sorriso che cambia ogni volta e rimane impresso"],gift_him:"Libri rari, gadget tecnologici, abbonamento culturale. Qualcosa di inaspettato e stimolante.",gift_her:"Un corso creativo, gioielli asimmetrici, un viaggio improvvisato. Qualcosa che racconta una storia.",best_compat:["bilancia","acquario","ariete","leone"],worst_compat:["vergine","pesci"],famous:["Marilyn Monroe","John F. Kennedy","Angelina Jolie","Johnny Depp","Kanye West"]},
+  cancro:{polarity:"Femminile",personality:"Cancro è il custode dell'anima. Sente tutto in modo viscerale e ama con una profondità che spaventa e guarisce. La sua casa è il suo castello — dentro e fuori.",strengths:["Empatia profondissima","Intuizione quasi paranormale","Fedeltà assoluta","Cura e nutrimento","Memoria emotiva ricchissima"],weaknesses:["Ipersensibilità","Umore fluttuante","Attaccamento eccessivo","Tendenza al vittimismo","Difficoltà a lasciar andare"],charismatic:["La capacità di far sentire gli altri visti davvero","Il calore che emana quando si fida","Lo sguardo che porta il peso del mondo come fosse normale"],gift_him:"Oggetti vintage con una storia, una cena cucinata a mano, qualcosa legato ai suoi ricordi più cari.",gift_her:"Cristalli lunari, gioielli con luna o madreperla, un libro di poesie. Qualcosa di intimo e personale.",best_compat:["scorpione","pesci","toro","vergine"],worst_compat:["ariete","capricorno"],famous:["Meryl Streep","Tom Hanks","Principessa Diana","Elon Musk","Ariana Grande"]},
+  leone:{polarity:"Maschile",personality:"Leone è il sole fatto persona. Regna con magnanimità e aspetta il riconoscimento che sente meritarsi. Ma sotto c'è un cuore caldo e generoso che dà tutto a chi ama.",strengths:["Carisma naturale","Generosità regale","Creatività esplosiva","Lealtà da re","Coraggio scenico"],weaknesses:["Arroganza","Bisogno eccessivo di ammirazione","Drammatismo","Orgoglio ferito facilmente","Tendenza a dominare"],charismatic:["La presenza fisica che monopolizza l'attenzione","La risata sonora che contagia","Il gesto grande e inatteso che sorprende tutti"],gift_him:"Qualcosa di lussuoso e visibile — orologio, profumo di nicchia, accessorio firmato.",gift_her:"Gioielli grandi e audaci, abiti che fanno scena, esperienze di lusso assoluto. Deve sentirsi una regina.",best_compat:["ariete","sagittario","gemelli","bilancia"],worst_compat:["scorpione","acquario"],famous:["Madonna","Barack Obama","Coco Chanel","Daniel Radcliffe","Jennifer Lopez"]},
+  vergine:{polarity:"Femminile",personality:"Vergine osserva il mondo con un occhio che vede i dettagli che gli altri ignorano. Serve, perfeziona, analizza. La sua intelligenza pratica è un dono raro che spesso non apprezza abbastanza.",strengths:["Precisione analitica","Affidabilità totale","Senso pratico","Dedizione al miglioramento","Discernimento acuto"],weaknesses:["Ipercriticismo","Ansia da perfezione","Difficoltà a ricevere cura","Rigidità","Preoccupazione cronica"],charismatic:["La mente che risolve i problemi in silenzio","Il consiglio preciso al momento giusto","La cura nei dettagli che nessuno nota ma tutti sentono"],gift_him:"Accessori di qualità (portafoglio, penna), libri tecnici o scientifici. Qualcosa di funzionale e bello insieme.",gift_her:"Set di cura della pelle di lusso, agenda artigianale, piante rare. Qualcosa di utile ed elegante.",best_compat:["toro","capricorno","cancro","scorpione"],worst_compat:["sagittario","gemelli"],famous:["Beyoncé","Freddie Mercury","Amy Winehouse","Keanu Reeves","Madre Teresa"]},
+  bilancia:{polarity:"Maschile",personality:"Bilancia cerca l'armonia in ogni respiro. Ha un senso estetico innato, un dono per la diplomazia e la capacità di vedere entrambi i lati di ogni storia. L'equilibrio è il suo ideale e la sua croce.",strengths:["Charme naturale","Senso della giustizia","Capacità diplomatica","Gusto estetico raffinato","Apertura mentale"],weaknesses:["Indecisione cronica","Tendenza al compiacere","Evitamento del conflitto","Dipendenza dall'approvazione","Superficialità tattica"],charismatic:["La grazia nei movimenti e nelle parole","La capacità di fare sentire speciale chiunque","Il sorriso che disarma ogni difesa"],gift_him:"Arte, design, profumo sofisticato. Qualcosa di bello per la casa o per il corpo.",gift_her:"Gioielli delicati e simmetrici, libri d'arte, esperienze culturali. Qualcosa di raffinato e armonico.",best_compat:["gemelli","acquario","leone","sagittario"],worst_compat:["capricorno","cancro"],famous:["Kim Kardashian","John Lennon","Brigitte Bardot","Will Smith","Catherine Zeta-Jones"]},
+  scorpione:{polarity:"Femminile",personality:"Scorpione vede attraverso le maschere. Trasforma il dolore in potere, il segreto in forza. Ama con un'intensità che brucia e guarisce. Non dimentica — né i torti né i doni.",strengths:["Intensità trasformativa","Intuizione penetrante","Lealtà assoluta","Determinazione di ferro","Profondità emotiva senza fondo"],weaknesses:["Gelosia ossessiva","Tendenza alla vendetta","Controllo eccessivo","Sospetto cronico","Difficoltà a fidarsi"],charismatic:["Lo sguardo che non lascia scampo","Il silenzio che comunica più delle parole","La fedeltà che non si rompe mai"],gift_him:"Qualcosa di oscuro e raro — coltello artigianale, whisky torbato, oggetto con una storia intensa.",gift_her:"Gioielli con pietre scure (granato, ossidiana), profumi profondi e animali, lingerie di lusso.",best_compat:["cancro","pesci","vergine","capricorno"],worst_compat:["leone","acquario"],famous:["Leonardo DiCaprio","Julia Roberts","Ryan Gosling","Katy Perry","Pablo Picasso"]},
+  sagittario:{polarity:"Maschile",personality:"Sagittario è l'arciere che mira lontano. Ama la libertà, la filosofia, gli orizzonti che cambiano. La sua onestà è brutale, il suo ottimismo contagioso. Vive per espandersi.",strengths:["Ottimismo strutturale","Mente filosofica","Spirito avventuriero","Onestà diretta","Generosità spontanea"],weaknesses:["Irresponsabilità","Mancanza di tatto","Paura dell'impegno","Eccessivo idealismo","Instabilità cronica"],charismatic:["L'entusiasmo che non si esaurisce mai","La risata franca e senza filtri","La capacità di trasformare ogni situazione in un'avventura"],gift_him:"Un viaggio, un corso d'avventura, un libro di filosofia. Qualcosa che apra orizzonti nuovi.",gift_her:"Accessori da viaggio di lusso, gioielli con turchese o lapislazzuli, esperienze culturali rare.",best_compat:["ariete","leone","bilancia","acquario"],worst_compat:["vergine","pesci"],famous:["Brad Pitt","Taylor Swift","Jay-Z","Scarlett Johansson","Winston Churchill"]},
+  capricorno:{polarity:"Femminile",personality:"Capricorno costruisce empiri con pazienza stoica. Sa che il tempo è dalla sua parte. Sotto la facciata seria batte un cuore che ama profondamente e teme la perdita più di ogni cosa.",strengths:["Disciplina assoluta","Ambizione strategica","Affidabilità totale","Pazienza di lungo periodo","Praticità visionaria"],weaknesses:["Rigidità emotiva","Pessimismo difensivo","Ossessione per il controllo","Difficoltà a chiedere aiuto","Fredezza apparente"],charismatic:["La competenza che ispira fiducia immediata","La calma assoluta in mezzo al caos","La capacità di costruire cose che durano decenni"],gift_him:"Accessori di lusso classici — orologio, scarpe di qualità, agenda in pelle. Qualcosa che dura decenni.",gift_her:"Gioielli senza tempo, accessori di alta qualità, esperienze di lusso discreto e raffinato.",best_compat:["toro","vergine","scorpione","pesci"],worst_compat:["ariete","cancro"],famous:["David Bowie","Michelle Obama","Denzel Washington","Kate Middleton","Elvis Presley"]},
+  acquario:{polarity:"Maschile",personality:"Acquario è il visionario che vive fuori dal tempo. Ama l'umanità ma trova difficile le relazioni singole. Porta idee che cambiano il mondo — e spesso non capisce perché gli altri non tengono il passo.",strengths:["Visione rivoluzionaria","Originalità radicale","Indipendenza totale","Intelligenza sistemica","Umanitarismo autentico"],weaknesses:["Distacco emotivo","Rigidità ideologica","Imprevedibilità","Difficoltà con l'intimità","Ribellione fine a se stessa"],charismatic:["L'unicità che non si lascia imitare","Le idee che anticipano il futuro di decenni","La capacità di trattare tutti come uguali"],gift_him:"Tecnologia innovativa, libri di futurologia o scienza, esperienze alternative e originali.",gift_her:"Gioielli unici e non convenzionali, arte contemporanea, accessori ecosostenibili o etici.",best_compat:["gemelli","bilancia","sagittario","ariete"],worst_compat:["toro","scorpione"],famous:["Oprah Winfrey","Bob Marley","Jennifer Aniston","Abraham Lincoln","Harry Styles"]},
+  pesci:{polarity:"Femminile",personality:"Pesci vive in due mondi simultaneamente — la realtà e il sogno. La sua empatia è un superpotere e una vulnerabilità. Ama senza misura e si dissolve nell'altro se non impara i confini.",strengths:["Empatia totale","Creatività visionaria","Spiritualità profonda","Intuizione quasi mistica","Gentilezza incondizionata"],weaknesses:["Evasione dalla realtà","Ipersensibilità","Tendenza al martirio","Indecisione","Vulnerabilità alla manipolazione"],charismatic:["Gli occhi che sembrano contenere l'oceano","La gentilezza che non chiede nulla in cambio","L'immaginazione che crea mondi dove non ce n'erano"],gift_him:"Musica rara o strumenti musicali, cristalli, libri di spiritualità. Qualcosa di poetico e fuori dal comune.",gift_her:"Gioielli con acquamarina o perla, profumi acquatici, arte romantica. Qualcosa di sognante e delicato.",best_compat:["cancro","scorpione","toro","capricorno"],worst_compat:["gemelli","sagittario"],famous:["Rihanna","Albert Einstein","Kurt Cobain","Drew Barrymore","Steve Jobs"]}
+};
+function getSunSignKey(bday){
+  if(!bday)return"ariete";
+  const d=new Date(bday+"T12:00:00"),m=d.getMonth()+1,day=d.getDate();
+  if((m===3&&day>=21)||(m===4&&day<=19))return"ariete";
+  if((m===4&&day>=20)||(m===5&&day<=20))return"toro";
+  if((m===5&&day>=21)||(m===6&&day<=20))return"gemelli";
+  if((m===6&&day>=21)||(m===7&&day<=22))return"cancro";
+  if((m===7&&day>=23)||(m===8&&day<=22))return"leone";
+  if((m===8&&day>=23)||(m===9&&day<=22))return"vergine";
+  if((m===9&&day>=23)||(m===10&&day<=22))return"bilancia";
+  if((m===10&&day>=23)||(m===11&&day<=21))return"scorpione";
+  if((m===11&&day>=22)||(m===12&&day<=21))return"sagittario";
+  if((m===12&&day>=22)||(m===1&&day<=19))return"capricorno";
+  if((m===1&&day>=20)||(m===2&&day<=18))return"acquario";
+  return"pesci";
+}
+function getMoonSignKey(dateStr){
+  if(!dateStr)return"ariete";
+  const days=(new Date(dateStr+"T12:00:00")-new Date("2000-01-01T12:00:00Z"))/86400000;
+  const lng=((218.3165+13.1764*days)%360+360)%360;
+  return SIGN_ORDER[Math.floor(lng/30)];
+}
+function getAscendantKey(bday,birthtime){
+  if(!birthtime||birthtime==="non specificato")return null;
+  const sunIdx=SIGN_ORDER.indexOf(getSunSignKey(bday));
+  const h=parseInt(birthtime.split(":")[0],10);
+  return SIGN_ORDER[((sunIdx+Math.round((h-6)/2))%12+12)%12];
+}
+
 // ── StarField ──
 const StarField=memo(({color="#fff",count=80,opacity=.5})=>{
   const s=useMemo(()=>Array.from({length:count},(_,i)=>({id:i,x:Math.random()*100,y:Math.random()*100,sz:Math.random()*1.8+.4,delay:Math.random()*6,dur:Math.random()*4+2})),[]);
@@ -378,7 +423,7 @@ function Home({t,onSelect,profile,onSetup}){
         <div style={{width:48,height:1,background:`linear-gradient(to right,transparent,${t.accent},transparent)`,margin:"22px auto",opacity:.8}}/>
         <div style={{fontSize:"8px",letterSpacing:".5em",color:t.muted,textTransform:"uppercase",marginBottom:profile?16:40}}>Psicologia Archetipica</div>
         {profile?(
-          <button onClick={onSetup} style={{fontSize:"8px",letterSpacing:".28em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}30`,padding:"8px 18px",marginBottom:32,background:`${t.accent}08`}}>{profile.name} — modifica profilo</button>
+          <button onClick={onSetup} style={{fontSize:"8px",letterSpacing:".28em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}30`,padding:"8px 18px",marginBottom:32,background:`${t.accent}08`}}>{profile.name} — il mio profilo ✦</button>
         ):(
           <button onClick={onSetup} style={{fontSize:"9px",letterSpacing:".32em",textTransform:"uppercase",color:t.text,border:`1px solid ${t.border}`,padding:"14px 28px",marginBottom:40,background:t.surface}}>✦ Crea il tuo profilo</button>
         )}
@@ -679,6 +724,144 @@ function ThemeBtn({theme,setTheme,t}){
   );
 }
 
+// ── PERSONAL PROFILE ──
+function ProfileSection({title,accent,children}){
+  return(
+    <div style={{marginBottom:44}}>
+      <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:22}}>
+        <div style={{height:1,flex:1,background:`linear-gradient(to right,${accent}60,transparent)`}}/>
+        <div style={{fontSize:"7px",letterSpacing:".44em",color:accent,textTransform:"uppercase"}}>{title}</div>
+        <div style={{height:1,flex:1,background:`linear-gradient(to left,${accent}60,transparent)`}}/>
+      </div>
+      {children}
+    </div>
+  );
+}
+function PersonalProfile({t,profile,onEdit,onBack}){
+  const sunKey=getSunSignKey(profile.birthday);
+  const moonKey=getMoonSignKey(profile.birthday);
+  const ascKey=getAscendantKey(profile.birthday,profile.birthtime);
+  const sunSg=SIGNS.find(s=>s.key===sunKey);
+  const moonSg=SIGNS.find(s=>s.key===moonKey);
+  const ascSg=ascKey?SIGNS.find(s=>s.key===ascKey):null;
+  const sp=SIGN_PROFILES[sunKey];
+  const SignPill=({sg,label,icon})=>(
+    <div style={{textAlign:"center",flex:1,minWidth:0}}>
+      <div style={{fontSize:"7px",letterSpacing:".36em",color:t.muted,textTransform:"uppercase",marginBottom:10}}>{icon} {label}</div>
+      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(28px,7vw,42px)",color:sg.colorLight,lineHeight:1}}>{sg.symbol}</div>
+      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.5vw,20px)",color:t.text,marginTop:6}}>{sg.name}</div>
+      <div style={{fontSize:"6px",letterSpacing:".28em",color:t.muted,textTransform:"uppercase",marginTop:5}}>{sg.element}</div>
+    </div>
+  );
+  const REL_CTX={"Single":"Momento di libertà e auto-scoperta. Il cielo ti chiede di costruire prima con te stesso.","Impegnato/a":"In una relazione attiva. Il tuo cielo suggerisce di nutrire la profondità, non la routine.","Fidanzato/a":"Un legame in costruzione. Il tuo archetipo solare porta questa energia nel progetto comune.","Sposato/a":"Un legame radicato. La tua luna definisce il linguaggio emotivo del vostro nido.","Flirt":"Energia leggera e giocosa. Il tuo ascendente è ciò che gli altri sentono prima di conoscerti.","È complicato":"Il caos relazionale è spesso un'ombra personale da integrare. Guarda il tuo segno lunare.","Appena separato/a":"Transizione. Il tuo segno solare è la bussola quando tutto cambia.","Divorziato/a":"Rinascita. Hai attraversato una trasformazione che pochi segni avrebbero retto così.","Vedovo/a":"La profondità del tuo dolore è proporzionale alla capacità di amare. Il cielo lo ricorda.","Platonica":"Le relazioni più profonde spesso non hanno etichette. Ascolta il tuo segno lunare."};
+  const WORK_CTX={"Studente":"Fase di accumulo. Il tuo segno solare è la materia prima, non ancora il capolavoro.","Neolaureato/a":"Soglia. Stai entrando nel mondo con la tua prima versione adulta.","In cerca di lavoro":"L'attesa non è vuoto — è fermento. Il tuo pianeta governante apre porte invisibili.","Disoccupato/a":"Il vuoto professionale spesso precede la chiamata più vera. Ascolta cosa manca.","Dipendente pubblico":"Stabilità come radice. Da qui puoi costruire verso qualcosa di più tuo.","Dipendente privato":"Struttura nel movimento. Il tuo archetipo solare chiede più spazio per esprimersi.","Imprenditore/trice":"Creatore. Il tuo cielo natale è anche il cielo del tuo progetto.","Capo":"Guidi gli altri — ma il tuo segno lunare ti dice come ti guidi tu.","Pensionato/a":"Hai guadagnato il diritto alla pienezza. Il tuo segno solare ora può fiorire liberamente.","Casalinga/o":"Il lavoro invisibile è spesso il più vitale. Il tuo archetipo nutre ciò che c'è attorno.","Nessuno di questi":"Non appartieni a nessuna categoria. È un dono travestito da problema."};
+  const dateDisplay=profile.birthday?new Date(profile.birthday+"T12:00:00").toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"}):"";
+  return(
+    <div style={{minHeight:"100vh",background:t.bg,overflowY:"auto"}}>
+      <div style={{position:"relative",textAlign:"center",padding:"calc(clamp(44px,8vw,72px) + env(safe-area-inset-top,0px)) 20px 48px",background:`linear-gradient(180deg,rgba(${sunSg.rgb},0.12) 0%,transparent 100%)`}}>
+        <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 16px)",left:16,color:t.muted,fontSize:"10px",letterSpacing:".16em",padding:"10px"}}>← indietro</button>
+        <button onClick={onEdit} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 16px)",right:16,color:t.accent,fontSize:"8px",letterSpacing:".22em",textTransform:"uppercase",padding:"10px",border:`1px solid ${t.accent}40`,background:`${t.accent}08`}}>modifica</button>
+        <div style={{fontSize:"7px",letterSpacing:".5em",color:t.muted,textTransform:"uppercase",marginBottom:12}}>Il cielo al momento della tua nascita</div>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(32px,8vw,58px)",fontWeight:300,color:t.text,letterSpacing:".08em"}}>{profile.name}</div>
+        {dateDisplay&&<div style={{fontSize:"9px",letterSpacing:".28em",color:t.muted,marginTop:10}}>{dateDisplay}</div>}
+      </div>
+      <div style={{maxWidth:640,margin:"0 auto",padding:"0 clamp(20px,5vw,40px) calc(env(safe-area-inset-bottom,0px) + 100px)"}}>
+        <div style={{display:"flex",justifyContent:"space-around",padding:"36px 0 48px",borderBottom:`1px solid ${t.border}`,gap:8}}>
+          <SignPill sg={sunSg} label="Sole" icon="☀"/>
+          <SignPill sg={moonSg} label="Luna" icon="☽"/>
+          {ascSg?<SignPill sg={ascSg} label="Ascendente" icon="↑"/>:(
+            <div style={{textAlign:"center",flex:1,opacity:.4}}>
+              <div style={{fontSize:"7px",letterSpacing:".36em",color:t.muted,textTransform:"uppercase",marginBottom:10}}>↑ Ascendente</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"32px",color:t.muted}}>—</div>
+              <div style={{fontSize:"6px",letterSpacing:".22em",color:t.muted,marginTop:10,lineHeight:1.6}}>ora di nascita non indicata</div>
+            </div>
+          )}
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:1,background:t.border,margin:"40px 0 44px"}}>
+          {[{l:"Elemento",v:sunSg.element},{l:"Polarità",v:sp.polarity},{l:"Modalità",v:sunSg.modality},{l:"Pianeta",v:sunSg.planet},{l:"Numero",v:sunSg.number},{l:"Giorno",v:sunSg.day}].map(d=>(
+            <div key={d.l} style={{padding:"18px 12px",background:t.card,textAlign:"center"}}>
+              <div style={{fontSize:"6px",letterSpacing:".28em",color:t.muted,textTransform:"uppercase",marginBottom:7}}>{d.l}</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:t.text}}>{d.v}</div>
+            </div>
+          ))}
+        </div>
+        <ProfileSection title="Personalità" accent={t.accent}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4vw,22px)",fontStyle:"italic",color:t.text,lineHeight:1.85}}>{sp.personality}</div>
+        </ProfileSection>
+        <ProfileSection title="Luce & Ombra" accent={t.accent}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20}}>
+            <div>
+              <div style={{fontSize:"7px",letterSpacing:".3em",color:sunSg.colorLight,textTransform:"uppercase",marginBottom:14}}>✦ Punti di forza</div>
+              {sp.strengths.map(s=><div key={s} style={{fontSize:"13px",color:t.text,padding:"8px 0",borderBottom:`1px solid ${t.border}`,lineHeight:1.4}}>{s}</div>)}
+            </div>
+            <div>
+              <div style={{fontSize:"7px",letterSpacing:".3em",color:t.muted,textTransform:"uppercase",marginBottom:14}}>◈ Debolezze</div>
+              {sp.weaknesses.map(w=><div key={w} style={{fontSize:"13px",color:t.muted,padding:"8px 0",borderBottom:`1px solid ${t.border}`,lineHeight:1.4}}>{w}</div>)}
+            </div>
+          </div>
+        </ProfileSection>
+        <ProfileSection title="Tratti Carismatici" accent={t.accent}>
+          {sp.charismatic.map((c,i)=>(
+            <div key={i} style={{display:"flex",gap:14,marginBottom:18,alignItems:"flex-start"}}>
+              <div style={{color:t.accent,fontSize:"10px",marginTop:4,flexShrink:0}}>◎</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:t.text,lineHeight:1.75}}>{c}</div>
+            </div>
+          ))}
+        </ProfileSection>
+        <ProfileSection title="Il Regalo Perfetto" accent={t.accent}>
+          {profile.gender!=="Donna"&&(
+            <div style={{marginBottom:12,padding:"20px 22px",border:`1px solid ${t.border}`,background:t.surface}}>
+              <div style={{fontSize:"7px",letterSpacing:".32em",color:t.accent,textTransform:"uppercase",marginBottom:10}}>Per lui</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:t.text,lineHeight:1.7}}>{sp.gift_him}</div>
+            </div>
+          )}
+          {profile.gender!=="Uomo"&&(
+            <div style={{padding:"20px 22px",border:`1px solid ${t.border}`,background:t.surface}}>
+              <div style={{fontSize:"7px",letterSpacing:".32em",color:t.accent,textTransform:"uppercase",marginBottom:10}}>Per lei</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:t.text,lineHeight:1.7}}>{sp.gift_her}</div>
+            </div>
+          )}
+        </ProfileSection>
+        <ProfileSection title="Compatibilità" accent={t.accent}>
+          <div style={{marginBottom:16}}>
+            <div style={{fontSize:"7px",letterSpacing:".3em",color:"#5a9a5a",textTransform:"uppercase",marginBottom:12}}>✦ Migliore affinità</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+              {sp.best_compat.map(k=>{const s=SIGNS.find(x=>x.key===k);return s&&(<div key={k} style={{padding:"9px 16px",border:`1px solid ${s.color}50`,background:`rgba(${s.rgb},0.08)`,fontSize:"12px",fontFamily:"'Cormorant Garamond',serif",color:t.text}}>{s.symbol} {s.name}</div>);})}
+            </div>
+          </div>
+          <div>
+            <div style={{fontSize:"7px",letterSpacing:".3em",color:"#9a5a5a",textTransform:"uppercase",marginBottom:12}}>◈ Maggiore tensione</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+              {sp.worst_compat.map(k=>{const s=SIGNS.find(x=>x.key===k);return s&&(<div key={k} style={{padding:"9px 16px",border:`1px solid ${t.border}`,fontSize:"12px",fontFamily:"'Cormorant Garamond',serif",color:t.muted}}>{s.symbol} {s.name}</div>);})}
+            </div>
+          </div>
+        </ProfileSection>
+        <ProfileSection title="Personaggi Famosi" accent={t.accent}>
+          <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+            {sp.famous.map(name=>(<div key={name} style={{padding:"9px 18px",border:`1px solid ${t.accent}40`,fontSize:"12px",fontFamily:"'Cormorant Garamond',serif",color:t.text,letterSpacing:".06em"}}>{name}</div>))}
+          </div>
+        </ProfileSection>
+        {(profile.relationship||profile.work)&&(
+          <ProfileSection title="Il tuo momento" accent={t.accent}>
+            {profile.relationship&&REL_CTX[profile.relationship]&&(
+              <div style={{marginBottom:12,padding:"18px 22px",borderLeft:`2px solid ${t.accent}60`,background:`${t.accent}06`}}>
+                <div style={{fontSize:"7px",letterSpacing:".28em",color:t.accent,textTransform:"uppercase",marginBottom:8}}>Cuore — {profile.relationship}</div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:t.text,lineHeight:1.75,fontStyle:"italic"}}>{REL_CTX[profile.relationship]}</div>
+              </div>
+            )}
+            {profile.work&&WORK_CTX[profile.work]&&(
+              <div style={{padding:"18px 22px",borderLeft:`2px solid ${t.muted}50`,background:`${t.muted}06`}}>
+                <div style={{fontSize:"7px",letterSpacing:".28em",color:t.muted,textTransform:"uppercase",marginBottom:8}}>Lavoro — {profile.work}</div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:t.text,lineHeight:1.75,fontStyle:"italic"}}>{WORK_CTX[profile.work]}</div>
+              </div>
+            )}
+          </ProfileSection>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── PROFILE SETUP ──
 const SETUP_STEPS=[
   {key:"name",         q:"Come ti chiami?",                                    type:"text",   placeholder:"Il tuo nome"},
@@ -797,13 +980,14 @@ function App(){
     });
   },[]);
 
-  const onSetupDone=useCallback((p)=>{setProfile(p);setSetupDone(true);setView("home");},[]);
+  const onSetupDone=useCallback((p)=>{setProfile(p);setSetupDone(true);setView("profile");},[]);
 
   return(
     <div style={{background:t.bg,color:t.text,minHeight:"100vh"}}>
       {splash&&<Splash onDone={()=>setSplash(false)} bg={t.bg} text={t.text}/>}
-      {!splash&&view==="setup"&&<ProfileSetup t={t} onDone={onSetupDone} onBack={()=>setView("home")}/>}
-      {!splash&&view==="home"&&<Home t={t} profile={profile} onSelect={s=>{setSelected(s);setView("sign")}} onSetup={()=>setView("setup")}/>}
+      {!splash&&view==="setup"&&<ProfileSetup t={t} onDone={onSetupDone} onBack={()=>setView(profile?"profile":"home")}/>}
+      {!splash&&view==="home"&&<Home t={t} profile={profile} onSelect={s=>{setSelected(s);setView("sign")}} onSetup={()=>setView(profile?"profile":"setup")}/>}
+      {!splash&&view==="profile"&&profile&&<PersonalProfile t={t} profile={profile} onEdit={()=>setView("setup")} onBack={()=>setView("home")}/>}
       {!splash&&view==="sign"&&selected&&<SignScreen sg={selected} t={t} onBack={()=>setView("home")} journal={journal} saveEntry={saveEntry}/>}
       {!splash&&view!=="setup"&&<ThemeBtn theme={theme} setTheme={setTheme} t={t}/>}
     </div>
