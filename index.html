@@ -47,7 +47,7 @@ textarea{font-family:inherit;resize:none;outline:none;border:none;-webkit-appear
 const{useState,useEffect,useRef,useCallback,useMemo,memo}=React;
 
 const SIGNS=[
-{key:"ariete",name:"Ariete",symbol:"♈",element:"Fuoco",modality:"Cardinale",archetype:"Il Guerriero",planet:"Marte",stone:"Rubino",metal:"Ferro",color:"#c83010",colorLight:"#ff6b40",darkBg:"#110202",rgb:[200,48,16],starColor:"#ff8a65",day:"Martedì",number:9,season:"Equinozio di Primavera",tarot:"L'Imperatore",myth:"Ares, dio della guerra",body:"Testa, cervello, occhi",
+{key:"ariete",name:"Ariete",symbol:"♈",element:"Fuoco",modality:"Cardinale",archetype:"Il Guerriero",planet:"Marte",stone:"Rubino",metal:"Ferro",color:"#c83010",colorLight:"#ff6b40",darkBg:"#110202",rgb:[200,48,16],starColor:"#ff8a65",day:"Martedì",number:9,season:"Equinozio di Primavera",tarot:"L'Imperatore",myth:"Ares, dio della guerra",body:"Testa, cervello, occhi",img:"./ariete.jpeg",
 shadow:"L'aggressività come armatura. L'impulso come fuga dall'intimità.",
 light:"Il coraggio che apre porte che nessuno osa toccare. Inizia ciò che gli altri temono di sognare.",
 wound:"La paura di essere inutile, di non lasciare traccia. Il terrore che la propria fiamma si consumi nel vuoto.",
@@ -379,7 +379,7 @@ function Home({t,onSelect}){
             <CometCard accentColor={sg.colorLight}>
               <div style={{background:sg.darkBg,padding:6,cursor:"pointer",border:`1px solid rgba(${sg.rgb},.25)`,borderRadius:16}}>
                 <div style={{position:"relative",aspectRatio:"3/4",borderRadius:11,overflow:"hidden",background:`linear-gradient(160deg,#030303 0%,rgba(${sg.rgb},.45) 55%,#030303 100%)`}}>
-                  {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:11,opacity:.82}}/>}
+                  {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:11,opacity:.72,filter:"invert(1)",mixBlendMode:"screen"}}/>}
                   <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse at 50% 62%,rgba(${sg.rgb},.28) 0%,transparent 68%)`,pointerEvents:"none"}}/>
                   <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,.55) 0%,transparent 45%)",pointerEvents:"none"}}/>
                 </div>
