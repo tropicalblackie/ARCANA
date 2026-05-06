@@ -863,10 +863,75 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
 }
 
 // ── THEME SWITCHER ──
+function BottomNav({view,setView,t,profile}){
+  const tabs=[
+    {key:"daily",icon:"☽",label:"Oroscopo"},
+    {key:"tarocchi",icon:"✦",label:"Tarocchi"},
+    {key:"sfera",icon:"◎",label:"Sfera"},
+  ];
+  const show=["daily","tarocchi","sfera"].includes(view);
+  if(!show)return null;
+  return(
+    <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:300,background:t.card,borderTop:`1px solid ${t.border}`,paddingBottom:"env(safe-area-inset-bottom,0px)",backdropFilter:"blur(20px) saturate(1.4)",WebkitBackdropFilter:"blur(20px) saturate(1.4)",boxShadow:`0 -4px 24px rgba(0,0,0,0.32),inset 0 1px 0 rgba(255,255,255,0.08)`}}>
+      <div style={{display:"flex"}}>
+        {tabs.map(tab=>{
+          const active=view===tab.key;
+          return(
+            <button key={tab.key} onClick={()=>setView(tab.key)} style={{flex:1,padding:"12px 8px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:"transparent",border:"none",cursor:"pointer",position:"relative"}}>
+              {active&&<div style={{position:"absolute",top:0,left:"25%",right:"25%",height:"2px",background:`linear-gradient(to right,transparent,${t.accent},transparent)`,borderRadius:"0 0 2px 2px"}}/>}
+              <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:active?t.accent:t.muted,lineHeight:1,filter:active?`drop-shadow(0 0 6px ${t.accent}90)`:"none",transition:"all .2s"}}>{tab.icon}</span>
+              <span style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:active?600:400,letterSpacing:".22em",textTransform:"uppercase",color:active?t.accent:t.muted,transition:"all .2s"}}>{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function BottomNav({view,setView,t,profile}){
+  const tabs=[
+    {key:"daily",icon:"☽",label:"Oroscopo"},
+    {key:"tarocchi",icon:"✦",label:"Tarocchi"},
+    {key:"sfera",icon:"◎",label:"Sfera"},
+  ];
+  const show=["daily","tarocchi","sfera"].includes(view);
+  if(!show)return null;
+  return(
+    <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:300,background:t.card,borderTop:`1px solid ${t.border}`,paddingBottom:"env(safe-area-inset-bottom,0px)",backdropFilter:"blur(20px) saturate(1.4)",WebkitBackdropFilter:"blur(20px) saturate(1.4)",boxShadow:`0 -4px 24px rgba(0,0,0,0.32),inset 0 1px 0 rgba(255,255,255,0.08)`}}>
+      <div style={{display:"flex"}}>
+        {tabs.map(tab=>{
+          const active=view===tab.key;
+          return(
+            <button key={tab.key} onClick={()=>setView(tab.key)} style={{flex:1,padding:"12px 8px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:"transparent",border:"none",cursor:"pointer",position:"relative"}}>
+              {active&&<div style={{position:"absolute",top:0,left:"25%",right:"25%",height:"2px",background:`linear-gradient(to right,transparent,${t.accent},transparent)`,borderRadius:"0 0 2px 2px"}}/>}
+              <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:active?t.accent:t.muted,lineHeight:1,filter:active?`drop-shadow(0 0 6px ${t.accent}90)`:"none",transition:"all .2s"}}>{tab.icon}</span>
+              <span style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:active?600:400,letterSpacing:".22em",textTransform:"uppercase",color:active?t.accent:t.muted,transition:"all .2s"}}>{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function ComingSoon({t,title,icon,desc}){
+  return(
+    <div style={{minHeight:"100vh",background:t.bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 32px",textAlign:"center"}}>
+      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(60px,18vw,90px)",color:t.accent,lineHeight:1,filter:`drop-shadow(0 0 28px ${t.accent}60)`,marginBottom:24}}>{icon}</div>
+      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(24px,7vw,36px)",fontWeight:300,color:t.text,marginBottom:16}}>{title}</div>
+      <div style={{width:40,height:1,background:`linear-gradient(to right,transparent,${t.accent},transparent)`,margin:"0 auto 20px"}}/>
+      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",fontStyle:"italic",color:t.muted,lineHeight:1.75,maxWidth:300}}>{desc}</div>
+      <div style={{marginTop:32,fontFamily:"'Inter',sans-serif",fontSize:"8px",letterSpacing:".38em",textTransform:"uppercase",color:t.muted,opacity:.45}}>in arrivo</div>
+      <div style={{height:"calc(env(safe-area-inset-bottom,0px) + 90px)"}}/>
+    </div>
+  );
+}
+
 function ThemeBtn({theme,setTheme,t}){
   const[open,setOpen]=useState(false);
   return(
-    <div style={{position:"fixed",bottom:"calc(env(safe-area-inset-bottom,0px) + 20px)",right:18,zIndex:200}}>
+    <div style={{position:"fixed",bottom:"calc(env(safe-area-inset-bottom,0px) + 82px)",right:18,zIndex:200}}>
       {open&&(
         <div className="fade-in" style={{position:"absolute",bottom:52,right:0,background:t.card,border:`1px solid ${t.border}`,boxShadow:`0 16px 48px rgba(0,0,0,.7)`,minWidth:140}}>
           {Object.entries(THEMES).map(([k,th])=>(
@@ -1242,6 +1307,13 @@ const HORO={
     c:["La prosperità inizia dalla convinzione di meritarla davvero.","Un passo verso la stabilità finanziaria vale più di un sogno lontano.","Oggi puoi fare una scelta che il tuo futuro ringrazierà.","Il denaro segue la chiarezza — sii preciso/a su cosa vuoi.","La generosità torna sempre, in forme e tempi che non sapevi immaginare.","Il flusso si riapre quando smetti di trattenerlo per paura di perderlo.","Ogni decisione finanziaria consapevole è un atto di rispetto verso te stesso/a.","Stai costruendo qualcosa di reale — anche se ancora non si vede in superficie.","La pazienza finanziaria è una delle forme più potenti di strategia a lungo termine.","Il cielo supporta chi investe nell'invisibile: nell'istruzione, nella crescita, nella fiducia."]
   }
 };
+function getLuckyNumbers(sgKey,dateStr){
+  const r=mkrand(dailySeed(dateStr,sgKey)+7777777);
+  const nums=new Set();
+  while(nums.size<6)nums.add(1+Math.floor(r()*90));
+  return[...nums].sort((a,b)=>a-b);
+}
+
 function generateHoroscope(sg,dateStr){
   const r=mkrand(dailySeed(dateStr,sg.key));
   const pick=arr=>arr[Math.floor(r()*arr.length)];
@@ -1421,6 +1493,7 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
   const horo=useMemo(()=>generateHoroscope(sunSg,dateStr),[sunSg.key,dateStr]);
   const lunar=useMemo(()=>getLunarPhase(dateStr),[dateStr]);
   const nextEv=useMemo(()=>getNextAstroEvent(dateStr),[dateStr]);
+  const lucky=useMemo(()=>getLuckyNumbers(sunSg.key,dateStr),[sunSg.key,dateStr]);
   const CATS=[
     {key:"amore",label:"Amore",icon:"♥",col:"#c07878"},
     {key:"lavoro",label:"Lavoro",icon:"✦",col:t.accent},
@@ -1571,7 +1644,21 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
           </div>
         </div>
 
-        <div style={{height:"calc(env(safe-area-inset-bottom,0px) + 60px)"}}/>
+        {/* ── NUMERI FORTUNATI ── */}
+        <div style={{marginBottom:12,padding:"20px 22px",background:t.card,border:`1px solid ${t.border}`,position:"relative",overflow:"hidden",boxShadow:`inset 0 1px 0 rgba(255,255,255,0.12),0 4px 20px rgba(0,0,0,0.12)`}}>
+          <GlassOverlay/>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"7px",fontWeight:500,letterSpacing:".4em",color:t.muted,textTransform:"uppercase",marginBottom:16,position:"relative",zIndex:1}}>Numeri fortunati della settimana</div>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap",position:"relative",zIndex:1}}>
+            {lucky.map((n,i)=>(
+              <div key={n} style={{width:48,height:48,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:"50%",border:`1.5px solid ${t.accent}${i===0?"ff":i===1?"cc":i===2?"aa":i===3?"88":"66"}`,background:`${t.accent}${i===0?"18":"0d"}`,boxShadow:i===0?`0 0 16px ${t.accent}40,inset 0 1px 0 rgba(255,255,255,0.15)`:"none",transition:"all .2s"}}>
+                <span style={{fontFamily:"'Inter',sans-serif",fontSize:i===0?"17px":"15px",fontWeight:i<3?700:600,color:i===0?t.accent:`${t.accent}${i===1?"dd":"99"}`}}>{n}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{marginTop:12,fontFamily:"'Cormorant Garamond',serif",fontSize:"12px",fontStyle:"italic",color:t.muted,opacity:.55,position:"relative",zIndex:1}}>Calcolati in base al tuo segno solare e al ciclo settimanale</div>
+        </div>
+
+        <div style={{height:"calc(env(safe-area-inset-bottom,0px) + 90px)"}}/>
       </div>
     </div>
   );
@@ -1611,9 +1698,12 @@ function App(){
       {!splash&&view==="setup"&&<ProfileSetup t={t} onDone={onSetupDone} onBack={()=>setView(profile?"daily":"home")}/>}
       {!splash&&view==="home"&&<Home t={t} profile={profile} onSelect={s=>{setSelected(s);setView("sign")}} onSetup={()=>setView(profile?"daily":"setup")}/>}
       {!splash&&view==="daily"&&profile&&<DailyHoroscope t={t} profile={profile} onBack={()=>setView("home")} onProfile={()=>setView("profile")} onEdit={()=>setView("setup")}/>}
+      {!splash&&view==="tarocchi"&&<ComingSoon t={t} title="Tarocchi" icon="✦" desc="Tre carte. Un momento. La tua verità interiore rivelata attraverso gli arcani maggiori."/>}
+      {!splash&&view==="sfera"&&<ComingSoon t={t} title="Sfera di Cristallo" icon="◎" desc="Il respiro del futuro è già qui. Ascolta ciò che il cosmo vuole dirti in questo preciso istante."/>}
       {!splash&&view==="profile"&&profile&&<PersonalProfile t={t} profile={profile} onEdit={()=>setView("setup")} onBack={()=>setView("daily")}/>}
       {!splash&&view==="sign"&&selected&&<SignScreen sg={selected} t={t} onBack={()=>setView("home")} journal={journal} saveEntry={saveEntry}/>}
       {!splash&&view!=="setup"&&<ThemeBtn theme={theme} setTheme={setTheme} t={t}/>}
+      {!splash&&<BottomNav view={view} setView={setView} t={t} profile={profile}/>}
     </div>
   );
 }
