@@ -403,8 +403,6 @@ function Home({t,onSelect,profile,onSetup}){
                 <GlassOverlay/>
                 <div style={{position:"relative",aspectRatio:"3/4",borderRadius:11,overflow:"hidden",background:t.surface,zIndex:1}}>
                   {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:11,zIndex:1}}/>}
-                  <div style={{position:"absolute",inset:0,background:`linear-gradient(to top, ${t.card}cc 0%, transparent 50%)`,pointerEvents:"none",zIndex:2}}/>
-                  <div style={{position:"absolute",bottom:12,left:13,zIndex:3,width:32,height:1,background:`linear-gradient(to right,${t.accent},transparent)`,opacity:.9}}/>
                 </div>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 13px 4px",color:t.text,position:"relative",zIndex:1}}>
                   <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(20px,5.5vw,28px)"}}>{sg.name}</div>
