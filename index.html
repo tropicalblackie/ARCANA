@@ -725,18 +725,6 @@ function ThemeBtn({theme,setTheme,t}){
 }
 
 // ── PERSONAL PROFILE ──
-function ProfileSection({title,accent,children}){
-  return(
-    <div style={{marginBottom:44}}>
-      <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:22}}>
-        <div style={{height:1,flex:1,background:`linear-gradient(to right,${accent}60,transparent)`}}/>
-        <div style={{fontSize:"7px",letterSpacing:".44em",color:accent,textTransform:"uppercase"}}>{title}</div>
-        <div style={{height:1,flex:1,background:`linear-gradient(to left,${accent}60,transparent)`}}/>
-      </div>
-      {children}
-    </div>
-  );
-}
 function PersonalProfile({t,profile,onEdit,onBack}){
   const sunKey=getSunSignKey(profile.birthday);
   const moonKey=getMoonSignKey(profile.birthday);
@@ -745,118 +733,217 @@ function PersonalProfile({t,profile,onEdit,onBack}){
   const moonSg=SIGNS.find(s=>s.key===moonKey);
   const ascSg=ascKey?SIGNS.find(s=>s.key===ascKey):null;
   const sp=SIGN_PROFILES[sunKey];
-  const SignPill=({sg,label,icon})=>(
-    <div style={{textAlign:"center",flex:1,minWidth:0}}>
-      <div style={{fontSize:"7px",letterSpacing:".36em",color:t.muted,textTransform:"uppercase",marginBottom:10}}>{icon} {label}</div>
-      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(28px,7vw,42px)",color:sg.colorLight,lineHeight:1}}>{sg.symbol}</div>
-      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.5vw,20px)",color:t.text,marginTop:6}}>{sg.name}</div>
-      <div style={{fontSize:"6px",letterSpacing:".28em",color:t.muted,textTransform:"uppercase",marginTop:5}}>{sg.element}</div>
-    </div>
-  );
+  const dateDisplay=profile.birthday?new Date(profile.birthday+"T12:00:00").toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"}):"";
+
   const REL_CTX={"Single":"Momento di libertà e auto-scoperta. Il cielo ti chiede di costruire prima con te stesso.","Impegnato/a":"In una relazione attiva. Il tuo cielo suggerisce di nutrire la profondità, non la routine.","Fidanzato/a":"Un legame in costruzione. Il tuo archetipo solare porta questa energia nel progetto comune.","Sposato/a":"Un legame radicato. La tua luna definisce il linguaggio emotivo del vostro nido.","Flirt":"Energia leggera e giocosa. Il tuo ascendente è ciò che gli altri sentono prima di conoscerti.","È complicato":"Il caos relazionale è spesso un'ombra personale da integrare. Guarda il tuo segno lunare.","Appena separato/a":"Transizione. Il tuo segno solare è la bussola quando tutto cambia.","Divorziato/a":"Rinascita. Hai attraversato una trasformazione che pochi segni avrebbero retto così.","Vedovo/a":"La profondità del tuo dolore è proporzionale alla capacità di amare. Il cielo lo ricorda.","Platonica":"Le relazioni più profonde spesso non hanno etichette. Ascolta il tuo segno lunare."};
   const WORK_CTX={"Studente":"Fase di accumulo. Il tuo segno solare è la materia prima, non ancora il capolavoro.","Neolaureato/a":"Soglia. Stai entrando nel mondo con la tua prima versione adulta.","In cerca di lavoro":"L'attesa non è vuoto — è fermento. Il tuo pianeta governante apre porte invisibili.","Disoccupato/a":"Il vuoto professionale spesso precede la chiamata più vera. Ascolta cosa manca.","Dipendente pubblico":"Stabilità come radice. Da qui puoi costruire verso qualcosa di più tuo.","Dipendente privato":"Struttura nel movimento. Il tuo archetipo solare chiede più spazio per esprimersi.","Imprenditore/trice":"Creatore. Il tuo cielo natale è anche il cielo del tuo progetto.","Capo":"Guidi gli altri — ma il tuo segno lunare ti dice come ti guidi tu.","Pensionato/a":"Hai guadagnato il diritto alla pienezza. Il tuo segno solare ora può fiorire liberamente.","Casalinga/o":"Il lavoro invisibile è spesso il più vitale. Il tuo archetipo nutre ciò che c'è attorno.","Nessuno di questi":"Non appartieni a nessuna categoria. È un dono travestito da problema."};
-  const dateDisplay=profile.birthday?new Date(profile.birthday+"T12:00:00").toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"}):"";
-  return(
-    <div style={{minHeight:"100vh",background:t.bg,overflowY:"auto"}}>
-      <div style={{position:"relative",textAlign:"center",padding:"calc(clamp(44px,8vw,72px) + env(safe-area-inset-top,0px)) 20px 48px",background:`linear-gradient(180deg,rgba(${sunSg.rgb},0.12) 0%,transparent 100%)`}}>
-        <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 16px)",left:16,color:t.muted,fontSize:"10px",letterSpacing:".16em",padding:"10px"}}>← indietro</button>
-        <button onClick={onEdit} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 16px)",right:16,color:t.accent,fontSize:"8px",letterSpacing:".22em",textTransform:"uppercase",padding:"10px",border:`1px solid ${t.accent}40`,background:`${t.accent}08`}}>modifica</button>
-        <div style={{fontSize:"7px",letterSpacing:".5em",color:t.muted,textTransform:"uppercase",marginBottom:12}}>Il cielo al momento della tua nascita</div>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(32px,8vw,58px)",fontWeight:300,color:t.text,letterSpacing:".08em"}}>{profile.name}</div>
-        {dateDisplay&&<div style={{fontSize:"9px",letterSpacing:".28em",color:t.muted,marginTop:10}}>{dateDisplay}</div>}
+
+  const Divider=({label})=>(
+    <div style={{display:"flex",alignItems:"center",gap:14,margin:"56px 0 40px"}}>
+      <div style={{height:"1px",flex:1,background:`linear-gradient(to right,transparent,${t.accent}55)`}}/>
+      <div style={{fontSize:"7px",letterSpacing:".52em",color:t.accent,textTransform:"uppercase",opacity:.85}}>{label}</div>
+      <div style={{height:"1px",flex:1,background:`linear-gradient(to left,transparent,${t.accent}55)`}}/>
+    </div>
+  );
+  const TriadCard=({sg,label,icon,primary})=>(
+    <div style={{flex:`0 0 clamp(145px,40vw,200px)`,borderRadius:14,overflow:"hidden",position:"relative",aspectRatio:"2/3",border:`1px solid ${primary?sg.color+"90":t.border}`,boxShadow:primary?`0 0 48px rgba(${sg.rgb},0.28),0 8px 32px rgba(${sg.rgb},0.15)`:"none",transition:"transform .3s"}}>
+      {sg.img&&<img src={sg.img} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0}}/>}
+      <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(0,0,0,0.15) 0%,transparent 35%,rgba(${sg.rgb},0.85) 100%)`,zIndex:1}}/>
+      <div style={{position:"absolute",top:10,left:0,right:0,textAlign:"center",zIndex:2}}>
+        <div style={{fontSize:"7px",letterSpacing:".38em",color:"rgba(255,255,255,0.65)",textTransform:"uppercase"}}>{icon} {label}</div>
       </div>
-      <div style={{maxWidth:640,margin:"0 auto",padding:"0 clamp(20px,5vw,40px) calc(env(safe-area-inset-bottom,0px) + 100px)"}}>
-        <div style={{display:"flex",justifyContent:"space-around",padding:"36px 0 48px",borderBottom:`1px solid ${t.border}`,gap:8}}>
-          <SignPill sg={sunSg} label="Sole" icon="☀"/>
-          <SignPill sg={moonSg} label="Luna" icon="☽"/>
-          {ascSg?<SignPill sg={ascSg} label="Ascendente" icon="↑"/>:(
-            <div style={{textAlign:"center",flex:1,opacity:.4}}>
-              <div style={{fontSize:"7px",letterSpacing:".36em",color:t.muted,textTransform:"uppercase",marginBottom:10}}>↑ Ascendente</div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"32px",color:t.muted}}>—</div>
-              <div style={{fontSize:"6px",letterSpacing:".22em",color:t.muted,marginTop:10,lineHeight:1.6}}>ora di nascita non indicata</div>
-            </div>
-          )}
+      {primary&&<div style={{position:"absolute",top:"35%",left:"50%",transform:"translate(-50%,-50%)",zIndex:2,fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(38px,11vw,56px)",color:"rgba(255,255,255,0.12)",lineHeight:1,pointerEvents:"none"}}>{sg.symbol}</div>}
+      <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"14px 10px",zIndex:2,textAlign:"center"}}>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(24px,7vw,34px)",color:"rgba(255,255,255,0.95)",lineHeight:1}}>{sg.symbol}</div>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.8vw,17px)",color:"white",marginTop:5,fontWeight:300}}>{sg.name}</div>
+        <div style={{fontSize:"6px",letterSpacing:".28em",color:"rgba(255,255,255,0.45)",marginTop:4,textTransform:"uppercase"}}>{sg.element}</div>
+      </div>
+    </div>
+  );
+
+  return(
+    <div className="screen-h" style={{overflowY:"auto",background:t.bg,color:t.text}}>
+
+      {/* ── HERO ── */}
+      <div style={{position:"relative",minHeight:"100dvh",display:"flex",flexDirection:"column",justifyContent:"flex-end",overflow:"hidden"}}>
+        {sunSg.img&&<img src={sunSg.img} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0}}/>}
+        <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(0,0,0,0.4) 0%,rgba(${sunSg.rgb},0.08) 40%,${t.bg}e0 75%,${t.bg} 100%)`,zIndex:1}}/>
+        <StarField color={sunSg.starColor} count={55} opacity={0.65}/>
+        <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 16px)",left:16,zIndex:10,color:"rgba(255,255,255,0.6)",fontSize:"10px",letterSpacing:".16em",padding:"12px 14px"}}>← indietro</button>
+        <button onClick={onEdit} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 16px)",right:16,zIndex:10,fontSize:"8px",letterSpacing:".24em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}55`,padding:"10px 16px",background:`${t.accent}12`,backdropFilter:"blur(8px)"}}>modifica</button>
+        <div style={{position:"absolute",top:"42%",left:"50%",transform:"translate(-50%,-50%)",zIndex:2,textAlign:"center",pointerEvents:"none"}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(90px,28vw,160px)",color:"rgba(255,255,255,0.06)",lineHeight:1,filter:`drop-shadow(0 0 60px rgba(${sunSg.rgb},0.5))`}}>{sunSg.symbol}</div>
         </div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:1,background:t.border,margin:"40px 0 44px"}}>
-          {[{l:"Elemento",v:sunSg.element},{l:"Polarità",v:sp.polarity},{l:"Modalità",v:sunSg.modality},{l:"Pianeta",v:sunSg.planet},{l:"Numero",v:sunSg.number},{l:"Giorno",v:sunSg.day}].map(d=>(
-            <div key={d.l} style={{padding:"18px 12px",background:t.card,textAlign:"center"}}>
-              <div style={{fontSize:"6px",letterSpacing:".28em",color:t.muted,textTransform:"uppercase",marginBottom:7}}>{d.l}</div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:t.text}}>{d.v}</div>
-            </div>
-          ))}
-        </div>
-        <ProfileSection title="Personalità" accent={t.accent}>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4vw,22px)",fontStyle:"italic",color:t.text,lineHeight:1.85}}>{sp.personality}</div>
-        </ProfileSection>
-        <ProfileSection title="Luce & Ombra" accent={t.accent}>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20}}>
-            <div>
-              <div style={{fontSize:"7px",letterSpacing:".3em",color:sunSg.colorLight,textTransform:"uppercase",marginBottom:14}}>✦ Punti di forza</div>
-              {sp.strengths.map(s=><div key={s} style={{fontSize:"13px",color:t.text,padding:"8px 0",borderBottom:`1px solid ${t.border}`,lineHeight:1.4}}>{s}</div>)}
-            </div>
-            <div>
-              <div style={{fontSize:"7px",letterSpacing:".3em",color:t.muted,textTransform:"uppercase",marginBottom:14}}>◈ Debolezze</div>
-              {sp.weaknesses.map(w=><div key={w} style={{fontSize:"13px",color:t.muted,padding:"8px 0",borderBottom:`1px solid ${t.border}`,lineHeight:1.4}}>{w}</div>)}
-            </div>
+        <div className="fade-in-up" style={{position:"relative",zIndex:3,padding:"0 clamp(24px,6vw,48px) clamp(44px,9vw,72px)"}}>
+          <div style={{fontSize:"7px",letterSpacing:".52em",color:"rgba(255,255,255,0.38)",textTransform:"uppercase",marginBottom:16}}>Carta Natale Archetipica</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(52px,14vw,96px)",fontWeight:300,lineHeight:.88,color:"white",letterSpacing:".02em",marginBottom:18}}>{profile.name}</div>
+          <div style={{display:"flex",gap:16,alignItems:"center",flexWrap:"wrap",marginBottom:28}}>
+            {dateDisplay&&<div style={{fontSize:"9px",letterSpacing:".24em",color:"rgba(255,255,255,0.45)"}}>{dateDisplay}</div>}
+            {profile.birthcity&&<div style={{fontSize:"9px",letterSpacing:".2em",color:"rgba(255,255,255,0.28)"}}>· {profile.birthcity}</div>}
           </div>
-        </ProfileSection>
-        <ProfileSection title="Tratti Carismatici" accent={t.accent}>
-          {sp.charismatic.map((c,i)=>(
-            <div key={i} style={{display:"flex",gap:14,marginBottom:18,alignItems:"flex-start"}}>
-              <div style={{color:t.accent,fontSize:"10px",marginTop:4,flexShrink:0}}>◎</div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:t.text,lineHeight:1.75}}>{c}</div>
+          <div style={{display:"inline-flex",alignItems:"center",gap:14,padding:"11px 22px",border:`1px solid ${sunSg.color}70`,background:`rgba(${sunSg.rgb},0.18)`,backdropFilter:"blur(16px)",borderRadius:2}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",color:sunSg.colorLight}}>{sunSg.symbol}</span>
+            <span style={{fontSize:"8px",letterSpacing:".34em",color:"rgba(255,255,255,0.85)",textTransform:"uppercase"}}>{sunSg.name}</span>
+            <span style={{width:1,height:16,background:"rgba(255,255,255,0.2)"}}/>
+            <span style={{fontSize:"7px",color:"rgba(255,255,255,0.4)",letterSpacing:".2em",textTransform:"uppercase"}}>{sunSg.archetype}</span>
+          </div>
+        </div>
+      </div>
+
+      <div style={{maxWidth:680,margin:"0 auto",padding:"0 clamp(20px,5vw,40px)"}}>
+
+        {/* ── TRINITÀ ── */}
+        <div style={{paddingTop:52}}>
+          <div style={{fontSize:"7px",letterSpacing:".52em",color:t.muted,textTransform:"uppercase",textAlign:"center",marginBottom:28}}>La tua trinità celeste</div>
+          <div className="hs" style={{display:"flex",gap:14,paddingBottom:6}}>
+            <TriadCard sg={sunSg} label="Segno Solare" icon="☀" primary={true}/>
+            <TriadCard sg={moonSg} label="Segno Lunare" icon="☽" primary={false}/>
+            {ascSg
+              ?<TriadCard sg={ascSg} label="Ascendente" icon="↑" primary={false}/>
+              :<div style={{flex:"0 0 clamp(145px,40vw,200px)",borderRadius:14,border:`1px dashed ${t.border}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:10,padding:24,opacity:.3}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:44,color:t.muted,lineHeight:1}}>↑</div>
+                <div style={{fontSize:"7px",letterSpacing:".3em",color:t.muted,textTransform:"uppercase",textAlign:"center"}}>Ascendente</div>
+                <div style={{fontSize:"9px",color:t.muted,textAlign:"center",lineHeight:1.6}}>inserisci l'ora di nascita</div>
+              </div>
+            }
+          </div>
+        </div>
+
+        {/* ── MAPPA ── */}
+        <Divider label="La Tua Mappa"/>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:1,background:t.border,border:`1px solid ${t.border}`}}>
+          {[{l:"Elemento",v:sunSg.element,c:sunSg.colorLight},{l:"Polarità",v:sp.polarity,c:t.text},{l:"Modalità",v:sunSg.modality,c:t.text},{l:"Pianeta",v:sunSg.planet,c:t.accent},{l:"Numero",v:sunSg.number,c:t.accent},{l:"Giorno fortunato",v:sunSg.day,c:t.muted}].map(d=>(
+            <div key={d.l} style={{padding:"22px 10px",background:t.card,textAlign:"center"}}>
+              <div style={{fontSize:"6px",letterSpacing:".28em",color:t.muted,textTransform:"uppercase",marginBottom:8}}>{d.l}</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.8vw,18px)",color:d.c,fontWeight:300}}>{d.v}</div>
             </div>
           ))}
-        </ProfileSection>
-        <ProfileSection title="Il Regalo Perfetto" accent={t.accent}>
+        </div>
+
+        {/* ── PERSONALITÀ ── */}
+        <Divider label="Personalità"/>
+        <div style={{position:"relative",paddingLeft:24}}>
+          <div style={{position:"absolute",left:-8,top:-10,fontFamily:"'Cormorant Garamond',serif",fontSize:"100px",lineHeight:.7,color:sunSg.colorLight,opacity:.15,userSelect:"none"}}>"</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,4.5vw,24px)",fontStyle:"italic",color:t.text,lineHeight:1.9}}>{sp.personality}</div>
+        </div>
+
+        {/* ── LUCE & OMBRA ── */}
+        <Divider label="Luce & Ombra"/>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:1,background:t.border}}>
+          <div style={{background:t.card,padding:"28px 20px"}}>
+            <div style={{fontSize:"7px",letterSpacing:".38em",color:sunSg.colorLight,textTransform:"uppercase",marginBottom:22}}>✦ Forza</div>
+            {sp.strengths.map((s,i)=>(
+              <div key={s} style={{display:"flex",gap:12,marginBottom:15,alignItems:"flex-start"}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"10px",color:sunSg.colorLight,opacity:.4,marginTop:3,flexShrink:0,minWidth:18}}>0{i+1}</div>
+                <div style={{fontSize:"13px",color:t.text,lineHeight:1.5}}>{s}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{background:t.surface,padding:"28px 20px"}}>
+            <div style={{fontSize:"7px",letterSpacing:".38em",color:t.muted,textTransform:"uppercase",marginBottom:22}}>◈ Ombra</div>
+            {sp.weaknesses.map((w,i)=>(
+              <div key={w} style={{display:"flex",gap:12,marginBottom:15,alignItems:"flex-start"}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"10px",color:t.muted,opacity:.4,marginTop:3,flexShrink:0,minWidth:18}}>0{i+1}</div>
+                <div style={{fontSize:"13px",color:t.muted,lineHeight:1.5}}>{w}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── CARISMA ── */}
+        <Divider label="Tratti Carismatici"/>
+        {sp.charismatic.map((c,i)=>(
+          <div key={i} style={{marginBottom:14,padding:"26px 28px",background:i===0?`rgba(${sunSg.rgb},0.1)`:i===1?`rgba(${sunSg.rgb},0.05)`:t.card,border:`1px solid rgba(${sunSg.rgb},${i===0?0.4:i===1?0.2:0.08})`}}>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,20px)",color:t.text,lineHeight:1.8,fontStyle:"italic"}}>{c}</div>
+          </div>
+        ))}
+
+        {/* ── REGALO ── */}
+        <Divider label="Il Regalo Perfetto"/>
+        <div style={{display:"grid",gridTemplateColumns:profile.gender==="Donna"||profile.gender==="Uomo"?"1fr":"1fr 1fr",gap:14}}>
           {profile.gender!=="Donna"&&(
-            <div style={{marginBottom:12,padding:"20px 22px",border:`1px solid ${t.border}`,background:t.surface}}>
-              <div style={{fontSize:"7px",letterSpacing:".32em",color:t.accent,textTransform:"uppercase",marginBottom:10}}>Per lui</div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:t.text,lineHeight:1.7}}>{sp.gift_him}</div>
+            <div style={{padding:"28px 26px",border:`1px solid ${t.accent}40`,background:`${t.accent}07`,position:"relative",overflow:"hidden"}}>
+              <div style={{position:"absolute",top:14,right:18,fontFamily:"'Cormorant Garamond',serif",fontSize:"48px",color:t.accent,opacity:.07,lineHeight:1,userSelect:"none"}}>♂</div>
+              <div style={{fontSize:"7px",letterSpacing:".4em",color:t.accent,textTransform:"uppercase",marginBottom:16}}>Per lui</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,18px)",color:t.text,lineHeight:1.8}}>{sp.gift_him}</div>
             </div>
           )}
           {profile.gender!=="Uomo"&&(
-            <div style={{padding:"20px 22px",border:`1px solid ${t.border}`,background:t.surface}}>
-              <div style={{fontSize:"7px",letterSpacing:".32em",color:t.accent,textTransform:"uppercase",marginBottom:10}}>Per lei</div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:t.text,lineHeight:1.7}}>{sp.gift_her}</div>
+            <div style={{padding:"28px 26px",border:`1px solid ${t.accent}40`,background:`${t.accent}07`,position:"relative",overflow:"hidden"}}>
+              <div style={{position:"absolute",top:14,right:18,fontFamily:"'Cormorant Garamond',serif",fontSize:"48px",color:t.accent,opacity:.07,lineHeight:1,userSelect:"none"}}>♀</div>
+              <div style={{fontSize:"7px",letterSpacing:".4em",color:t.accent,textTransform:"uppercase",marginBottom:16}}>Per lei</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,18px)",color:t.text,lineHeight:1.8}}>{sp.gift_her}</div>
             </div>
           )}
-        </ProfileSection>
-        <ProfileSection title="Compatibilità" accent={t.accent}>
-          <div style={{marginBottom:16}}>
-            <div style={{fontSize:"7px",letterSpacing:".3em",color:"#5a9a5a",textTransform:"uppercase",marginBottom:12}}>✦ Migliore affinità</div>
-            <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
-              {sp.best_compat.map(k=>{const s=SIGNS.find(x=>x.key===k);return s&&(<div key={k} style={{padding:"9px 16px",border:`1px solid ${s.color}50`,background:`rgba(${s.rgb},0.08)`,fontSize:"12px",fontFamily:"'Cormorant Garamond',serif",color:t.text}}>{s.symbol} {s.name}</div>);})}
-            </div>
+        </div>
+
+        {/* ── COMPATIBILITÀ ── */}
+        <Divider label="Compatibilità"/>
+        <div style={{marginBottom:32}}>
+          <div style={{fontSize:"7px",letterSpacing:".38em",color:"#6aaa6a",textTransform:"uppercase",marginBottom:18}}>✦ Anime affini</div>
+          <div className="hs" style={{display:"flex",gap:12,paddingBottom:4}}>
+            {sp.best_compat.map(k=>{
+              const s=SIGNS.find(x=>x.key===k);
+              return s&&(
+                <div key={k} style={{flex:`0 0 clamp(88px,26vw,115px)`,borderRadius:10,overflow:"hidden",position:"relative",aspectRatio:"2/3",border:`1px solid ${s.color}65`,boxShadow:`0 4px 24px rgba(${s.rgb},0.18)`}}>
+                  {s.img&&<img src={s.img} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0}}/>}
+                  <div style={{position:"absolute",inset:0,background:`linear-gradient(to top,rgba(${s.rgb},0.88) 0%,transparent 55%)`,zIndex:1}}/>
+                  <div style={{position:"absolute",bottom:0,left:0,right:0,textAlign:"center",padding:"10px 6px",zIndex:2}}>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"white"}}>{s.symbol}</div>
+                    <div style={{fontSize:"6px",color:"rgba(255,255,255,0.75)",letterSpacing:".22em",marginTop:3,textTransform:"uppercase"}}>{s.name}</div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          <div>
-            <div style={{fontSize:"7px",letterSpacing:".3em",color:"#9a5a5a",textTransform:"uppercase",marginBottom:12}}>◈ Maggiore tensione</div>
-            <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
-              {sp.worst_compat.map(k=>{const s=SIGNS.find(x=>x.key===k);return s&&(<div key={k} style={{padding:"9px 16px",border:`1px solid ${t.border}`,fontSize:"12px",fontFamily:"'Cormorant Garamond',serif",color:t.muted}}>{s.symbol} {s.name}</div>);})}
-            </div>
+        </div>
+        <div>
+          <div style={{fontSize:"7px",letterSpacing:".38em",color:"#aa6a6a",textTransform:"uppercase",marginBottom:18}}>◈ Maggiore tensione</div>
+          <div className="hs" style={{display:"flex",gap:12,paddingBottom:4}}>
+            {sp.worst_compat.map(k=>{
+              const s=SIGNS.find(x=>x.key===k);
+              return s&&(
+                <div key={k} style={{flex:`0 0 clamp(88px,26vw,115px)`,borderRadius:10,overflow:"hidden",position:"relative",aspectRatio:"2/3",border:`1px solid ${t.border}`,filter:"saturate(0.3) brightness(0.75)"}}>
+                  {s.img&&<img src={s.img} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0}}/>}
+                  <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.8) 0%,transparent 55%)",zIndex:1}}/>
+                  <div style={{position:"absolute",bottom:0,left:0,right:0,textAlign:"center",padding:"10px 6px",zIndex:2}}>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"rgba(255,255,255,0.55)"}}>{s.symbol}</div>
+                    <div style={{fontSize:"6px",color:"rgba(255,255,255,0.4)",letterSpacing:".22em",marginTop:3,textTransform:"uppercase"}}>{s.name}</div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        </ProfileSection>
-        <ProfileSection title="Personaggi Famosi" accent={t.accent}>
-          <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
-            {sp.famous.map(name=>(<div key={name} style={{padding:"9px 18px",border:`1px solid ${t.accent}40`,fontSize:"12px",fontFamily:"'Cormorant Garamond',serif",color:t.text,letterSpacing:".06em"}}>{name}</div>))}
-          </div>
-        </ProfileSection>
+        </div>
+
+        {/* ── FAMOSI ── */}
+        <Divider label="Stessa Energia"/>
+        <div style={{display:"flex",flexWrap:"wrap",gap:10}}>
+          {sp.famous.map((name,i)=>(
+            <div key={name} style={{padding:"12px 22px",border:`1px solid ${i===0?sunSg.color+"70":t.border}`,background:i===0?`rgba(${sunSg.rgb},0.12)`:t.card,fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.5vw,16px)",color:i===0?sunSg.colorLight:t.text,letterSpacing:".07em"}}>{name}</div>
+          ))}
+        </div>
+
+        {/* ── MOMENTO ── */}
         {(profile.relationship||profile.work)&&(
-          <ProfileSection title="Il tuo momento" accent={t.accent}>
+          <div>
+            <Divider label="Il Tuo Momento"/>
             {profile.relationship&&REL_CTX[profile.relationship]&&(
-              <div style={{marginBottom:12,padding:"18px 22px",borderLeft:`2px solid ${t.accent}60`,background:`${t.accent}06`}}>
-                <div style={{fontSize:"7px",letterSpacing:".28em",color:t.accent,textTransform:"uppercase",marginBottom:8}}>Cuore — {profile.relationship}</div>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:t.text,lineHeight:1.75,fontStyle:"italic"}}>{REL_CTX[profile.relationship]}</div>
+              <div style={{marginBottom:14,padding:"28px 28px",border:`1px solid ${t.accent}45`,background:`${t.accent}09`}}>
+                <div style={{fontSize:"7px",letterSpacing:".4em",color:t.accent,textTransform:"uppercase",marginBottom:14}}>Cuore · {profile.relationship}</div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4vw,20px)",color:t.text,lineHeight:1.9,fontStyle:"italic"}}>{REL_CTX[profile.relationship]}</div>
               </div>
             )}
             {profile.work&&WORK_CTX[profile.work]&&(
-              <div style={{padding:"18px 22px",borderLeft:`2px solid ${t.muted}50`,background:`${t.muted}06`}}>
-                <div style={{fontSize:"7px",letterSpacing:".28em",color:t.muted,textTransform:"uppercase",marginBottom:8}}>Lavoro — {profile.work}</div>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:t.text,lineHeight:1.75,fontStyle:"italic"}}>{WORK_CTX[profile.work]}</div>
+              <div style={{padding:"28px 28px",border:`1px solid ${t.border}`,background:t.surface}}>
+                <div style={{fontSize:"7px",letterSpacing:".4em",color:t.muted,textTransform:"uppercase",marginBottom:14}}>Percorso · {profile.work}</div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4vw,20px)",color:t.text,lineHeight:1.9,fontStyle:"italic"}}>{WORK_CTX[profile.work]}</div>
               </div>
             )}
-          </ProfileSection>
+          </div>
         )}
+
+        <div style={{height:"calc(env(safe-area-inset-bottom,0px) + 80px)"}}/>
       </div>
     </div>
   );
