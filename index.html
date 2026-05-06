@@ -413,7 +413,7 @@ function Home({t,onSelect,profile,onSetup}){
             <CometCard accentColor={t.accent}>
               <div style={{background:t.card,padding:6,cursor:"pointer",border:`1.5px solid rgba(255,255,255,0.32)`,borderRadius:16,boxShadow:`0 8px 32px rgba(0,0,0,0.18), 0 1.5px 0 rgba(255,255,255,0.22) inset, 0 -1px 0 rgba(0,0,0,0.12) inset`}}>
                 <div style={{position:"relative",aspectRatio:"3/4",borderRadius:11,overflow:"hidden",background:t.surface}}>
-                  {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:11,zIndex:1}}/>}
+                  {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:11,zIndex:1,filter:"contrast(1.45) brightness(0.82)"}}/>}
                   <GlassOverlay/>
                 </div>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 11px 3px",color:t.text}}>
