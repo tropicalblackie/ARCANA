@@ -862,33 +862,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
   );
 }
 
-// ── THEME SWITCHER ──
-function BottomNav({view,setView,t,profile}){
-  const tabs=[
-    {key:"daily",icon:"☽",label:"Oroscopo"},
-    {key:"tarocchi",icon:"✦",label:"Tarocchi"},
-    {key:"sfera",icon:"◎",label:"Sfera"},
-  ];
-  const show=["daily","tarocchi","sfera"].includes(view);
-  if(!show)return null;
-  return(
-    <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:300,background:t.card,borderTop:`1px solid ${t.border}`,paddingBottom:"env(safe-area-inset-bottom,0px)",backdropFilter:"blur(20px) saturate(1.4)",WebkitBackdropFilter:"blur(20px) saturate(1.4)",boxShadow:`0 -4px 24px rgba(0,0,0,0.32),inset 0 1px 0 rgba(255,255,255,0.08)`}}>
-      <div style={{display:"flex"}}>
-        {tabs.map(tab=>{
-          const active=view===tab.key;
-          return(
-            <button key={tab.key} onClick={()=>setView(tab.key)} style={{flex:1,padding:"12px 8px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:"transparent",border:"none",cursor:"pointer",position:"relative"}}>
-              {active&&<div style={{position:"absolute",top:0,left:"25%",right:"25%",height:"2px",background:`linear-gradient(to right,transparent,${t.accent},transparent)`,borderRadius:"0 0 2px 2px"}}/>}
-              <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:active?t.accent:t.muted,lineHeight:1,filter:active?`drop-shadow(0 0 6px ${t.accent}90)`:"none",transition:"all .2s"}}>{tab.icon}</span>
-              <span style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:active?600:400,letterSpacing:".22em",textTransform:"uppercase",color:active?t.accent:t.muted,transition:"all .2s"}}>{tab.label}</span>
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
+// ── BOTTOM NAV ──
 function BottomNav({view,setView,t,profile}){
   const tabs=[
     {key:"daily",icon:"☽",label:"Oroscopo"},
