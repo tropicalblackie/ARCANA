@@ -285,7 +285,7 @@ const planetDay=()=>["Domenica","Lunedì","Martedì","Mercoledì","Giovedì","Ve
 const season=()=>{const m=new Date().getMonth()+1;if(m>=3&&m<=5)return"Primavera";if(m>=6&&m<=8)return"Estate";if(m>=9&&m<=11)return"Autunno";return"Inverno"};
 const lunarPhase=()=>{const d=new Date().getDate();return d<=7?"Luna Nuova":d<=14?"Crescente":d<=21?"Luna Piena":"Calante"};
 const entryAngle=()=>{const seed=new Date().getDate()+new Date().getMonth()*31;const a=["il punto di rottura tra ciò che eri e ciò che stai diventando","la ferita che non hai mai mostrato a nessuno","il desiderio che dici di non avere","il ricordo che torna senza avvertire","la paura che ti sveglia alle tre di notte","la forza che non sai di possedere","la verità che stai evitando di dire","la versione di te che stai rimandando","l'amore che hai smesso di chiedere","il corpo come luogo del non detto"];return a[seed%a.length]};
-const LOGO_SRC="./logo.jpeg";
+const LOGO_SRC="./logo.png";
 
 // ── StarField ──
 const StarField=memo(({color="#fff",count=80,opacity=.5})=>{
@@ -327,7 +327,7 @@ const CometCard=memo(({children,accentColor="#fff"})=>{
 });
 
 // ── SPLASH ──
-const Splash=memo(function Splash({onDone}){
+const Splash=memo(function Splash({onDone,bg}){
   const[leaving,setLeaving]=useState(false);
   useEffect(()=>{
     const t1=setTimeout(()=>setLeaving(true),2000);
@@ -335,8 +335,8 @@ const Splash=memo(function Splash({onDone}){
     return()=>{clearTimeout(t1);clearTimeout(t2)};
   },[onDone]);
   return(
-    <div style={{position:"fixed",inset:0,zIndex:9999,background:"#ffffff",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",pointerEvents:leaving?"none":"auto",opacity:leaving?0:1,transform:leaving?"scale(1.06)":"scale(1)",transition:leaving?"opacity .75s cubic-bezier(.4,0,1,1),transform .75s cubic-bezier(.4,0,1,1)":"none"}}>
-      <img src={LOGO_SRC} alt="ARCANA" style={{width:"clamp(80px,22vw,130px)",height:"clamp(80px,22vw,130px)",objectFit:"contain",mixBlendMode:"multiply",filter:"contrast(1.6) brightness(1.08)",animation:"sp-drop .7s cubic-bezier(.16,1,.3,1) .05s both"}}/>
+    <div style={{position:"fixed",inset:0,zIndex:9999,background:bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",pointerEvents:leaving?"none":"auto",opacity:leaving?0:1,transform:leaving?"scale(1.06)":"scale(1)",transition:leaving?"opacity .75s cubic-bezier(.4,0,1,1),transform .75s cubic-bezier(.4,0,1,1)":"none"}}>
+      <img src={LOGO_SRC} alt="ARCANA" style={{width:"clamp(80px,22vw,130px)",height:"clamp(80px,22vw,130px)",objectFit:"contain",animation:"sp-drop .7s cubic-bezier(.16,1,.3,1) .05s both"}}/>
       <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(48px,12vw,88px)",fontWeight:300,letterSpacing:".3em",color:"#0a0010",lineHeight:1,marginTop:"clamp(18px,4vw,28px)",opacity:0,animation:"sp-text .5s cubic-bezier(.16,1,.3,1) .55s forwards"}}>
         ARCANA
       </div>
@@ -679,7 +679,7 @@ function App(){
 
   return(
     <div style={{background:t.bg,color:t.text,minHeight:"100vh"}}>
-      {splash&&<Splash onDone={()=>setSplash(false)}/>}
+      {splash&&<Splash onDone={()=>setSplash(false)} bg={t.bg}/>}
       {view==="home"&&<Home t={t} onSelect={s=>{setSelected(s);setView("sign")}}/>}
       {view==="sign"&&selected&&<SignScreen sg={selected} t={t} onBack={()=>setView("home")} journal={journal} saveEntry={saveEntry}/>}
       <ThemeBtn theme={theme} setTheme={setTheme} t={t}/>
