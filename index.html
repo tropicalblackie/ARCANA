@@ -1258,37 +1258,73 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
   const trinity=[{sg:sunSg,label:"Solare",icon:"☀"},{sg:moonSg,label:"Lunare",icon:"☽"},...(ascSg?[{sg:ascSg,label:"Ascendente",icon:"↑"}]:[])];
   return(
     <div style={{minHeight:"100vh",background:t.bg,color:t.text,overflowY:"auto"}}>
-      {/* ── HERO ── */}
-      <div style={{position:"relative",height:"52dvh",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
-        {sunSg.img&&<img src={sunSg.img} loading="eager" decoding="async" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",filter:"brightness(0.58) saturate(1.1)"}}/>}
-        <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(0,0,0,0.52) 0%,rgba(0,0,0,0) 36%,rgba(0,0,0,0.74) 68%,rgba(0,0,0,0.97) 100%)"}}/>
-        <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 65% 42% at 50% 58%,rgba(${sunSg.rgb},0.18) 0%,transparent 70%)`,pointerEvents:"none"}}/>
-        <StarField color={sunSg.starColor} count={36} opacity={0.55}/>
-        <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 14px)",left:14,zIndex:10,color:"rgba(255,255,255,0.48)",fontSize:"10px",letterSpacing:".16em",padding:"12px 14px"}}>← indietro</button>
-        <button onClick={onEdit} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 14px)",right:14,zIndex:10,fontSize:"7px",letterSpacing:".24em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}50`,padding:"9px 15px",background:"rgba(0,0,0,0.35)",backdropFilter:"blur(10px)"}}>modifica</button>
-        <div className="fade-in-up" style={{position:"relative",zIndex:2,padding:"0 clamp(22px,6vw,44px) clamp(26px,5.5vw,40px)"}}>
-          <div style={{fontSize:"6px",letterSpacing:".52em",color:"rgba(255,255,255,0.24)",textTransform:"uppercase",marginBottom:12,paddingLeft:".52em"}}>{dateIt} · oroscopo del giorno</div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(34px,9.5vw,58px)",fontWeight:300,lineHeight:.88,color:"rgba(255,255,255,0.93)",marginBottom:18,textShadow:`0 3px 24px rgba(${sunSg.rgb},0.35)`}}>{greeting},<br/>{profile.name}</div>
-          <div style={{display:"inline-flex",alignItems:"center",gap:12,padding:"9px 16px",border:`1px solid rgba(${sunSg.rgb},0.48)`,background:`rgba(${sunSg.rgb},0.16)`,backdropFilter:"blur(14px)",borderRadius:2}}>
-            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:sunSg.colorLight,filter:`drop-shadow(0 0 5px rgba(${sunSg.rgb},0.8))`}}>{sunSg.symbol}</span>
-            <span style={{width:1,height:14,background:"rgba(255,255,255,0.15)"}}/>
-            <span style={{fontSize:"7px",letterSpacing:".32em",color:"rgba(255,255,255,0.78)",textTransform:"uppercase"}}>{sunSg.name}</span>
+      {/* ── HERO (full screen, tutto dentro) ── */}
+      <div style={{position:"relative",minHeight:"100dvh",display:"flex",flexDirection:"column",justifyContent:"flex-end",overflow:"hidden"}}>
+        {sunSg.img&&<img src={sunSg.img} loading="eager" decoding="async" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",filter:"brightness(0.48) saturate(1.1)"}}/>}
+        <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(0,0,0,0.62) 0%,rgba(0,0,0,0.05) 28%,rgba(0,0,0,0.70) 58%,rgba(0,0,0,0.98) 100%)"}}/>
+        <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 70% 50% at 50% 60%,rgba(${sunSg.rgb},0.16) 0%,transparent 70%)`,pointerEvents:"none"}}/>
+        <StarField color={sunSg.starColor} count={36} opacity={0.5}/>
+
+        {/* nav */}
+        <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 14px)",left:14,zIndex:10,color:"rgba(255,255,255,0.45)",fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:400,letterSpacing:".14em",padding:"12px 14px"}}>← indietro</button>
+        <button onClick={onEdit} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 14px)",right:14,zIndex:10,fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,letterSpacing:".22em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}50`,padding:"9px 16px",background:"rgba(0,0,0,0.4)",backdropFilter:"blur(10px)"}}>modifica</button>
+
+        {/* contenuto hero */}
+        <div className="fade-in-up" style={{position:"relative",zIndex:2,padding:"0 clamp(22px,6vw,44px) clamp(32px,6vw,48px)"}}>
+
+          {/* data + titolo principale */}
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(10px,2.4vw,12px)",fontWeight:400,letterSpacing:".28em",color:"rgba(255,255,255,0.42)",textTransform:"uppercase",marginBottom:10}}>{dateIt}</div>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(26px,6.5vw,38px)",fontWeight:700,color:"rgba(255,255,255,0.97)",letterSpacing:"-.01em",lineHeight:1.05,marginBottom:6}}>Oroscopo del Giorno</div>
+
+          {/* saluto */}
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,5vw,26px)",fontWeight:300,fontStyle:"italic",color:"rgba(255,255,255,0.62)",lineHeight:1.2,marginBottom:22}}>{greeting}, {profile.name}</div>
+
+          {/* badge segno */}
+          <div style={{display:"inline-flex",alignItems:"center",gap:12,padding:"10px 18px",border:`1px solid rgba(${sunSg.rgb},0.5)`,background:`rgba(${sunSg.rgb},0.15)`,backdropFilter:"blur(16px)",borderRadius:3,marginBottom:26}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:sunSg.colorLight,filter:`drop-shadow(0 0 6px rgba(${sunSg.rgb},0.9))`}}>{sunSg.symbol}</span>
+            <span style={{width:1,height:15,background:"rgba(255,255,255,0.18)"}}/>
+            <span style={{fontFamily:"'Inter',sans-serif",fontSize:"12px",fontWeight:600,letterSpacing:".2em",color:"rgba(255,255,255,0.88)",textTransform:"uppercase"}}>{sunSg.name}</span>
           </div>
+
+          {/* ── TRINITÀ ── */}
+          <div style={{marginBottom:22}}>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,letterSpacing:".38em",color:"rgba(255,255,255,0.32)",textTransform:"uppercase",marginBottom:10}}>Trinità celeste</div>
+            <div style={{display:"flex",gap:8}}>
+              {trinity.map(({sg:s,label,icon})=>(
+                <div key={s.key} style={{flex:1,padding:"13px 8px 12px",background:"rgba(0,0,0,0.38)",border:`1px solid rgba(${s.rgb},0.38)`,backdropFilter:"blur(14px)",textAlign:"center",borderRadius:6,minWidth:0}}>
+                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(22px,6vw,30px)",color:s.colorLight,filter:`drop-shadow(0 0 8px rgba(${s.rgb},0.75))`,lineHeight:1,marginBottom:6}}>{s.symbol}</div>
+                  <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(11px,3vw,13px)",fontWeight:600,color:"rgba(255,255,255,0.86)",marginBottom:4,letterSpacing:".01em"}}>{s.name}</div>
+                  <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:400,letterSpacing:".18em",color:"rgba(255,255,255,0.38)",textTransform:"uppercase"}}>{icon} {label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── CTA ── */}
+          <button onClick={onProfile} style={{width:"100%",padding:"16px",border:`1px solid ${t.accent}60`,background:`rgba(${sunSg.rgb},0.08)`,backdropFilter:"blur(10px)",color:t.accent,fontFamily:"'Inter',sans-serif",fontSize:"12px",fontWeight:500,letterSpacing:".28em",textTransform:"uppercase",borderRadius:2}}>Maggiori dettagli</button>
+          <div style={{marginTop:9,fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:400,letterSpacing:".24em",color:"rgba(255,255,255,0.22)",textTransform:"uppercase",textAlign:"center"}}>carta natale archetipica</div>
         </div>
       </div>
-      <div style={{height:28,background:`linear-gradient(to bottom,rgba(0,0,0,0.97),${t.bg})`,marginTop:-2}}/>
+
+      {/* bridge + scroll hint */}
+      <div style={{height:32,background:`linear-gradient(to bottom,rgba(0,0,0,0.98),${t.bg})`}}/>
+      <div style={{textAlign:"center",padding:"4px 0 24px"}}>
+        <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,letterSpacing:".38em",color:t.muted,textTransform:"uppercase",marginBottom:6}}>Il tuo oroscopo di oggi</div>
+        <div style={{color:t.muted,fontSize:"14px",opacity:.45}}>↓</div>
+      </div>
+
+      {/* ── 4 CATEGORIE ── */}
       <div style={{maxWidth:640,margin:"0 auto",padding:"0 clamp(16px,5vw,32px)"}}>
-        {/* ── 4 CATEGORIE ── */}
         {CATS.map(cat=>{
           const d=horo[cat.key];
           return(
-            <div key={cat.key} style={{marginBottom:12,padding:"24px 24px 22px",background:t.card,border:`1px solid ${t.border}`,position:"relative",overflow:"hidden"}}>
-              <div style={{position:"absolute",top:0,left:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${cat.col}75,transparent)`}}/>
-              <div style={{position:"absolute",right:-4,top:"50%",transform:"translateY(-50%)",fontFamily:"'Cormorant Garamond',serif",fontSize:"90px",color:cat.col,opacity:.04,lineHeight:1,pointerEvents:"none",userSelect:"none"}}>{cat.icon}</div>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+            <div key={cat.key} style={{marginBottom:12,padding:"22px 22px 20px",background:t.card,border:`1px solid ${t.border}`,position:"relative",overflow:"hidden"}}>
+              <div style={{position:"absolute",top:0,left:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${cat.col}70,transparent)`}}/>
+              <div style={{position:"absolute",right:0,top:"50%",transform:"translateY(-50%)",fontFamily:"'Cormorant Garamond',serif",fontSize:"88px",color:cat.col,opacity:.038,lineHeight:1,pointerEvents:"none",userSelect:"none"}}>{cat.icon}</div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:13}}>
                 <div style={{display:"flex",alignItems:"center",gap:10}}>
-                  <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:cat.col,lineHeight:1}}>{cat.icon}</span>
-                  <span style={{fontSize:"7px",letterSpacing:".42em",color:cat.col,textTransform:"uppercase"}}>{cat.label}</span>
+                  <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:cat.col,lineHeight:1}}>{cat.icon}</span>
+                  <span style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:700,letterSpacing:".28em",color:cat.col,textTransform:"uppercase"}}>{cat.label}</span>
                 </div>
                 <div style={{display:"flex",gap:4}}>
                   {[1,2,3,4,5].map(n=>(
@@ -1296,29 +1332,11 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
                   ))}
                 </div>
               </div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,18px)",color:t.text,lineHeight:1.88,fontStyle:"italic"}}>{d.text}</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4.2vw,19px)",fontWeight:400,color:t.text,lineHeight:1.88}}>{d.text}</div>
             </div>
           );
         })}
-        {/* ── TRINITÀ MINI ── */}
-        <div style={{margin:"28px 0 24px"}}>
-          <div style={{fontSize:"6px",letterSpacing:".5em",color:t.muted,textTransform:"uppercase",textAlign:"center",marginBottom:16,paddingLeft:".5em"}}>Trinità celeste</div>
-          <div style={{display:"flex",gap:8}}>
-            {trinity.map(({sg:s,label,icon})=>(
-              <div key={s.key} style={{flex:1,padding:"14px 8px",background:t.surface,border:`1px solid ${s.color}45`,textAlign:"center",borderRadius:8,minWidth:0}}>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(20px,5.5vw,28px)",color:s.colorLight,filter:`drop-shadow(0 0 7px rgba(${s.rgb},0.7))`,lineHeight:1,marginBottom:5}}>{s.symbol}</div>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(10px,3vw,13px)",color:t.text,marginBottom:3}}>{s.name}</div>
-                <div style={{fontSize:"5px",letterSpacing:".24em",color:t.muted,textTransform:"uppercase"}}>{icon} {label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-        {/* ── CTA ── */}
-        <div style={{textAlign:"center",padding:"16px 0 calc(env(safe-area-inset-bottom,0px) + 72px)"}}>
-          <div style={{width:36,height:"1px",background:`linear-gradient(to right,transparent,${t.accent}55,transparent)`,margin:"0 auto 26px"}}/>
-          <button onClick={onProfile} style={{padding:"15px 44px",border:`1px solid ${t.accent}65`,background:`${t.accent}10`,color:t.accent,fontSize:"8px",letterSpacing:".4em",textTransform:"uppercase"}}>Maggiori dettagli</button>
-          <div style={{marginTop:12,fontSize:"6px",letterSpacing:".3em",color:t.muted,textTransform:"uppercase",opacity:.55}}>carta natale archetipica</div>
-        </div>
+        <div style={{height:"calc(env(safe-area-inset-bottom,0px) + 60px)"}}/>
       </div>
     </div>
   );
