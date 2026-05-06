@@ -1258,6 +1258,157 @@ function generateHoroscope(sg,dateStr){
   };
 }
 
+// ── ASTRO EVENTS 2026 ──
+const ASTRO_2026=[
+  {d:"2026-01-03",n:"Quadrantidi al Picco",icon:"✦",col:"#8ab4d8",desc:"Fino a 120 meteore/ora nelle prime ore del mattino. Cielo di desideri e magia."},
+  {d:"2026-01-13",n:"Luna Piena del Lupo",icon:"☽",col:"#b4c8e8",desc:"Prima luna piena dell'anno. Invita alla riflessione profonda e all'introspezione."},
+  {d:"2026-02-11",n:"Luna Piena della Neve",icon:"☽",col:"#b4c8e8",desc:"Chiarezza emotiva. Momento ideale per lasciare andare ciò che non serve."},
+  {d:"2026-02-17",n:"Mercurio Retrogrado",icon:"☿",col:"#c8a84a",desc:"Fase di revisione. Rifletti prima di comunicare o firmare accordi importanti."},
+  {d:"2026-03-10",n:"Mercurio Diretto",icon:"☿",col:"#90c4d8",desc:"La mente si schiarisce. I piani possono finalmente procedere con forza."},
+  {d:"2026-03-13",n:"Luna Piena del Verme",icon:"☽",col:"#b4c8e8",desc:"La terra si risveglia. Energia di preparazione e nuovi semi da piantare."},
+  {d:"2026-03-20",n:"Equinozio di Primavera",icon:"♈",col:"#78c090",desc:"Il Sole entra in Ariete. Energie di rinascita, iniziativa e coraggio solare."},
+  {d:"2026-04-01",n:"Venere Retrograda",icon:"♀",col:"#c07878",desc:"Riesame dei valori e delle relazioni. Cosa vale davvero la tua energia?"},
+  {d:"2026-04-11",n:"Luna Piena del Pesce Rosa",icon:"☽",col:"#b4c8e8",desc:"Fioritura e fertilità. Mostra ciò che hai costruito con pazienza."},
+  {d:"2026-05-05",n:"Eclisse Lunare Penombrale",icon:"⊙",col:"#d4a818",desc:"Trasformazioni sottili ma potenti. Il cielo invita a portare a termine vecchi cicli."},
+  {d:"2026-05-10",n:"Venere Diretta",icon:"♀",col:"#c8a4c0",desc:"Il cuore riprende la direzione. Clarezza su ciò che si desidera davvero."},
+  {d:"2026-05-11",n:"Luna Piena dei Fiori",icon:"☽",col:"#b4c8e8",desc:"Abbondanza emotiva. Celebra i progressi e nutri le connessioni importanti."},
+  {d:"2026-06-09",n:"Luna Piena delle Fragole",icon:"☽",col:"#b4c8e8",desc:"Dolcezza e abbondanza. Raccogli i frutti di ciò che hai seminato."},
+  {d:"2026-06-21",n:"Solstizio d'Estate",icon:"☀",col:"#d4a818",desc:"Il giorno più lungo. Vitalità al massimo: celebra la pienezza della vita."},
+  {d:"2026-07-07",n:"Marte Retrogrado",icon:"♂",col:"#c07858",desc:"Riflessione sull'azione. Rivaluta obiettivi e motivazioni più profonde."},
+  {d:"2026-07-09",n:"Luna Piena del Cervo",icon:"☽",col:"#b4c8e8",desc:"Crescita rapida. La tua forza interiore è più vasta di quanto credi."},
+  {d:"2026-08-07",n:"Luna Piena dello Storione",icon:"☽",col:"#b4c8e8",desc:"Profondità e mistero. Porta in superficie ciò che era rimasto nascosto."},
+  {d:"2026-08-12",n:"Perseidi al Picco",icon:"✦",col:"#8ab4d8",desc:"Fino a 100 meteore/ora nel cielo estivo. Notte perfetta per la contemplazione."},
+  {d:"2026-09-05",n:"Luna Piena del Raccolto",icon:"☽",col:"#b4c8e8",desc:"Gratitudine e raccolto. Riconosci quanto hai costruito con costanza."},
+  {d:"2026-09-11",n:"Eclisse Solare Totale",icon:"⊙",col:"#d4a818",desc:"Potente porta di trasformazione. Nuovi inizi profondi — visibile su Europa e Africa."},
+  {d:"2026-09-23",n:"Equinozio d'Autunno",icon:"♎",col:"#78c090",desc:"Il Sole entra in Bilancia. Equilibrio, armonia, valutazione dei rapporti chiave."},
+  {d:"2026-10-04",n:"Luna Piena del Cacciatore",icon:"☽",col:"#b4c8e8",desc:"Istinti affilati. Momento di precisione e chiarezza nella visione del futuro."},
+  {d:"2026-10-14",n:"Marte Diretto",icon:"♂",col:"#c09078",desc:"L'azione riprende potenza. Energia e determinazione si riaccendono con forza."},
+  {d:"2026-11-03",n:"Luna Piena del Castoro",icon:"☽",col:"#b4c8e8",desc:"Costruzione e rifugio. Prepara il tuo spazio interiore per l'inverno."},
+  {d:"2026-12-03",n:"Luna Piena del Freddo",icon:"☽",col:"#b4c8e8",desc:"Silenzio e riflessione profonda. Distillazione di tutto ciò che l'anno ha portato."},
+  {d:"2026-12-21",n:"Solstizio d'Inverno",icon:"✦",col:"#d4a818",desc:"La notte più lunga. Da qui la luce torna a crescere, lentamente ma inesorabile."},
+];
+function getNextAstroEvent(dateStr){
+  const today=new Date(dateStr+"T00:00:00");
+  const ev=ASTRO_2026.find(e=>new Date(e.d+"T00:00:00")>=today);
+  if(!ev)return{...ASTRO_2026[ASTRO_2026.length-1],daysAway:0};
+  const daysAway=Math.round((new Date(ev.d+"T00:00:00")-today)/86400000);
+  return{...ev,daysAway};
+}
+function getLunarPhase(dateStr){
+  const d=new Date(dateStr+"T12:00:00");
+  const ref=new Date("2000-01-06T18:14:00Z");
+  const synodic=29.530588853;
+  const pd=((((d-ref)/86400000)%synodic)+synodic)%synodic;
+  const norm=pd/synodic;
+  let name,desc;
+  if(pd<1.85){name="Luna Nuova";desc="Tempo di semina interiore. Inizi, intenzioni, silenzio fertile.";}
+  else if(pd<7.38){name="Luna Crescente";desc="L'energia cresce. Agisci su ciò che hai iniziato con intenzione.";}
+  else if(pd<9.22){name="Primo Quarto";desc="Momento di decisione. Supera gli ostacoli con determinazione.";}
+  else if(pd<12.91){name="Gibbosa Crescente";desc="Raffinamento e perseveranza. Il culmine si avvicina.";}
+  else if(pd<16.61){name="Luna Piena";desc="Culmine e rivelazione. Ciò che era nascosto si manifesta oggi.";}
+  else if(pd<20.30){name="Gibbosa Calante";desc="Gratitudine e rilascio. Integra ciò che hai ottenuto.";}
+  else if(pd<23.99){name="Ultimo Quarto";desc="Revisione profonda. Lascia andare ciò che non serve più.";}
+  else{name="Luna Calante";desc="Il ciclo si chiude. Prepara il terreno per la prossima rinascita.";}
+  const daysToFull=pd<14.765?14.765-pd:synodic-pd+14.765;
+  const daysToNew=pd<0.5?0.5-pd:synodic-pd;
+  const nextEvent=daysToFull<daysToNew
+    ?{type:"Luna Piena",days:Math.max(0,Math.round(daysToFull))}
+    :{type:"Luna Nuova",days:Math.max(0,Math.round(daysToNew))};
+  return{pd,norm,name,desc,nextEvent};
+}
+const MoonSVG=memo(function MoonSVG({pd}){
+  const S=56,r=22,cx=28,cy=28;
+  const norm=pd/29.530588853;
+  const waxing=norm<=0.5;
+  const tx=r*Math.cos(2*Math.PI*norm);
+  let path='';
+  if(norm>0.005&&norm<0.995){
+    if(waxing){
+      const sw=tx>0?0:1;
+      path=`M${cx},${cy-r} A${r},${r},0,0,1,${cx},${cy+r} A${Math.abs(tx).toFixed(2)},${r},0,0,${sw},${cx},${cy-r} Z`;
+    }else{
+      const tx2=r*Math.cos(2*Math.PI*(1-norm));
+      const sw=tx2>0?1:0;
+      path=`M${cx},${cy-r} A${r},${r},0,0,0,${cx},${cy+r} A${Math.abs(tx2).toFixed(2)},${r},0,0,${sw},${cx},${cy-r} Z`;
+    }
+  }
+  const isNew=norm<0.005||norm>0.995;
+  const isFull=norm>0.492&&norm<0.508;
+  return(
+    <svg width={S} height={S} style={{display:"block",overflow:"visible",flexShrink:0}}>
+      <circle cx={cx} cy={cy} r={r} fill="rgba(10,4,20,0.96)" stroke="rgba(255,255,255,0.14)" strokeWidth={1}/>
+      {isFull
+        ?<circle cx={cx} cy={cy} r={r} fill="rgba(255,248,210,0.90)"/>
+        :!isNew&&<path d={path} fill="rgba(255,248,210,0.88)"/>}
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.20)" strokeWidth={0.8}/>
+      {isFull&&<circle cx={cx} cy={cy} r={r+3} fill="none" stroke="rgba(255,230,140,0.22)" strokeWidth={4}/>}
+    </svg>
+  );
+});
+function BioChart({birthday,dateStr,t}){
+  const baseDays=useMemo(()=>{
+    const b=new Date(birthday+"T12:00:00");
+    const r=new Date(dateStr+"T12:00:00");
+    const v=Math.round((r-b)/86400000);
+    return isNaN(v)?0:v;
+  },[birthday,dateStr]);
+  const CYCLES=[
+    {key:"f",period:23,col:"#e07060",label:"Fisico"},
+    {key:"e",period:28,col:"#b060a8",label:"Emotivo"},
+    {key:"i",period:33,col:"#5890d8",label:"Intellettuale"},
+    {key:"s",period:26,col:"#48b870",label:"Sociale"},
+  ];
+  const W=320,H=148,PL=8,PR=8,PT=12,PB=26;
+  const cW=W-PL-PR,cH=H-PT-PB;
+  const toX=d=>PL+(d+3.5)/7*cW;
+  const toY=v=>PT+cH/2-v*(cH*0.46);
+  const makePath=period=>{
+    let p=`M${toX(-3.5).toFixed(1)},${toY(Math.sin(2*Math.PI*(baseDays-3.5)/period)).toFixed(1)}`;
+    for(let i=1;i<=70;i++){const d=-3.5+i*7/70;p+=` L${toX(d).toFixed(1)},${toY(Math.sin(2*Math.PI*(baseDays+d)/period)).toFixed(1)}`;}
+    return p;
+  };
+  const todayX=toX(0);
+  const isLight=parseInt(t.text.slice(1,3),16)<128;
+  const gC=isLight?"rgba(0,0,0,0.06)":"rgba(255,255,255,0.06)";
+  const gM=isLight?"rgba(0,0,0,0.16)":"rgba(255,255,255,0.14)";
+  const lC=isLight?"rgba(0,0,0,0.32)":"rgba(255,255,255,0.28)";
+  const lT=isLight?"rgba(0,0,0,0.68)":"rgba(255,255,255,0.65)";
+  const tC=isLight?"rgba(0,0,0,0.13)":"rgba(255,255,255,0.14)";
+  const dow=new Date(dateStr+"T12:00:00").getDay();
+  const DN=["Dom","Lun","Mar","Mer","Gio","Ven","Sab"];
+  return(
+    <svg viewBox={`0 0 ${W} ${H}`} style={{width:"100%",height:"auto",display:"block"}}>
+      {[-1,-0.5,0,0.5,1].map(v=>(
+        <line key={v} x1={PL} x2={W-PR} y1={toY(v)} y2={toY(v)} stroke={v===0?gM:gC} strokeWidth={v===0?0.9:0.4}/>
+      ))}
+      {[-3,-2,-1,0,1,2,3].map(d=>(
+        <line key={d} x1={toX(d)} x2={toX(d)} y1={PT} y2={PT+cH} stroke={gC} strokeWidth={0.4}/>
+      ))}
+      <line x1={todayX} x2={todayX} y1={PT-3} y2={PT+cH+3} stroke={tC} strokeWidth={1} strokeDasharray="3,2.5"/>
+      {CYCLES.map(c=>(
+        <path key={c.key} d={makePath(c.period)} fill="none" stroke={c.col} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round" opacity={0.90}/>
+      ))}
+      {CYCLES.map(c=>{
+        const v=Math.sin(2*Math.PI*baseDays/c.period);
+        return(
+          <g key={c.key}>
+            <circle cx={todayX} cy={toY(v)} r={5} fill={c.col} opacity={0.18}/>
+            <circle cx={todayX} cy={toY(v)} r={2.6} fill={c.col} stroke="rgba(0,0,0,0.25)" strokeWidth={0.8}/>
+          </g>
+        );
+      })}
+      {[-3,-2,-1,0,1,2,3].map(d=>{
+        const n=(((dow+d)%7)+7)%7;
+        return(
+          <text key={d} x={toX(d)} y={H-7} textAnchor="middle" fontSize={d===0?8:7} fontWeight={d===0?600:400} fill={d===0?lT:lC} fontFamily="Inter,sans-serif">
+            {d===0?"oggi":DN[n]}
+          </text>
+        );
+      })}
+    </svg>
+  );
+}
+
 // ── DAILY HOROSCOPE ──
 function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
   const sunKey=getSunSignKey(profile.birthday);
@@ -1272,6 +1423,8 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
   const h=today.getHours();
   const greeting=h<12?"Buongiorno":h<18?"Buon pomeriggio":"Buonasera";
   const horo=useMemo(()=>generateHoroscope(sunSg,dateStr),[sunSg.key,dateStr]);
+  const lunar=useMemo(()=>getLunarPhase(dateStr),[dateStr]);
+  const nextEv=useMemo(()=>getNextAstroEvent(dateStr),[dateStr]);
   const CATS=[
     {key:"amore",label:"Amore",icon:"♥",col:"#c07878"},
     {key:"lavoro",label:"Lavoro",icon:"✦",col:t.accent},
@@ -1361,6 +1514,67 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
             </div>
           );
         })}
+        {/* ── DIVIDER ── */}
+        <div style={{margin:"32px 0 20px",display:"flex",alignItems:"center",gap:12}}>
+          <div style={{flex:1,height:"1px",background:`linear-gradient(to right,transparent,${t.border})`}}/>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"7px",fontWeight:500,letterSpacing:".44em",color:t.muted,textTransform:"uppercase"}}>cielo di oggi</div>
+          <div style={{flex:1,height:"1px",background:`linear-gradient(to left,transparent,${t.border})`}}/>
+        </div>
+
+        {/* ── PROSSIMO EVENTO ── */}
+        <div style={{marginBottom:12,padding:"20px 22px",background:t.card,border:`1px solid ${t.border}`,position:"relative",overflow:"hidden",boxShadow:`inset 0 1px 0 rgba(255,255,255,0.12),0 4px 20px rgba(0,0,0,0.12)`}}>
+          <GlassOverlay/>
+          <div style={{position:"absolute",top:0,left:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${nextEv.col}80,transparent)`}}/>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"7px",fontWeight:500,letterSpacing:".4em",color:t.muted,textTransform:"uppercase",marginBottom:10,position:"relative",zIndex:1}}>Prossimo evento celeste</div>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12,marginBottom:10,position:"relative",zIndex:1}}>
+            <div style={{display:"flex",alignItems:"center",gap:10,flex:1,minWidth:0}}>
+              <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"26px",color:nextEv.col,lineHeight:1,flexShrink:0}}>{nextEv.icon}</span>
+              <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(13px,3.8vw,16px)",fontWeight:700,color:t.text,lineHeight:1.2}}>{nextEv.n}</div>
+            </div>
+            <div style={{padding:"5px 11px",background:`${nextEv.col}18`,border:`1px solid ${nextEv.col}45`,flexShrink:0}}>
+              <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:700,color:nextEv.col,whiteSpace:"nowrap"}}>{nextEv.daysAway===0?"oggi":nextEv.daysAway===1?"domani":`tra ${nextEv.daysAway}g`}</div>
+            </div>
+          </div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.8vw,16px)",fontStyle:"italic",color:t.muted,lineHeight:1.62,marginBottom:10,position:"relative",zIndex:1}}>{nextEv.desc}</div>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",letterSpacing:".18em",color:t.muted,opacity:.55,position:"relative",zIndex:1}}>
+            {new Date(nextEv.d+"T12:00:00").toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long"})}
+          </div>
+        </div>
+
+        {/* ── FASE LUNARE ── */}
+        <div style={{marginBottom:12,padding:"20px 22px",background:t.card,border:`1px solid ${t.border}`,position:"relative",overflow:"hidden",boxShadow:`inset 0 1px 0 rgba(255,255,255,0.12),0 4px 20px rgba(0,0,0,0.12)`}}>
+          <GlassOverlay/>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"7px",fontWeight:500,letterSpacing:".4em",color:t.muted,textTransform:"uppercase",marginBottom:14,position:"relative",zIndex:1}}>Fase Lunare</div>
+          <div style={{display:"flex",gap:18,alignItems:"center",position:"relative",zIndex:1}}>
+            <MoonSVG pd={lunar.pd}/>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(14px,4vw,17px)",fontWeight:700,color:t.text,marginBottom:6,lineHeight:1.1}}>{lunar.name}</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.8vw,16px)",fontStyle:"italic",color:t.muted,lineHeight:1.58,marginBottom:11}}>{lunar.desc}</div>
+              <div style={{display:"inline-flex",alignItems:"center",gap:5,padding:"5px 12px",background:`${t.accent}12`,border:`1px solid ${t.accent}38`}}>
+                <span style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:500,letterSpacing:".2em",color:t.accent}}>{lunar.nextEvent.type} tra {lunar.nextEvent.days} giorn{lunar.nextEvent.days===1?"o":"i"}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── BIORITMOGRAMMA ── */}
+        <div style={{marginBottom:12,padding:"18px 14px 14px",background:t.card,border:`1px solid ${t.border}`,position:"relative",overflow:"hidden",boxShadow:`inset 0 1px 0 rgba(255,255,255,0.12),0 4px 20px rgba(0,0,0,0.12)`}}>
+          <GlassOverlay/>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12,padding:"0 4px",position:"relative",zIndex:1}}>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"7px",fontWeight:500,letterSpacing:".4em",color:t.muted,textTransform:"uppercase"}}>Bioritmogramma settimanale</div>
+          </div>
+          <div style={{position:"relative",zIndex:1}}><BioChart birthday={profile.birthday} dateStr={dateStr} t={t}/></div>
+          <div style={{display:"flex",flexWrap:"wrap",gap:"7px 14px",marginTop:10,padding:"0 4px",position:"relative",zIndex:1}}>
+            {[["Fisico","#e07060","23g"],["Emotivo","#b060a8","28g"],["Intellettuale","#5890d8","33g"],["Sociale","#48b870","26g"]].map(([l,c,p])=>(
+              <div key={l} style={{display:"flex",alignItems:"center",gap:5}}>
+                <div style={{width:16,height:2,background:c,borderRadius:1}}/>
+                <span style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,color:t.muted}}>{l}</span>
+                <span style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",color:t.muted,opacity:.45}}>({p})</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div style={{height:"calc(env(safe-area-inset-bottom,0px) + 60px)"}}/>
       </div>
     </div>
