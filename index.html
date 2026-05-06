@@ -400,11 +400,11 @@ function Home({t,onSelect,profile,onSetup}){
         {shown.map((sg,i)=>(
           <div key={sg.key} className="fade-in-up" style={{animationDelay:`${i*.06}s`,opacity:0}} onClick={()=>onSelect(sg)}>
             <CometCard accentColor={t.accent}>
-              <div style={{background:t.card,padding:8,cursor:"pointer",border:"1.5px solid rgba(255,255,255,0.32)",borderRadius:16,boxShadow:"0 8px 32px rgba(0,0,0,0.18),0 1.5px 0 rgba(255,255,255,0.22) inset,0 -1px 0 rgba(0,0,0,0.12) inset",position:"relative",overflow:"hidden"}}>
+              <div style={{background:t.card,padding:8,cursor:"pointer",border:`1.5px solid ${t.accent}55`,borderRadius:16,boxShadow:`0 8px 32px ${t.accent}12,0 1.5px 0 rgba(255,255,255,0.14) inset`,position:"relative",overflow:"hidden"}}>
                 <GlassOverlay/>
                 <div style={{position:"relative",aspectRatio:"3/4",borderRadius:11,overflow:"hidden",background:t.surface,zIndex:1}}>
-                  {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:11,zIndex:1,filter:"contrast(1.85) brightness(0.72)"}}/>}
-                  <div style={{position:"absolute",inset:0,background:`linear-gradient(to top, ${t.card} 0%, transparent 45%)`,pointerEvents:"none",zIndex:2}}/>
+                  {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:11,zIndex:1}}/>}
+                  <div style={{position:"absolute",inset:0,background:`linear-gradient(to top, ${t.card}cc 0%, transparent 50%)`,pointerEvents:"none",zIndex:2}}/>
                   <div style={{position:"absolute",bottom:12,left:13,zIndex:3,width:32,height:1,background:`linear-gradient(to right,${t.accent},transparent)`,opacity:.9}}/>
                 </div>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 13px 4px",color:t.text,position:"relative",zIndex:1}}>
