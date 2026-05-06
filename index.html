@@ -433,26 +433,29 @@ function SignFlipCard({sg,t,i,onSelect}){
     if(raf.current){cancelAnimationFrame(raf.current);raf.current=null;}
   },[]);
 
-  // gentle pendulum oscillation — hints that card is rotatable
+  // natural damped pendulum — decays from drag position, settles into gentle oscillation
   const startIdle=useCallback(()=>{
     stopAnim();
-    idleBase.current=angle.current;
+    const startAngle=angle.current;
+    idleBase.current=startAngle;
     idleT0.current=performance.now();
     const tick=now=>{
-      applyAngle(idleBase.current+Math.sin((now-idleT0.current)*0.00160)*15);
+      const s=(now-idleT0.current)*0.001;
+      const decay=Math.exp(-s*1.1);
+      const osc=Math.sin(s*1.85)*10*(1-Math.exp(-s*0.8));
+      applyAngle(idleBase.current*decay+osc);
       raf.current=requestAnimationFrame(tick);
     };
     raf.current=requestAnimationFrame(tick);
   },[applyAngle,stopAnim]);
 
-  // start idle after card fades in
   useEffect(()=>{
     const timer=setTimeout(startIdle,i*60+750);
     return()=>{clearTimeout(timer);stopAnim();};
   },[i,startIdle,stopAnim]);
 
   const onDown=useCallback(e=>{
-    if(e.button!==0)return;
+    if(e.pointerType==="mouse"&&e.button!==0)return;
     stopAnim();
     const d=drag.current;
     d.active=true;d.locked=false;
@@ -467,16 +470,18 @@ function SignFlipCard({sg,t,i,onSelect}){
     const totalDx=e.clientX-d.sx,totalDy=e.clientY-d.sy;
     if(!d.locked){
       const adx=Math.abs(totalDx),ady=Math.abs(totalDy);
-      if(adx<3&&ady<3)return;
-      if(ady>adx){d.active=false;setCursor("grab");startIdle();return;}
+      if(adx<1&&ady<1)return; // 1px dead zone
+      if(ady>adx*1.3){d.active=false;setCursor("grab");startIdle();return;}
       d.locked=true;
       try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}
     }
-    const now=performance.now(),dx=e.clientX-d.lx,dt=Math.max(now-d.lt,1);
-    d.vel=(dx/dt)*16*0.65;
+    const now=performance.now();
+    const dt=Math.max(now-d.lt,4);
+    const dx=e.clientX-d.lx;
+    d.vel=d.vel*0.55+(dx/dt)*16*0.45; // EMA velocity
     d.moved+=Math.abs(dx);
     d.lx=e.clientX;d.lt=now;
-    applyAngle(d.sa+totalDx*0.78);
+    applyAngle(d.sa+totalDx*1.55); // 1.55x: 65px drag ≈ 100°
   },[applyAngle,startIdle]);
 
   const onUp=useCallback(()=>{
@@ -484,15 +489,15 @@ function SignFlipCard({sg,t,i,onSelect}){
     if(!d.active)return;
     d.active=false;
     setCursor("grab");
-    if(d.moved<6){onSelect(sg);return;}
+    if(d.moved<8){onSelect(sg);return;}
     let vel=d.vel;
-    const tick=()=>{
-      vel*=0.94;
-      if(Math.abs(vel)<0.08){startIdle();return;}
+    const coast=()=>{
+      vel*=0.97; // long smooth glide
+      if(Math.abs(vel)<0.05){startIdle();return;}
       applyAngle(angle.current+vel);
-      raf.current=requestAnimationFrame(tick);
+      raf.current=requestAnimationFrame(coast);
     };
-    raf.current=requestAnimationFrame(tick);
+    raf.current=requestAnimationFrame(coast);
   },[applyAngle,onSelect,sg,startIdle]);
 
   const onCancel=useCallback(()=>{
@@ -504,7 +509,7 @@ function SignFlipCard({sg,t,i,onSelect}){
   return(
     <div className="fade-in-up" style={{animationDelay:`${i*.06}s`,opacity:0}}>
       <div
-        style={{perspective:"1000px",perspectiveOrigin:"50% 40%",touchAction:"pan-y",userSelect:"none",WebkitUserSelect:"none",cursor}}
+        style={{perspective:"820px",perspectiveOrigin:"50% 40%",touchAction:"pan-y",userSelect:"none",WebkitUserSelect:"none",cursor}}
         onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onCancel}>
         <div ref={innerRef} style={{transformStyle:"preserve-3d",transform:"rotateY(0deg)",willChange:"transform",position:"relative"}}>
 
