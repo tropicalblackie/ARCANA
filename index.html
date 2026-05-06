@@ -349,7 +349,7 @@ const Splash=memo(function Splash({onDone,bg}){
 });
 
 // ── HOME ──
-function Home({t,onSelect}){
+function Home({t,onSelect,profile}){
   const[filter,setFilter]=useState("all");
   const elColor={Fuoco:"#b04a18",Terra:"#4a7a38",Aria:"#8a7010",Acqua:"#1860a0"};
   const shown=filter==="all"?SIGNS:SIGNS.filter(s=>s.element===filter);
@@ -358,6 +358,7 @@ function Home({t,onSelect}){
       <div className="fade-in-up" style={{textAlign:"center",padding:"calc(clamp(44px,8vw,72px) + env(safe-area-inset-top,0px)) 20px 48px",position:"relative",zIndex:1}}>
         <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(62px,15vw,118px)",fontWeight:300,letterSpacing:".3em",color:t.text,lineHeight:.9}}>ARCANA</div>
         <div style={{width:36,height:1,background:t.accent,margin:"20px auto",opacity:.35}}/>
+        {profile?.name&&<div style={{fontSize:"9px",letterSpacing:".32em",color:t.muted,textTransform:"uppercase",marginBottom:6}}>benvenuta, {profile.name}</div>}
         <div style={{fontSize:"8px",letterSpacing:".5em",color:t.muted,textTransform:"uppercase",marginBottom:40}}>Psicologia Archetipica</div>
         <div style={{display:"flex",justifyContent:"center",gap:"clamp(14px,4vw,36px)",flexWrap:"wrap",marginBottom:48}}>
           {[lunarPhase(),planetDay(),season()].map((v,i)=><div key={i} style={{fontSize:"11px",letterSpacing:".14em",color:t.muted}}>{v}</div>)}
@@ -657,6 +658,97 @@ function ThemeBtn({theme,setTheme,t}){
   );
 }
 
+// ── PROFILE SETUP ──
+const SETUP_STEPS=[
+  {key:"name",         q:"Come ti chiami?",                                    type:"text",   placeholder:"Il tuo nome"},
+  {key:"gender",       q:"Come ti identifichi?",                               type:"choice", options:["Donna","Uomo","Non binario","Preferisco non dirlo"]},
+  {key:"birthday",     q:"Quando sei nato/a?",                                 type:"date"},
+  {key:"birthcity",    q:"In quale città sei nato/a?",                         type:"text",   placeholder:"Città di nascita"},
+  {key:"birthtime",    q:"A che ora sei nato/a?",                              type:"time"},
+  {key:"relationship", q:"Qual è il tuo stato sentimentale?",                  type:"choice", options:["Single","Impegnato/a","Fidanzato/a","Sposato/a","Flirt","Platonica","Appena separato/a","Divorziato/a","Vedovo/a","È complicato"]},
+  {key:"work",         q:"Come descriveresti la tua situazione lavorativa?",   type:"choice", options:["Studente","Neolaureato/a","In cerca di lavoro","Disoccupato/a","Dipendente pubblico","Dipendente privato","Imprenditore/trice","Capo","Pensionato/a","Casalinga/o","Nessuno di questi"]},
+];
+
+function ProfileSetup({t,onDone}){
+  const[step,setStep]=useState(0);
+  const[data,setData]=useState({});
+  const[val,setVal]=useState("");
+  const s=SETUP_STEPS[step];
+  const total=SETUP_STEPS.length;
+  const isDark=parseInt(t.bg.slice(1,3),16)<128;
+
+  const next=useCallback((v)=>{
+    const chosen=v!==undefined?v:val;
+    const newData={...data,[s.key]:chosen};
+    if(step<total-1){setData(newData);setVal("");setStep(step+1);}
+    else{try{localStorage.setItem("arcana_profile",JSON.stringify(newData))}catch(e){}onDone(newData);}
+  },[step,val,data,s,total,onDone]);
+
+  const back=()=>{if(step>0){setStep(p=>{const ns=p-1;setVal(data[SETUP_STEPS[ns].key]||"");return ns;});}};
+  const canContinue=(s.type==="text"||s.type==="date")&&val.trim().length>0;
+
+  return(
+    <div className="screen-h" style={{background:t.bg,display:"flex",flexDirection:"column",padding:"env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)"}}>
+      <div style={{padding:"clamp(16px,4vw,28px) 24px 0",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+        {step>0?<button onClick={back} style={{color:t.muted,fontSize:"10px",letterSpacing:".16em"}}>← indietro</button>:<div/>}
+        <div style={{fontSize:"8px",letterSpacing:".32em",color:t.muted,textTransform:"uppercase"}}>{step+1} / {total}</div>
+      </div>
+      <div style={{display:"flex",gap:4,justifyContent:"center",padding:"16px 0 0"}}>
+        {SETUP_STEPS.map((_,i)=>(
+          <div key={i} style={{width:i===step?20:5,height:4,borderRadius:2,background:i<=step?t.accent:t.border,transition:"all .35s"}}/>
+        ))}
+      </div>
+      <div className="fade-in" key={step} style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",padding:"0 clamp(20px,6vw,40px)",overflowY:"auto"}}>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(24px,6vw,38px)",fontStyle:"italic",color:t.text,lineHeight:1.2,marginBottom:36}}>{s.q}</div>
+
+        {s.type==="text"&&(
+          <input autoFocus value={val} onChange={e=>setVal(e.target.value)} onKeyDown={e=>e.key==="Enter"&&canContinue&&next()} placeholder={s.placeholder}
+            style={{background:"transparent",border:"none",borderBottom:`1px solid ${t.border}`,color:t.text,fontSize:"clamp(20px,5vw,28px)",fontFamily:"'Cormorant Garamond',serif",padding:"10px 0",outline:"none",caretColor:t.accent,width:"100%","::placeholder":{color:t.muted}}}/>
+        )}
+
+        {s.type==="date"&&(
+          <input type="date" value={val} onChange={e=>setVal(e.target.value)} colorScheme={isDark?"dark":"light"}
+            style={{background:"transparent",border:"none",borderBottom:`1px solid ${t.border}`,color:t.text,fontSize:"clamp(18px,4.5vw,24px)",fontFamily:"'Cormorant Garamond',serif",padding:"10px 0",outline:"none",width:"100%",colorScheme:isDark?"dark":"light"}}/>
+        )}
+
+        {s.type==="time"&&(
+          <div>
+            <input type="time" value={val} onChange={e=>setVal(e.target.value)}
+              style={{background:"transparent",border:"none",borderBottom:`1px solid ${t.border}`,color:t.text,fontSize:"clamp(18px,4.5vw,24px)",fontFamily:"'Cormorant Garamond',serif",padding:"10px 0",outline:"none",width:"100%",colorScheme:isDark?"dark":"light"}}/>
+            <div style={{marginTop:28,display:"flex",gap:12,flexWrap:"wrap"}}>
+              <button onClick={()=>next(val||"non specificato")} style={{padding:"12px 20px",fontSize:"9px",letterSpacing:".22em",textTransform:"uppercase",border:`1px solid ${t.accent}`,color:t.text,background:`${t.accent}14`}}>
+                {val?"Continua →":"Continua →"}
+              </button>
+              <button onClick={()=>next("non specificato")} style={{padding:"12px 20px",fontSize:"9px",letterSpacing:".22em",textTransform:"uppercase",border:`1px solid ${t.border}`,color:t.muted,background:"transparent"}}>
+                Non lo so
+              </button>
+            </div>
+          </div>
+        )}
+
+        {s.type==="choice"&&(
+          <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+            {s.options.map(o=>(
+              <button key={o} onClick={()=>next(o)}
+                style={{padding:"12px 18px",fontSize:"9px",letterSpacing:".18em",textTransform:"uppercase",border:`1px solid ${t.border}`,color:t.muted,background:"transparent",borderRadius:2,transition:"all .15s"}}>
+                {o}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {(s.type==="text"||s.type==="date")&&(
+        <div style={{padding:"20px 24px calc(env(safe-area-inset-bottom,0px) + 20px)"}}>
+          <button onClick={()=>canContinue&&next()} style={{width:"100%",padding:"18px",fontSize:"9px",letterSpacing:".3em",textTransform:"uppercase",border:`1px solid ${canContinue?t.accent:t.border}`,color:canContinue?t.text:t.muted,background:canContinue?`${t.accent}14`:"transparent",transition:"all .25s"}}>
+            Continua →
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── APP ──
 function App(){
   const[view,setView]=useState("home");
@@ -664,9 +756,16 @@ function App(){
   const[theme,setTheme]=useState("carta");
   const[splash,setSplash]=useState(true);
   const[journal,setJournal]=useState({});
+  const[profile,setProfile]=useState(null);
+  const[setupDone,setSetupDone]=useState(false);
   const t=THEMES[theme];
 
-  useEffect(()=>{try{const s=localStorage.getItem("arcana_v3");if(s)setJournal(JSON.parse(s))}catch(e){}}, []);
+  useEffect(()=>{
+    try{
+      const s=localStorage.getItem("arcana_v3");if(s)setJournal(JSON.parse(s));
+      const p=localStorage.getItem("arcana_profile");if(p){setProfile(JSON.parse(p));setSetupDone(true);}
+    }catch(e){}
+  },[]);
   useEffect(()=>{document.body.style.background=t.bg},[t.bg]);
 
   const saveEntry=useCallback((sKey,tab,text)=>{
@@ -677,12 +776,17 @@ function App(){
     });
   },[]);
 
+  const onSetupDone=useCallback((p)=>{setProfile(p);setSetupDone(true);},[]);
+
+  const showSetup=!splash&&!setupDone;
+
   return(
     <div style={{background:t.bg,color:t.text,minHeight:"100vh"}}>
       {splash&&<Splash onDone={()=>setSplash(false)} bg={t.bg}/>}
-      {view==="home"&&<Home t={t} onSelect={s=>{setSelected(s);setView("sign")}}/>}
-      {view==="sign"&&selected&&<SignScreen sg={selected} t={t} onBack={()=>setView("home")} journal={journal} saveEntry={saveEntry}/>}
-      <ThemeBtn theme={theme} setTheme={setTheme} t={t}/>
+      {showSetup&&<ProfileSetup t={t} onDone={onSetupDone}/>}
+      {!splash&&setupDone&&view==="home"&&<Home t={t} profile={profile} onSelect={s=>{setSelected(s);setView("sign")}}/>}
+      {!splash&&setupDone&&view==="sign"&&selected&&<SignScreen sg={selected} t={t} onBack={()=>setView("home")} journal={journal} saveEntry={saveEntry}/>}
+      {!splash&&setupDone&&<ThemeBtn theme={theme} setTheme={setTheme} t={t}/>}
     </div>
   );
 }
