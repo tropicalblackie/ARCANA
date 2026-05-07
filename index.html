@@ -1604,7 +1604,7 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
         <div style={{marginBottom:14,padding:"22px 26px",background:`linear-gradient(135deg,rgba(250,249,248,0.92),rgba(240,237,232,0.86))`,border:"1.5px solid rgba(88,144,216,.15)",borderRadius:12,boxShadow:`0 8px 28px rgba(88,144,216,.05),inset 0 1px 0 rgba(255,255,255,0.8)`,position:"relative",overflow:"hidden",animation:"slideUpStagger .5s ease-out .32s both"}}>
           <div style={{position:"absolute",top:0,left:0,bottom:0,width:3,background:"linear-gradient(180deg,#5890d800,#5890d828,#5890d800)",borderRadius:"12px 0 0 12px"}}/>
           <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:600,letterSpacing:".3em",color:"#5890d8",textTransform:"uppercase",marginBottom:12,position:"relative",zIndex:1}}>Bioritmi Settimanali</div>
-          <div style={{position:"relative",zIndex:1,marginBottom:12}}><BioChart birthday={profile.birthday} dateStr={dateStr} t={{accent:"#5890d8"}}/></div>
+          <div style={{position:"relative",zIndex:1,marginBottom:12}}><BioChart birthday={profile.birthday} dateStr={dateStr} t={localT}/></div>
           <div style={{display:"flex",flexWrap:"wrap",gap:"10px 16px",position:"relative",zIndex:1}}>
             {[["Fisico","#e07060","23g"],["Emotivo","#b060a8","28g"],["Intellettuale","#5890d8","33g"],["Sociale","#48b870","26g"]].map(([l,c,p])=>(
               <div key={l} style={{display:"flex",alignItems:"center",gap:7}}>
