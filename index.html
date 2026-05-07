@@ -42,6 +42,7 @@ textarea{font-family:inherit;resize:none;outline:none;border:none;-webkit-appear
 @keyframes sp-sub{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes gold-sweep{0%{background-position:200% center}100%{background-position:-200% center}}
 .gold-text{background:linear-gradient(90deg,#c8a868 0%,#f0d898 40%,#c8a868 60%,#a07840 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gold-sweep 4s linear infinite}
+@keyframes candle-flicker{0%,100%{opacity:1}93%{opacity:.92}94%{opacity:.85}95%{opacity:.93}97%{opacity:.88}98%{opacity:.96}}
 </style>
 </head>
 <body>
@@ -398,6 +399,33 @@ const CometCard=memo(({children,accentColor="#fff"})=>{
   );
 });
 
+// ── CANDLE LIGHT ──
+function useCandleLight(){
+  useEffect(()=>{
+    const el=document.documentElement;
+    let raf=null;let tx=50,ty=35,cx=50,cy=35;
+    function loop(){cx+=(tx-cx)*.07;cy+=(ty-cy)*.07;el.style.setProperty('--cx',cx.toFixed(1)+'%');el.style.setProperty('--cy',cy.toFixed(1)+'%');raf=requestAnimationFrame(loop);}
+    raf=requestAnimationFrame(loop);
+    function onMouse(e){tx=e.clientX/window.innerWidth*100;ty=e.clientY/window.innerHeight*100;}
+    function onOrient(e){
+      const g=Math.max(-50,Math.min(50,e.gamma||0));
+      const b=Math.max(-50,Math.min(50,(e.beta||0)-25));
+      tx=50+g*(100/100);ty=50+b*(100/100);
+    }
+    window.addEventListener('mousemove',onMouse,{passive:true});
+    window.addEventListener('deviceorientation',onOrient,{passive:true});
+    return()=>{cancelAnimationFrame(raf);window.removeEventListener('mousemove',onMouse);window.removeEventListener('deviceorientation',onOrient);el.style.removeProperty('--cx');el.style.removeProperty('--cy');};
+  },[]);
+}
+const CandleShine=memo(function CandleShine(){
+  return(
+    <div style={{position:"absolute",inset:0,borderRadius:"inherit",pointerEvents:"none",zIndex:6,
+      background:"radial-gradient(circle at var(--cx,50%) var(--cy,35%), rgba(255,210,100,0.13) 0%, rgba(200,150,50,0.07) 30%, transparent 65%)",
+      animation:"candle-flicker 6s ease-in-out infinite",
+      mixBlendMode:"screen"}}/>
+  );
+});
+
 // ── GLASS OVERLAY ──
 const GlassOverlay=memo(function GlassOverlay(){return(
   <div style={{position:"absolute",inset:0,borderRadius:"inherit",overflow:"hidden",pointerEvents:"none",zIndex:4}}>
@@ -455,9 +483,10 @@ const SIGN_DATES={ariete:"21 mar – 19 apr",toro:"20 apr – 20 mag",gemelli:"2
 // ── SIGN FLIP CARD ──
 function SignFlipCard({sg,t,i,onSelect}){
   const innerRef=useRef(null);
+  const frontRef=useRef(null);
+  const backRef=useRef(null);
   const angle=useRef(0);
   const raf=useRef(null);
-  const idleBase=useRef(0);
   const idleT0=useRef(0);
   const drag=useRef({active:false,locked:false,sx:0,sy:0,sa:0,lx:0,vel:0,moved:0,lt:0});
   const[cursor,setCursor]=useState("grab");
@@ -465,23 +494,32 @@ function SignFlipCard({sg,t,i,onSelect}){
   const applyAngle=useCallback(a=>{
     angle.current=a;
     if(innerRef.current) innerRef.current.style.transform=`rotateY(${a}deg)`;
+    // iOS Safari backface-visibility fallback: toggle opacity via direct DOM
+    const norm=((a%360)+360)%360;
+    const onBack=norm>90&&norm<=270;
+    if(frontRef.current){frontRef.current.style.opacity=onBack?0:1;frontRef.current.style.pointerEvents=onBack?"none":"auto";}
+    if(backRef.current){backRef.current.style.opacity=onBack?1:0;}
   },[]);
 
   const stopAnim=useCallback(()=>{
     if(raf.current){cancelAnimationFrame(raf.current);raf.current=null;}
   },[]);
 
-  // natural damped pendulum — decays from drag position, settles into gentle oscillation
+  // Snaps to nearest face (0° or 180°), then gentle oscillation around that face
   const startIdle=useCallback(()=>{
     stopAnim();
-    const startAngle=angle.current;
-    idleBase.current=startAngle;
+    const a=angle.current;
+    const rounds=Math.floor(a/360);
+    const norm=a-rounds*360;
+    const snapBack=norm>90&&norm<=270;
+    const target=rounds*360+(snapBack?180:0);
+    const startAngle=a;
     idleT0.current=performance.now();
     const tick=now=>{
       const s=(now-idleT0.current)*0.001;
-      const decay=Math.exp(-s*1.1);
-      const osc=Math.sin(s*1.85)*10*(1-Math.exp(-s*0.8));
-      applyAngle(idleBase.current*decay+osc);
+      const settle=Math.exp(-s*2.8);
+      const osc=Math.sin(s*1.6)*4*(1-Math.exp(-s*1.4));
+      applyAngle(target+(startAngle-target)*settle+osc);
       raf.current=requestAnimationFrame(tick);
     };
     raf.current=requestAnimationFrame(tick);
@@ -552,8 +590,9 @@ function SignFlipCard({sg,t,i,onSelect}){
         <div ref={innerRef} style={{transformStyle:"preserve-3d",WebkitTransformStyle:"preserve-3d",transform:"rotateY(0deg)",willChange:"transform",position:"relative"}}>
 
           {/* ── FRONT ── */}
-          <div style={{backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden"}}>
+          <div ref={frontRef} style={{backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",transform:"translateZ(1px)"}}>
             <div style={{background:"linear-gradient(165deg,rgba(255,255,255,0.16) 0%,rgba(255,255,255,0.05) 50%,rgba(255,255,255,0.10) 100%)",padding:8,border:"1px solid rgba(255,255,255,0.26)",borderRadius:16,boxShadow:`inset 0 1.5px 0 rgba(255,255,255,0.62),inset 0.5px 0 0 rgba(255,255,255,0.16),inset -0.5px 0 0 rgba(255,255,255,0.06),inset 0 -1px 0 rgba(255,255,255,0.10),0 24px 60px rgba(0,0,0,0.58),0 6px 20px rgba(0,0,0,0.36),0 0 0 0.5px rgba(${sg.rgb},0.22)`,position:"relative",overflow:"hidden"}}>
+              <CandleShine/>
               <GlassOverlay/>
               <div style={{position:"relative",aspectRatio:"3/4",borderRadius:11,overflow:"hidden",background:t.surface,zIndex:1}}>
                 {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" decoding="async" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:11,zIndex:1}}/>}
@@ -567,10 +606,11 @@ function SignFlipCard({sg,t,i,onSelect}){
           </div>
 
           {/* ── BACK ── no backdrop-filter: breaks transform-style:preserve-3d on iOS Safari */}
-          <div style={{
+          <div ref={backRef} style={{
             position:"absolute",inset:0,
             backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",
-            transform:"rotateY(180deg)",
+            transform:"rotateY(180deg) translateZ(1px)",
+            opacity:0,
             borderRadius:16,
             background:`linear-gradient(155deg,#08000f 0%,rgba(${sg.rgb},0.32) 48%,#04000a 100%)`,
             border:"1px solid rgba(255,255,255,0.18)",
@@ -2064,6 +2104,7 @@ function App(){
   const[profile,setProfile]=useState(null);
   const[setupDone,setSetupDone]=useState(false); // kept for compat
   const t=THEMES[theme];
+  useCandleLight();
 
   useEffect(()=>{
     try{
