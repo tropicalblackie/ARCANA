@@ -1558,30 +1558,38 @@ function ProfileSetup({t,onDone,onBack}){
   const[geoLoading,setGeoLoading]=useState(false);
   const[geoError,setGeoError]=useState("");
   const[geoResult,setGeoResult]=useState(null);
+  const geoTimerRef=useRef(null);
   const s=SETUP_STEPS[step];
   const total=SETUP_STEPS.length;
   const isDark=parseInt(t.bg.slice(1,3),16)<128;
 
+  const autoGeocode=useCallback(async(cityName)=>{
+    if(!cityName.trim())return;
+    setGeoLoading(true);
+    setGeoError("");
+    const geo=await geocodeCity(cityName);
+    setGeoLoading(false);
+    if(geo){
+      setGeoResult(geo);
+    }else{
+      setGeoError("Città non trovata. Prova di nuovo.");
+    }
+  },[]);
+
+  useEffect(()=>{
+    if(s.key==="birthcity"&&s.validate&&val.trim()){
+      if(geoTimerRef.current)clearTimeout(geoTimerRef.current);
+      geoTimerRef.current=setTimeout(()=>autoGeocode(val),500);
+    }
+    return()=>{if(geoTimerRef.current)clearTimeout(geoTimerRef.current);};
+  },[val,s.key,s.validate,autoGeocode]);
+
   const next=useCallback(async(v)=>{
     const chosen=v!==undefined?v:val;
-    let finalValue=chosen;
-    if(s.key==="birthcity"&&s.validate&&chosen.trim()){
-      setGeoLoading(true);
-      setGeoError("");
-      const geo=await geocodeCity(chosen);
-      setGeoLoading(false);
-      if(geo){
-        finalValue=`${geo.name}, ${geo.lat}, ${geo.lon}`;
-        setGeoResult(geo);
-      }else{
-        setGeoError("Città non trovata. Prova di nuovo.");
-        return;
-      }
-    }
-    const newData={...data,[s.key]:finalValue};
+    const newData={...data,[s.key]:geoResult?`${geoResult.name}, ${geoResult.lat}, ${geoResult.lon}`:chosen};
     if(step<total-1){setData(newData);setVal("");setStep(step+1);setGeoLoading(false);setGeoError("");setGeoResult(null);}
     else{try{localStorage.setItem("arcana_profile",JSON.stringify(newData))}catch(e){}onDone(newData);}
-  },[step,val,data,s,total,onDone]);
+  },[step,val,data,s,total,onDone,geoResult]);
 
   const back=()=>{if(step>0){setStep(p=>{const ns=p-1;setVal(data[SETUP_STEPS[ns].key]||"");return ns;});}};
   const canContinue=(s.type==="text"||s.type==="date")&&val.trim().length>0&&(s.key!=="birthcity"||geoResult!==null);
