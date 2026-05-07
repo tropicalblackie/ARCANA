@@ -1330,23 +1330,23 @@ float perlin4d(vec4 P){
 }`;
 
 /* ── Liquid Three.js Ball ── */
-function LiquidBall({colorHex,breathProgressRef}){
+function LiquidBall({breathProgressRef}){
   const mountRef=useRef(null);
   useEffect(()=>{
     if(!mountRef.current||typeof THREE==='undefined')return;
     const el=mountRef.current;
-    const w=el.offsetWidth||270;
-    const h=el.offsetHeight||270;
+    const w=el.offsetWidth||220;
+    const h=el.offsetHeight||220;
     const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
     renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
     renderer.setSize(w,h);
     renderer.setClearColor(0x000000,0);
     el.appendChild(renderer.domElement);
     const scene=new THREE.Scene();
-    const camera=new THREE.PerspectiveCamera(38,1,0.1,100);
-    camera.position.z=2.6;
-    const col=new THREE.Color(colorHex);
-    // mouse/touch state
+    // FOV 42, z=3.4 → visible half = 3.4*tan(21°) = 1.30 — sphere+max_displacement=1.10 → safe
+    const camera=new THREE.PerspectiveCamera(42,1,0.1,100);
+    camera.position.z=3.4;
+    const col=new THREE.Color(0x0c0c0e);
     const mouse={x:0,y:0,vx:0,vy:0,cx:0,cy:0};
     let burst=0;
     const material=new THREE.ShaderMaterial({
@@ -1361,13 +1361,16 @@ function LiquidBall({colorHex,breathProgressRef}){
         ${PERLIN4D_GLSL}
         void main(){
           vec3 pos=position;
-          float pn=perlin4d(vec4(position*1.8,iTime*0.33))*uDisp;
-          // mouse pull: attract surface toward pointer direction
-          vec3 mouseDir=normalize(vec3(uMouse,0.6));
+          // higher frequency (2.4) for more organic movement
+          float pn=perlin4d(vec4(position*2.4,iTime*0.38))*uDisp;
+          // mouse deformation — pulls surface toward pointer
+          vec3 mouseDir=normalize(vec3(uMouse,0.55));
           float mouseAlign=max(dot(normalize(pos),mouseDir),0.0);
-          pn+=mouseAlign*mouseAlign*(uMouse.x*uMouse.x+uMouse.y*uMouse.y)*0.28;
-          // burst ripple on tap
-          pn+=uBurst*sin(length(pos-mouseDir*0.5)*18.0-iTime*6.0)*0.09;
+          pn+=mouseAlign*mouseAlign*(uMouse.x*uMouse.x+uMouse.y*uMouse.y)*0.36;
+          // tap burst ripple
+          pn+=uBurst*sin(length(pos-mouseDir*0.4)*22.0-iTime*7.0)*0.11;
+          // hard clamp — sphere never exceeds safe radius
+          pn=clamp(pn,-0.38,0.38);
           pos+=normal*pn;
           vPerlin=pn;
           vNorm=normalMatrix*normal;
@@ -1379,38 +1382,31 @@ function LiquidBall({colorHex,breathProgressRef}){
         varying float vPerlin;
         varying vec3 vNorm;
         void main(){
-          vec3 ld=normalize(vec3(0.8,1.2,1.5));
+          vec3 ld=normalize(vec3(0.7,1.3,1.4));
           vec3 n=normalize(vNorm);
-          float diff=max(dot(n,ld),0.0)*0.65+0.35;
-          float rim=pow(1.0-max(dot(n,vec3(0.0,0.0,1.0)),0.0),2.8);
+          float diff=max(dot(n,ld),0.0)*0.55+0.45;
+          // subtle dark rim — no white halo
+          float rim=pow(1.0-max(dot(n,vec3(0.0,0.0,1.0)),0.0),3.5);
           vec3 c=uColor*diff;
-          c+=vec3(0.88,0.92,1.0)*rim*(0.55+uBurst*0.4);
-          c+=vec3(1.0)*max(vPerlin*4.0,0.0)*0.18;
-          c+=uColor*uBurst*0.25;
-          gl_FragColor=vec4(c,0.94);
+          c+=vec3(0.08,0.08,0.11)*rim*(1.0+uBurst*0.8);
+          // very faint highlight from displacement peaks
+          c+=vec3(0.10,0.10,0.13)*max(vPerlin*5.0,0.0)*0.22;
+          gl_FragColor=vec4(c,0.97);
         }`,
       transparent:true,
     });
     const geometry=new THREE.SphereGeometry(0.68,96,96);
     const mesh=new THREE.Mesh(geometry,material);
     scene.add(mesh);
-    // pointer helpers
-    const stiffness=0.055,damping=0.68;
+    const stiffness=0.06,damping=0.65;
     let last=performance.now();
     const setTarget=(ex,ey)=>{
       const rect=renderer.domElement.getBoundingClientRect();
       mouse.x=((ex-rect.left)/rect.width*2-1);
       mouse.y=-((ey-rect.top)/rect.height*2-1);
     };
-    const onMove=e=>{
-      const src=e.touches?e.touches[0]:e;
-      setTarget(src.clientX,src.clientY);
-    };
-    const onTap=e=>{
-      const src=e.touches?e.touches[0]:e;
-      setTarget(src.clientX,src.clientY);
-      burst=1.0;
-    };
+    const onMove=e=>{const src=e.touches?e.touches[0]:e;setTarget(src.clientX,src.clientY);};
+    const onTap=e=>{const src=e.touches?e.touches[0]:e;setTarget(src.clientX,src.clientY);burst=1.0;};
     renderer.domElement.addEventListener('mousemove',onMove,{passive:true});
     renderer.domElement.addEventListener('touchmove',onMove,{passive:true});
     renderer.domElement.addEventListener('mousedown',onTap,{passive:true});
@@ -1421,19 +1417,19 @@ function LiquidBall({colorHex,breathProgressRef}){
       animId=requestAnimationFrame(animate);
       const dt=Math.min((now-last)/16.667,3);
       last=now;
-      // spring smooth mouse
       mouse.vx=(mouse.vx+stiffness*(mouse.x-mouse.cx)*dt)*Math.pow(damping,dt);
       mouse.vy=(mouse.vy+stiffness*(mouse.y-mouse.cy)*dt)*Math.pow(damping,dt);
       mouse.cx+=mouse.vx*dt;
       mouse.cy+=mouse.vy*dt;
-      burst*=Math.pow(0.88,dt);
+      burst*=Math.pow(0.86,dt);
       const t=(now-t0)/1000;
       material.uniforms.iTime.value=t;
-      material.uniforms.uDisp.value=0.08+(breathProgressRef?breathProgressRef.current:0)*0.24;
+      // breath: 0.14 base → 0.44 max, all clamped in shader
+      material.uniforms.uDisp.value=0.14+(breathProgressRef?breathProgressRef.current:0)*0.30;
       material.uniforms.uMouse.value.set(mouse.cx,mouse.cy);
       material.uniforms.uBurst.value=burst;
-      mesh.rotation.y=t*0.07+mouse.cx*0.18;
-      mesh.rotation.x=Math.sin(t*0.11)*0.04+mouse.cy*0.14;
+      mesh.rotation.y=t*0.08+mouse.cx*0.22;
+      mesh.rotation.x=Math.sin(t*0.13)*0.05+mouse.cy*0.18;
       renderer.render(scene,camera);
     };
     animate(performance.now());
@@ -1443,12 +1439,10 @@ function LiquidBall({colorHex,breathProgressRef}){
       renderer.domElement.removeEventListener('touchmove',onMove);
       renderer.domElement.removeEventListener('mousedown',onTap);
       renderer.domElement.removeEventListener('touchstart',onTap);
-      renderer.dispose();
-      geometry.dispose();
-      material.dispose();
+      renderer.dispose();geometry.dispose();material.dispose();
       if(el.contains(renderer.domElement))el.removeChild(renderer.domElement);
     };
-  },[colorHex]);
+  },[]);
   return <div ref={mountRef} style={{width:"100%",height:"100%",cursor:"pointer"}}/>;
 }
 
@@ -1519,35 +1513,35 @@ function MeditationSession({med,onEnd}){
   const phaseLabel={inspira:"· inspira ·",tieni:"· tieni ·",espira:"· espira ·",riposa:"· riposa ·"};
   const phaseAlpha={inspira:0.9,tieni:0.65,espira:0.55,riposa:0.3};
   return(
-    <div style={{position:"fixed",inset:0,zIndex:500,background:med.bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
+    <div style={{position:"fixed",inset:0,zIndex:500,background:"#f7f5fc",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
       <div style={{position:"absolute",inset:0,pointerEvents:"none"}}>
-        {[...Array(22)].map((_,i)=><div key={i} style={{position:"absolute",width:i%5===0?2:1,height:i%5===0?2:1,borderRadius:"50%",background:`rgba(255,255,255,${i%4===0?.45:.18})`,top:`${(i*41+7)%100}%`,left:`${(i*73+13)%100}%`,animation:`pulse ${1.5+(i*0.31)%2}s ${(i*0.19)%2}s ease-in-out infinite`}}/>)}
+        {[...Array(18)].map((_,i)=><div key={i} style={{position:"absolute",width:i%5===0?2:1,height:i%5===0?2:1,borderRadius:"50%",background:`rgba(10,5,30,${i%4===0?.12:.06})`,top:`${(i*41+7)%100}%`,left:`${(i*73+13)%100}%`,animation:`pulse ${1.5+(i*0.31)%2}s ${(i*0.19)%2}s ease-in-out infinite`}}/>)}
       </div>
-      {/* header — absolute so it doesn't push ball off-center */}
+      {/* header */}
       <div style={{position:"absolute",top:0,left:0,right:0,display:"flex",alignItems:"flex-start",justifyContent:"space-between",padding:`calc(env(safe-area-inset-top,0px) + 18px) 22px 0`,zIndex:2}}>
         <div>
-          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",letterSpacing:".44em",textTransform:"uppercase",color:`${med.glow}.22)`}}>{med.name}</div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"13px",fontStyle:"italic",color:`${med.glow}.42)`,marginTop:3,maxWidth:"65vw",lineHeight:1.5}}>{med.pose}</div>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",letterSpacing:".44em",textTransform:"uppercase",color:`${med.glow}.35)`}}>{med.name}</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"13px",fontStyle:"italic",color:"rgba(10,5,30,0.45)",marginTop:3,maxWidth:"65vw",lineHeight:1.5}}>{med.pose}</div>
         </div>
-        <button onClick={handleEnd} style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",letterSpacing:".24em",textTransform:"uppercase",color:`${med.glow}.32)`,background:"none",border:"none",cursor:"pointer",paddingTop:2}}>✕ fine</button>
+        <button onClick={handleEnd} style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",letterSpacing:".24em",textTransform:"uppercase",color:"rgba(10,5,30,0.35)",background:"none",border:"none",cursor:"pointer",paddingTop:2}}>✕ fine</button>
       </div>
-      {/* ball — truly centered */}
-      <div style={{width:"clamp(220px,58vw,290px)",height:"clamp(220px,58vw,290px)",flexShrink:0,position:"relative",zIndex:1,filter:`drop-shadow(0 0 30px ${med.glow}.35)) drop-shadow(0 0 70px ${med.glow}.14))`}}>
-        <LiquidBall colorHex={med.col} breathProgressRef={breathProgressRef}/>
+      {/* ball — smaller, no shadow halo */}
+      <div style={{width:"clamp(170px,44vw,210px)",height:"clamp(170px,44vw,210px)",flexShrink:0,position:"relative",zIndex:1}}>
+        <LiquidBall breathProgressRef={breathProgressRef}/>
       </div>
-      {/* breath controls below ball */}
+      {/* breath controls */}
       <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,marginTop:20,position:"relative",zIndex:2}}>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(44px,12vw,58px)",fontWeight:300,color:`rgba(237,232,245,${phaseAlpha[breathState.phase]||0.5})`,transition:"color .6s",lineHeight:1,letterSpacing:"-0.01em"}}>{breathState.count}</div>
-        <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(10px,2.8vw,13px)",letterSpacing:".42em",textTransform:"uppercase",color:`${med.glow}.55)`,height:20,display:"flex",alignItems:"center"}}>{phaseLabel[breathState.phase]||breathState.phase}</div>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(44px,12vw,58px)",fontWeight:300,color:`rgba(10,5,30,${phaseAlpha[breathState.phase]||0.5})`,transition:"color .6s",lineHeight:1,letterSpacing:"-0.01em"}}>{breathState.count}</div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(10px,2.8vw,13px)",letterSpacing:".42em",textTransform:"uppercase",color:med.col,height:20,display:"flex",alignItems:"center",opacity:0.75}}>{phaseLabel[breathState.phase]||breathState.phase}</div>
         <div style={{display:"flex",gap:5,marginTop:2}}>
           {med.breathPhases.map((p,i)=>(
-            <div key={i} style={{height:2.5,width:breathState.phase===p.name?20:4,borderRadius:2,background:breathState.phase===p.name?med.col:"rgba(255,255,255,0.1)",transition:"all .3s ease"}}/>
+            <div key={i} style={{height:2.5,width:breathState.phase===p.name?20:4,borderRadius:2,background:breathState.phase===p.name?med.col:"rgba(10,5,30,0.12)",transition:"all .3s ease"}}/>
           ))}
         </div>
       </div>
-      {/* ephemeral meditation text */}
+      {/* ephemeral text */}
       <div style={{position:"absolute",bottom:"calc(env(safe-area-inset-bottom,0px) + 48px)",left:0,right:0,textAlign:"center",padding:"0 clamp(28px,7vw,56px)",opacity:textVis?1:0,transition:`opacity ${textVis?"1.3s":"1s"} ease`,pointerEvents:"none",zIndex:2}}>
-        {med.texts[textIdx].split("\n").map((line,i)=><div key={i} style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,5vw,24px)",fontStyle:"italic",color:"rgba(237,232,245,0.82)",lineHeight:1.75}}>{line}</div>)}
+        {med.texts[textIdx].split("\n").map((line,i)=><div key={i} style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,5vw,24px)",fontStyle:"italic",color:"rgba(10,5,30,0.68)",lineHeight:1.75}}>{line}</div>)}
       </div>
     </div>
   );
