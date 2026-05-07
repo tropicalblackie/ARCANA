@@ -865,11 +865,11 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
 // ── BOTTOM NAV ──
 function BottomNav({view,setView,t,profile}){
   const tabs=[
+    {key:"hub",icon:"⊕",label:"Home"},
     {key:"daily",icon:"☽",label:"Oroscopo"},
     {key:"tarocchi",icon:"✦",label:"Tarocchi"},
-    {key:"sfera",icon:"◎",label:"Sfera"},
   ];
-  const show=["daily","tarocchi","sfera"].includes(view);
+  const show=["hub","daily","tarocchi"].includes(view);
   if(!show)return null;
   return(
     <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:300,background:t.card,borderTop:`1px solid ${t.border}`,paddingBottom:"env(safe-area-inset-bottom,0px)",backdropFilter:"blur(20px) saturate(1.4)",WebkitBackdropFilter:"blur(20px) saturate(1.4)",boxShadow:`0 -4px 24px rgba(0,0,0,0.32),inset 0 1px 0 rgba(255,255,255,0.08)`}}>
@@ -899,7 +899,6 @@ const TAROT_AREAS=[
   {key:"soldi", label:"Soldi", icon:"◉",color:"#c8a030",desc:"Abbondanza & Flusso"},
 ];
 const TROM=["0","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI"];
-const TANGLES=[-30,-20,-10,0,10,20,30];
 const TPOS=["Passato","Presente","Futuro"];
 const ARCANI=[
   {n:0, name:"Il Matto",      sym:"◯",amore:"Un'avventura romantica ti aspetta dove meno te lo aspetti — apriti all'ignoto.",lavoro:"Il coraggio di ricominciare da zero è il tuo superpotere in questo momento.",salute:"Il tuo corpo chiede libertà e movimento: interrompi la routine.",soldi:"Un'opportunità inattesa si mostra: fidati dell'istinto prima del calcolo."},
@@ -938,7 +937,7 @@ function Tarocchi({t}){
   const aObj=TAROT_AREAS.find(a=>a.key===area)||TAROT_AREAS[0];
 
   function startSpread(aKey){
-    const sh=[...ARCANI].sort(()=>Math.random()-.5).slice(0,7);
+    const sh=[...ARCANI].sort(()=>Math.random()-.5).slice(0,9);
     setDeck(sh);setPicked([]);setFlipped([false,false,false]);
     setArea(aKey);setPhase("spread");
   }
@@ -1020,36 +1019,36 @@ function Tarocchi({t}){
           </div>
         </div>
 
-        {/* Card fan */}
-        <div style={{position:"relative",height:210,margin:"16px 0 16px"}}>
-          {deck.map((card,i)=>{
-            const isPicked=picked.includes(i);
-            const pickOrder=picked.indexOf(i);
-            const isHov=hovCard===i;
-            const angle=TANGLES[i];
-            let ty=0;
-            if(isPicked) ty=-56;
-            else if(isHov&&picked.length<3) ty=-26;
-            return(
-              <div key={i} onClick={()=>pickCard(i)}
-                onMouseEnter={()=>setHovCard(i)} onMouseLeave={()=>setHovCard(null)}
-                style={{position:"absolute",left:"50%",bottom:0,width:70,height:112,marginLeft:-35,borderRadius:10,cursor:isPicked||picked.length>=3?"default":"pointer",transform:`rotate(${angle}deg) translateY(${ty}px)`,transformOrigin:"center bottom",transition:"transform .45s cubic-bezier(.16,1,.3,1),box-shadow .3s",zIndex:isPicked?20:isHov?15:10-Math.abs(i-3),boxShadow:isPicked?`0 22px 55px ${aObj.color}55,0 0 0 1.5px ${aObj.color}65`:isHov?"0 10px 32px rgba(0,0,0,.9)":"0 4px 16px rgba(0,0,0,.7)"}}>
-                <div style={{width:"100%",height:"100%",borderRadius:10,background:isPicked?`linear-gradient(145deg,${aObj.color}38,${aObj.color}14,rgba(7,4,14,.9))`:"linear-gradient(145deg,#1e1030,#0c0820,#07040e)",border:`1px solid ${isPicked?aObj.color+"72":"rgba(200,165,80,0.18)"}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:5,position:"relative",overflow:"hidden",transition:"background .4s,border .4s"}}>
-                  <div style={{position:"absolute",inset:6,border:`0.5px solid ${isPicked?aObj.color+"52":"rgba(200,165,80,0.12)"}`,borderRadius:6,transition:"border .4s"}}/>
-                  <div style={{position:"absolute",top:9,left:9,fontSize:"7px",color:isPicked?aObj.color:"rgba(200,165,80,0.28)",fontFamily:"'Cormorant Garamond',serif"}}>✦</div>
-                  <div style={{position:"absolute",top:9,right:9,fontSize:"7px",color:isPicked?aObj.color:"rgba(200,165,80,0.28)",fontFamily:"'Cormorant Garamond',serif"}}>✦</div>
-                  <div style={{position:"absolute",bottom:9,left:9,fontSize:"7px",color:isPicked?aObj.color:"rgba(200,165,80,0.28)",fontFamily:"'Cormorant Garamond',serif"}}>✦</div>
-                  <div style={{position:"absolute",bottom:9,right:9,fontSize:"7px",color:isPicked?aObj.color:"rgba(200,165,80,0.28)",fontFamily:"'Cormorant Garamond',serif"}}>✦</div>
-                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:isPicked?"20px":"16px",color:isPicked?aObj.color:"rgba(200,165,80,0.4)",transition:"all .3s",lineHeight:1}}>{isPicked?aObj.icon:"✦"}</div>
-                  {isPicked&&pickOrder>=0&&<div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"11px",color:aObj.color,opacity:.9,letterSpacing:".06em"}}>{["I","II","III"][pickOrder]}</div>}
+        {/* Card grid 3×3 */}
+        <div style={{padding:"0 20px",marginBottom:8}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,maxWidth:360,margin:"0 auto"}}>
+            {deck.map((card,i)=>{
+              const isPicked=picked.includes(i);
+              const pickOrder=picked.indexOf(i);
+              const isHov=hovCard===i;
+              const canPick=!isPicked&&picked.length<3;
+              return(
+                <div key={i} onClick={()=>pickCard(i)}
+                  onMouseEnter={()=>setHovCard(i)} onMouseLeave={()=>setHovCard(null)}
+                  style={{aspectRatio:"2/3",borderRadius:12,cursor:canPick?"pointer":isPicked?"default":"not-allowed",transition:"transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s",transform:isPicked?"translateY(-6px) scale(1.04)":isHov&&canPick?"translateY(-3px)":"translateY(0)",boxShadow:isPicked?`0 18px 40px ${aObj.color}50,0 0 0 1.5px ${aObj.color}75`:isHov&&canPick?"0 8px 24px rgba(0,0,0,.8),0 0 0 1px rgba(200,165,80,0.2)":"0 2px 10px rgba(0,0,0,.7)",opacity:!isPicked&&picked.length>=3?0.35:1}}>
+                  <div style={{width:"100%",height:"100%",borderRadius:12,background:isPicked?`linear-gradient(160deg,${aObj.color}30,${aObj.color}10,rgba(7,4,14,.95))`:"linear-gradient(160deg,#1a0e2e,#0e0820,#07040e)",border:`1px solid ${isPicked?aObj.color+"80":isHov&&canPick?"rgba(200,165,80,0.35)":"rgba(200,165,80,0.12)"}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,position:"relative",overflow:"hidden",transition:"all .3s"}}>
+                    <div style={{position:"absolute",inset:5,border:`0.5px solid ${isPicked?aObj.color+"45":"rgba(200,165,80,0.09)"}`,borderRadius:8,transition:"border .3s"}}/>
+                    <div style={{position:"absolute",top:7,left:7,fontSize:"6px",color:isPicked?aObj.color:"rgba(200,165,80,0.22)"}}>✦</div>
+                    <div style={{position:"absolute",top:7,right:7,fontSize:"6px",color:isPicked?aObj.color:"rgba(200,165,80,0.22)"}}>✦</div>
+                    <div style={{position:"absolute",bottom:7,left:7,fontSize:"6px",color:isPicked?aObj.color:"rgba(200,165,80,0.22)"}}>✦</div>
+                    <div style={{position:"absolute",bottom:7,right:7,fontSize:"6px",color:isPicked?aObj.color:"rgba(200,165,80,0.22)"}}>✦</div>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:isPicked?"22px":isHov&&canPick?"18px":"15px",color:isPicked?aObj.color:"rgba(200,165,80,0.38)",transition:"all .3s",lineHeight:1,position:"relative"}}>{isPicked?aObj.icon:"✦"}</div>
+                    {isPicked&&pickOrder>=0&&<div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"12px",color:aObj.color,fontWeight:500,letterSpacing:".06em",position:"relative"}}>{["I","II","III"][pickOrder]}</div>}
+                    {!isPicked&&<div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",color:isHov&&canPick?"rgba(200,165,80,0.55)":"rgba(200,165,80,0.2)",letterSpacing:".04em",transition:"color .2s",position:"relative"}}>{isHov&&canPick?"scegli":"· · ·"}</div>}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         {/* Position slots */}
-        <div style={{display:"flex",gap:10,padding:"0 24px",marginBottom:picked.length===3?16:0,maxWidth:380,margin:"0 auto",marginBottom:picked.length===3?16:8}}>
+        <div style={{display:"flex",gap:10,padding:"16px 24px 0",maxWidth:380,margin:"0 auto"}}>
           {TPOS.map((pos,i)=>(
             <div key={pos} style={{flex:1,textAlign:"center",padding:"10px 6px",background:picked.length>i?`${aObj.color}18`:"rgba(255,255,255,0.03)",border:`1px solid ${picked.length>i?aObj.color+"45":"rgba(255,255,255,0.06)"}`,borderRadius:12,fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,letterSpacing:".08em",color:picked.length>i?aObj.color:"rgba(237,232,245,0.2)",textTransform:"uppercase",transition:"all .35s"}}>{pos}</div>
           ))}
@@ -1057,14 +1056,14 @@ function Tarocchi({t}){
 
         {/* Reveal CTA */}
         {picked.length===3&&(
-          <div className="fade-in-up" style={{padding:"12px 24px 0",maxWidth:400,margin:"0 auto"}}>
+          <div className="fade-in-up" style={{padding:"14px 24px 0",maxWidth:400,margin:"0 auto"}}>
             <button onClick={doReveal}
               onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"}
               onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}
-              style={{width:"100%",padding:"18px 24px",background:`linear-gradient(135deg,${aObj.color}ee,${aObj.color}aa)`,border:"none",borderRadius:16,color:"#fff",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",letterSpacing:".04em",cursor:"pointer",boxShadow:`0 8px 32px ${aObj.color}48`,transition:"transform .2s"}}>Rivela il Destino ✦</button>
+              style={{width:"100%",padding:"18px 24px",background:`linear-gradient(135deg,${aObj.color}ee,${aObj.color}aa)`,border:"none",borderRadius:50,color:"#fff",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",letterSpacing:".04em",cursor:"pointer",boxShadow:`0 8px 32px ${aObj.color}48`,transition:"transform .2s"}}>Rivela il Destino ✦</button>
           </div>
         )}
-        <div style={{textAlign:"center",marginTop:20}}>
+        <div style={{textAlign:"center",marginTop:18}}>
           <button onClick={reset} style={{background:"none",border:"none",color:"rgba(237,232,245,0.28)",fontFamily:"'Inter',sans-serif",fontSize:"11px",letterSpacing:".06em",cursor:"pointer"}}>← cambia dominio</button>
         </div>
       </div>
@@ -1074,60 +1073,158 @@ function Tarocchi({t}){
   /* ── REVEAL ── */
   const pickedCards=picked.map(i=>deck[i]);
   return(
-    <div style={{minHeight:"100vh",background:"#f2f2f7",paddingBottom:"calc(env(safe-area-inset-bottom,0px) + 80px)"}}>
-      {/* Dark header */}
-      <div style={{background:"#07040e",padding:"clamp(44px,10vw,64px) 24px 28px",textAlign:"center"}}>
-        <div style={{display:"inline-flex",alignItems:"center",gap:8,background:`${aObj.color}22`,border:`1px solid ${aObj.color}52`,borderRadius:20,padding:"7px 18px",marginBottom:16}}>
-          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:aObj.color}}>{aObj.icon}</span>
-          <span style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:600,color:aObj.color,letterSpacing:".06em",textTransform:"uppercase"}}>{aObj.label}</span>
-        </div>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(24px,7vw,34px)",fontWeight:300,color:"#ede8f5",marginBottom:4}}>La Tua Lettura</div>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",fontStyle:"italic",color:"rgba(237,232,245,0.4)"}}>Passato · Presente · Futuro</div>
-        <div style={{width:40,height:1,background:`linear-gradient(to right,transparent,${aObj.color}72,transparent)`,margin:"16px auto 0"}}/>
-      </div>
-      <div style={{height:36,background:"linear-gradient(to bottom,#07040e,#f2f2f7)"}}/>
-
-      {/* Cards */}
-      <div style={{padding:"4px 16px 0",display:"flex",flexDirection:"column",gap:14,maxWidth:560,margin:"0 auto"}}>
-        {pickedCards.map((card,i)=>(
-          <div key={i}>
-            {!flipped[i]?(
-              <div style={{borderRadius:16,height:72,background:"linear-gradient(135deg,#1e1030,#0c0820)",border:`1px solid ${aObj.color}25`,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 2px 12px rgba(0,0,0,0.12)"}}>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:`${aObj.color}40`,animation:"pulse 1.8s ease-in-out infinite"}}>✦</div>
-              </div>
-            ):(
-              <div className="fade-in-up" style={{background:"#ffffff",borderRadius:16,boxShadow:"0 4px 20px rgba(0,0,0,0.08),0 0 0 0.5px rgba(0,0,0,0.05)",overflow:"hidden"}}>
-                <div style={{background:`linear-gradient(135deg,${aObj.color}15,${aObj.color}06)`,borderBottom:`0.5px solid ${aObj.color}28`,padding:"16px 20px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-                  <div style={{display:"flex",alignItems:"center",gap:14}}>
-                    <div style={{width:40,height:40,borderRadius:10,background:`${aObj.color}18`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:aObj.color,lineHeight:1}}>{TROM[card.n]}</div>
-                    </div>
-                    <div>
-                      <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:600,letterSpacing:".1em",color:`${aObj.color}95`,textTransform:"uppercase",marginBottom:3}}>{TPOS[i]}</div>
-                      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"19px",fontWeight:500,color:"#000",letterSpacing:"-.01em"}}>{card.name}</div>
-                    </div>
-                  </div>
-                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"30px",color:`${aObj.color}52`,lineHeight:1,flexShrink:0}}>{card.sym}</div>
-                </div>
-                <div style={{padding:"18px 20px"}}>
-                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4.2vw,18px)",color:"#000",lineHeight:1.9,fontStyle:"italic"}}>{card[aObj.key]}</div>
-                </div>
-              </div>
-            )}
-          </div>
+    <div style={{minHeight:"100vh",background:"#07040e",color:"#ede8f5",paddingBottom:"calc(env(safe-area-inset-bottom,0px) + 80px)"}}>
+      {/* Stars */}
+      <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0}}>
+        {[...Array(18)].map((_,i)=>(
+          <div key={i} style={{position:"absolute",width:1.5,height:1.5,borderRadius:"50%",background:"rgba(255,255,255,0.35)",top:`${(i*41+9)%100}%`,left:`${(i*67+17)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
         ))}
       </div>
-
-      {/* Done */}
-      {flipped.every(Boolean)&&(
-        <div className="fade-in" style={{padding:"28px 20px 0",textAlign:"center",maxWidth:560,margin:"0 auto"}}>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"13px",fontStyle:"italic",color:"rgba(60,60,67,0.38)",marginBottom:22}}>La lettura è completa ✦</div>
-          <button onClick={reset}
-            onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"}
-            onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}
-            style={{padding:"16px 44px",background:"#000",border:"none",borderRadius:14,color:"#fff",fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",letterSpacing:".04em",cursor:"pointer",transition:"transform .2s"}}>Nuova Lettura</button>
+      <div style={{position:"relative",zIndex:1}}>
+        {/* Header */}
+        <div style={{background:"rgba(7,4,14,0.95)",padding:"clamp(44px,10vw,64px) 24px 28px",textAlign:"center"}}>
+          <div style={{display:"inline-flex",alignItems:"center",gap:8,background:`${aObj.color}20`,border:`1px solid ${aObj.color}55`,borderRadius:20,padding:"7px 18px",marginBottom:16}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:aObj.color}}>{aObj.icon}</span>
+            <span style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:600,color:aObj.color,letterSpacing:".06em",textTransform:"uppercase"}}>{aObj.label}</span>
+          </div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(24px,7vw,34px)",fontWeight:300,color:"#ede8f5",marginBottom:4}}>La Tua Lettura</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",fontStyle:"italic",color:"rgba(237,232,245,0.38)"}}>Passato · Presente · Futuro</div>
+          <div style={{width:36,height:1,background:`linear-gradient(to right,transparent,${aObj.color}65,transparent)`,margin:"16px auto 0"}}/>
         </div>
-      )}
+
+        {/* Cards */}
+        <div style={{padding:"24px 18px 0",display:"flex",flexDirection:"column",gap:14,maxWidth:560,margin:"0 auto"}}>
+          {pickedCards.map((card,i)=>(
+            <div key={i}>
+              {!flipped[i]?(
+                <div style={{borderRadius:14,height:68,background:"linear-gradient(135deg,#1a0e2e,#0c0820)",border:`1px solid ${aObj.color}20`,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:`${aObj.color}40`,animation:"pulse 1.8s ease-in-out infinite"}}>✦</div>
+                </div>
+              ):(
+                <div className="fade-in-up" style={{background:"linear-gradient(160deg,#150d28,#0e0820)",borderRadius:14,border:`1px solid ${aObj.color}30`,overflow:"hidden",boxShadow:`0 8px 32px rgba(0,0,0,0.6),0 0 0 0.5px ${aObj.color}20`}}>
+                  <div style={{background:`linear-gradient(135deg,${aObj.color}18,transparent)`,borderBottom:`0.5px solid ${aObj.color}28`,padding:"16px 20px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                    <div style={{display:"flex",alignItems:"center",gap:14}}>
+                      <div style={{width:40,height:40,borderRadius:10,background:`${aObj.color}18`,border:`1px solid ${aObj.color}35`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:aObj.color,lineHeight:1}}>{TROM[card.n]}</div>
+                      </div>
+                      <div>
+                        <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:600,letterSpacing:".1em",color:`${aObj.color}90`,textTransform:"uppercase",marginBottom:3}}>{TPOS[i]}</div>
+                        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"19px",fontWeight:500,color:"#ede8f5",letterSpacing:"-.01em"}}>{card.name}</div>
+                      </div>
+                    </div>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"32px",color:`${aObj.color}45`,lineHeight:1,flexShrink:0}}>{card.sym}</div>
+                  </div>
+                  <div style={{padding:"18px 20px"}}>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4.2vw,18px)",color:"rgba(237,232,245,0.82)",lineHeight:1.95,fontStyle:"italic"}}>{card[aObj.key]}</div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Done */}
+        {flipped.every(Boolean)&&(
+          <div className="fade-in" style={{padding:"32px 20px 0",textAlign:"center",maxWidth:560,margin:"0 auto"}}>
+            <div style={{width:28,height:1,background:`linear-gradient(to right,transparent,${aObj.color}55,transparent)`,margin:"0 auto 18px"}}/>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"13px",fontStyle:"italic",color:"rgba(237,232,245,0.28)",marginBottom:24}}>La lettura è completa ✦</div>
+            <button onClick={reset}
+              onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"}
+              onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}
+              style={{padding:"16px 44px",background:`linear-gradient(135deg,${aObj.color}ee,${aObj.color}99)`,border:"none",borderRadius:50,color:"#fff",fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",letterSpacing:".04em",cursor:"pointer",transition:"transform .2s",boxShadow:`0 8px 28px ${aObj.color}40`}}>Nuova Lettura</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════
+   HOME HUB
+══════════════════════════════════════════════════════ */
+const HUB_COMING=[
+  {key:"meditazione",  label:"Meditazione",         icon:"◯",  col:"#58c890", shape:"pill"},
+  {key:"natale",       label:"Tema Natale",          icon:"✧",  col:"#7090d8", shape:"sq"},
+  {key:"sogni",        label:"Sogni",                icon:"◗",  col:"#9468d8", shape:"pill"},
+  {key:"compatibilita",label:"Compatibilità",        icon:"⋈",  col:"#d4688a", shape:"sq"},
+  {key:"druido",       label:"Oroscopo Druido",      icon:"⊕",  col:"#60b870", shape:"pill"},
+  {key:"cinese",       label:"Oroscopo Cinese",      icon:"◈",  col:"#d87840", shape:"sq"},
+  {key:"ascendente",   label:"Ascendente",           icon:"△",  col:"#58c8e0", shape:"pill"},
+  {key:"sfera",        label:"Sfera di Cristallo",   icon:"◎",  col:"#9888e8", shape:"sq"},
+];
+
+function HomeHub({t,setView,profile}){
+  const[hov,setHov]=useState(null);
+  return(
+    <div style={{minHeight:"100vh",background:"#07040e",color:"#ede8f5",overflowX:"hidden",paddingBottom:"calc(env(safe-area-inset-bottom,0px) + 80px)"}}>
+      {/* Star field */}
+      <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0}}>
+        {[...Array(36)].map((_,i)=>(
+          <div key={i} style={{position:"absolute",width:i%7===0?2:1.5,height:i%7===0?2:1.5,borderRadius:"50%",background:`rgba(255,255,255,${i%3===0?0.55:0.28})`,top:`${(i*37+11)%100}%`,left:`${(i*71+7)%100}%`,animation:`pulse ${2+(i*0.29)%2.5}s ${(i*0.17)%2.5}s ease-in-out infinite`}}/>
+        ))}
+      </div>
+      <div style={{position:"relative",zIndex:1,padding:"0 20px"}}>
+
+        {/* ── Header ── */}
+        <div style={{padding:"clamp(52px,12vw,82px) 0 36px",textAlign:"center"}}>
+          <div className="gold-text" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(10px,2.8vw,12px)",fontWeight:500,letterSpacing:".52em",textTransform:"uppercase",marginBottom:14}}>ARCANA</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(30px,8vw,48px)",fontWeight:300,color:"#ede8f5",letterSpacing:"-.02em",lineHeight:1,marginBottom:10}}>Il Tuo Cosmo</div>
+          <div style={{width:36,height:1,background:"linear-gradient(to right,transparent,rgba(200,165,80,0.55),transparent)",margin:"0 auto"}}/>
+        </div>
+
+        {/* ── Oroscopo — pill hero ── */}
+        <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,letterSpacing:".42em",color:"rgba(200,165,80,0.48)",textTransform:"uppercase",marginBottom:14,paddingLeft:2}}>Attivo</div>
+        <div onClick={()=>setView("daily")} onMouseEnter={()=>setHov("daily")} onMouseLeave={()=>setHov(null)}
+          style={{marginBottom:10,padding:"20px 24px",background:hov==="daily"?"rgba(136,136,232,0.1)":"rgba(255,255,255,0.04)",border:`1px solid ${hov==="daily"?"rgba(136,136,232,0.5)":"rgba(255,255,255,0.07)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="daily"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="daily"?"0 16px 44px rgba(136,136,232,0.2)":"none"}}>
+          <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(136,136,232,0.12)",border:"1px solid rgba(136,136,232,0.22)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",color:"#8888e8",lineHeight:1}}>☽</span>
+          </div>
+          <div style={{flex:1}}>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4.5vw,21px)",fontWeight:500,color:"#ede8f5",marginBottom:2}}>Oroscopo del Giorno</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(237,232,245,0.35)",letterSpacing:".02em"}}>Il tuo cielo di oggi</div>
+          </div>
+          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"rgba(136,136,232,0.35)"}}>›</span>
+        </div>
+
+        {/* ── Tarocchi + Profilo — 2 col ── */}
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:36}}>
+          <div onClick={()=>setView("tarocchi")} onMouseEnter={()=>setHov("tarocchi")} onMouseLeave={()=>setHov(null)}
+            style={{padding:"30px 16px 24px",background:hov==="tarocchi"?"rgba(200,160,48,0.1)":"rgba(255,255,255,0.04)",border:`1px solid ${hov==="tarocchi"?"rgba(200,160,48,0.5)":"rgba(255,255,255,0.07)"}`,borderRadius:20,textAlign:"center",cursor:"pointer",transition:"all .32s cubic-bezier(.16,1,.3,1)",transform:hov==="tarocchi"?"translateY(-3px)":"translateY(0)",boxShadow:hov==="tarocchi"?"0 18px 46px rgba(200,160,48,0.18)":"none",position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",top:"38%",left:"50%",transform:"translate(-50%,-50%)",width:72,height:72,borderRadius:"50%",background:`radial-gradient(circle,rgba(200,160,48,${hov==="tarocchi"?".2":".07"}),transparent 70%)`,pointerEvents:"none",transition:"all .35s"}}/>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(38px,10vw,50px)",color:"rgba(200,160,48,0.88)",lineHeight:1,marginBottom:12,position:"relative",filter:hov==="tarocchi"?"drop-shadow(0 0 18px rgba(200,160,48,0.6))":"none",transition:"filter .3s"}}>✦</div>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,18px)",fontWeight:500,color:"#ede8f5",marginBottom:4,position:"relative"}}>Tarocchi</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",letterSpacing:".07em",color:"rgba(237,232,245,0.28)",textTransform:"uppercase",position:"relative"}}>22 arcani</div>
+          </div>
+          <div onClick={()=>profile?setView("profile"):setView("setup")} onMouseEnter={()=>setHov("profile")} onMouseLeave={()=>setHov(null)}
+            style={{padding:"30px 16px 24px",background:hov==="profile"?"rgba(212,104,138,0.1)":"rgba(255,255,255,0.04)",border:`1px solid ${hov==="profile"?"rgba(212,104,138,0.5)":"rgba(255,255,255,0.07)"}`,borderRadius:20,textAlign:"center",cursor:"pointer",transition:"all .32s cubic-bezier(.16,1,.3,1)",transform:hov==="profile"?"translateY(-3px)":"translateY(0)",boxShadow:hov==="profile"?"0 18px 46px rgba(212,104,138,0.18)":"none",position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",top:"38%",left:"50%",transform:"translate(-50%,-50%)",width:72,height:72,borderRadius:"50%",background:`radial-gradient(circle,rgba(212,104,138,${hov==="profile"?".2":".07"}),transparent 70%)`,pointerEvents:"none",transition:"all .35s"}}/>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(38px,10vw,50px)",color:"rgba(212,104,138,0.88)",lineHeight:1,marginBottom:12,position:"relative",filter:hov==="profile"?"drop-shadow(0 0 18px rgba(212,104,138,0.6))":"none",transition:"filter .3s"}}>◉</div>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,18px)",fontWeight:500,color:"#ede8f5",marginBottom:4,position:"relative"}}>Profilo</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",letterSpacing:".07em",color:"rgba(237,232,245,0.28)",textTransform:"uppercase",position:"relative"}}>La tua anima</div>
+          </div>
+        </div>
+
+        {/* ── In Arrivo ── */}
+        <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,letterSpacing:".42em",color:"rgba(237,232,245,0.2)",textTransform:"uppercase",marginBottom:16,paddingLeft:2}}>In Arrivo</div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+          {HUB_COMING.map((f)=>{
+            const isPill=f.shape==="pill";
+            const isH=hov===f.key;
+            return(
+              <div key={f.key} onMouseEnter={()=>setHov(f.key)} onMouseLeave={()=>setHov(null)}
+                style={{padding:isPill?"22px 14px 18px":"26px 16px 22px",background:isH?`${f.col}0f`:"rgba(255,255,255,0.025)",border:`1px solid ${isH?f.col+"48":"rgba(255,255,255,0.05)"}`,borderRadius:isPill?50:16,textAlign:"center",cursor:"default",transition:"all .3s",position:"relative",overflow:"hidden"}}>
+                <div style={{position:"absolute",top:7,right:10,fontFamily:"'Inter',sans-serif",fontSize:"7px",letterSpacing:".07em",color:`${f.col}55`,textTransform:"uppercase"}}>presto</div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(26px,7vw,32px)",color:`${f.col}70`,lineHeight:1,marginBottom:8,transition:"transform .25s",transform:isH?"scale(1.1)":"scale(1)"}}>{f.icon}</div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.4vw,15px)",color:"rgba(237,232,245,0.42)",lineHeight:1.3}}>{f.label}</div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div style={{textAlign:"center",marginTop:40,paddingBottom:8}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"11px",fontStyle:"italic",color:"rgba(200,165,80,0.16)",letterSpacing:".06em"}}>L'universo si espande ✦</div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -1889,7 +1986,7 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
 }
 
 function App(){
-  const[view,setView]=useState("home");
+  const[view,setView]=useState("hub");
   const[selected,setSelected]=useState(null);
   const[theme,setTheme]=useState("carta");
   const[splash,setSplash]=useState(true);
@@ -1919,13 +2016,13 @@ function App(){
   return(
     <div style={{background:t.bg,color:t.text,minHeight:"100vh"}}>
       {splash&&<Splash onDone={()=>setSplash(false)} bg={t.bg} text={t.text}/>}
-      {!splash&&view==="setup"&&<ProfileSetup t={t} onDone={onSetupDone} onBack={()=>setView(profile?"daily":"home")}/>}
+      {!splash&&view==="setup"&&<ProfileSetup t={t} onDone={onSetupDone} onBack={()=>setView(profile?"daily":"hub")}/>}
       {!splash&&view==="home"&&<Home t={t} profile={profile} onSelect={s=>{setSelected(s);setView("sign")}} onSetup={()=>setView(profile?"daily":"setup")}/>}
-      {!splash&&view==="daily"&&profile&&<DailyHoroscope t={t} profile={profile} onBack={()=>setView("home")} onProfile={()=>setView("profile")} onEdit={()=>setView("setup")}/>}
+      {!splash&&view==="hub"&&<HomeHub t={t} setView={setView} profile={profile}/>}
+      {!splash&&view==="daily"&&profile&&<DailyHoroscope t={t} profile={profile} onBack={()=>setView("hub")} onProfile={()=>setView("profile")} onEdit={()=>setView("setup")}/>}
       {!splash&&view==="tarocchi"&&<Tarocchi t={t}/>}
-      {!splash&&view==="sfera"&&<ComingSoon t={t} title="Sfera di Cristallo" icon="◎" desc="Il respiro del futuro è già qui. Ascolta ciò che il cosmo vuole dirti in questo preciso istante."/>}
       {!splash&&view==="profile"&&profile&&<PersonalProfile t={t} profile={profile} onEdit={()=>setView("setup")} onBack={()=>setView("daily")}/>}
-      {!splash&&view==="sign"&&selected&&<SignScreen sg={selected} t={t} onBack={()=>setView("home")} journal={journal} saveEntry={saveEntry}/>}
+      {!splash&&view==="sign"&&selected&&<SignScreen sg={selected} t={t} onBack={()=>setView("hub")} journal={journal} saveEntry={saveEntry}/>}
       {!splash&&view!=="setup"&&<ThemeBtn theme={theme} setTheme={setTheme} t={t}/>}
       {!splash&&<BottomNav view={view} setView={setView} t={t} profile={profile}/>}
     </div>
