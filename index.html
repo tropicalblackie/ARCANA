@@ -1346,17 +1346,28 @@ function LiquidBall({colorHex,breathProgressRef}){
     const camera=new THREE.PerspectiveCamera(38,1,0.1,100);
     camera.position.z=2.6;
     const col=new THREE.Color(colorHex);
+    // mouse/touch state
+    const mouse={x:0,y:0,vx:0,vy:0,cx:0,cy:0};
+    let burst=0;
     const material=new THREE.ShaderMaterial({
-      uniforms:{iTime:{value:0},uDisp:{value:0.18},uColor:{value:col}},
+      uniforms:{iTime:{value:0},uDisp:{value:0.18},uColor:{value:col},uMouse:{value:new THREE.Vector2(0,0)},uBurst:{value:0}},
       vertexShader:`
         uniform float iTime;
         uniform float uDisp;
+        uniform vec2 uMouse;
+        uniform float uBurst;
         varying float vPerlin;
         varying vec3 vNorm;
         ${PERLIN4D_GLSL}
         void main(){
           vec3 pos=position;
           float pn=perlin4d(vec4(position*1.8,iTime*0.33))*uDisp;
+          // mouse pull: attract surface toward pointer direction
+          vec3 mouseDir=normalize(vec3(uMouse,0.6));
+          float mouseAlign=max(dot(normalize(pos),mouseDir),0.0);
+          pn+=mouseAlign*mouseAlign*(uMouse.x*uMouse.x+uMouse.y*uMouse.y)*0.28;
+          // burst ripple on tap
+          pn+=uBurst*sin(length(pos-mouseDir*0.5)*18.0-iTime*6.0)*0.09;
           pos+=normal*pn;
           vPerlin=pn;
           vNorm=normalMatrix*normal;
@@ -1364,6 +1375,7 @@ function LiquidBall({colorHex,breathProgressRef}){
         }`,
       fragmentShader:`
         uniform vec3 uColor;
+        uniform float uBurst;
         varying float vPerlin;
         varying vec3 vNorm;
         void main(){
@@ -1372,8 +1384,9 @@ function LiquidBall({colorHex,breathProgressRef}){
           float diff=max(dot(n,ld),0.0)*0.65+0.35;
           float rim=pow(1.0-max(dot(n,vec3(0.0,0.0,1.0)),0.0),2.8);
           vec3 c=uColor*diff;
-          c+=vec3(0.88,0.92,1.0)*rim*0.55;
+          c+=vec3(0.88,0.92,1.0)*rim*(0.55+uBurst*0.4);
           c+=vec3(1.0)*max(vPerlin*4.0,0.0)*0.18;
+          c+=uColor*uBurst*0.25;
           gl_FragColor=vec4(c,0.94);
         }`,
       transparent:true,
@@ -1381,27 +1394,62 @@ function LiquidBall({colorHex,breathProgressRef}){
     const geometry=new THREE.SphereGeometry(0.68,96,96);
     const mesh=new THREE.Mesh(geometry,material);
     scene.add(mesh);
+    // pointer helpers
+    const stiffness=0.055,damping=0.68;
+    let last=performance.now();
+    const setTarget=(ex,ey)=>{
+      const rect=renderer.domElement.getBoundingClientRect();
+      mouse.x=((ex-rect.left)/rect.width*2-1);
+      mouse.y=-((ey-rect.top)/rect.height*2-1);
+    };
+    const onMove=e=>{
+      const src=e.touches?e.touches[0]:e;
+      setTarget(src.clientX,src.clientY);
+    };
+    const onTap=e=>{
+      const src=e.touches?e.touches[0]:e;
+      setTarget(src.clientX,src.clientY);
+      burst=1.0;
+    };
+    renderer.domElement.addEventListener('mousemove',onMove,{passive:true});
+    renderer.domElement.addEventListener('touchmove',onMove,{passive:true});
+    renderer.domElement.addEventListener('mousedown',onTap,{passive:true});
+    renderer.domElement.addEventListener('touchstart',onTap,{passive:true});
     let animId;
     const t0=performance.now();
-    const animate=()=>{
+    const animate=(now)=>{
       animId=requestAnimationFrame(animate);
-      const t=(performance.now()-t0)/1000;
+      const dt=Math.min((now-last)/16.667,3);
+      last=now;
+      // spring smooth mouse
+      mouse.vx=(mouse.vx+stiffness*(mouse.x-mouse.cx)*dt)*Math.pow(damping,dt);
+      mouse.vy=(mouse.vy+stiffness*(mouse.y-mouse.cy)*dt)*Math.pow(damping,dt);
+      mouse.cx+=mouse.vx*dt;
+      mouse.cy+=mouse.vy*dt;
+      burst*=Math.pow(0.88,dt);
+      const t=(now-t0)/1000;
       material.uniforms.iTime.value=t;
       material.uniforms.uDisp.value=0.08+(breathProgressRef?breathProgressRef.current:0)*0.24;
-      mesh.rotation.y=t*0.07;
-      mesh.rotation.x=Math.sin(t*0.11)*0.04;
+      material.uniforms.uMouse.value.set(mouse.cx,mouse.cy);
+      material.uniforms.uBurst.value=burst;
+      mesh.rotation.y=t*0.07+mouse.cx*0.18;
+      mesh.rotation.x=Math.sin(t*0.11)*0.04+mouse.cy*0.14;
       renderer.render(scene,camera);
     };
-    animate();
+    animate(performance.now());
     return()=>{
       cancelAnimationFrame(animId);
+      renderer.domElement.removeEventListener('mousemove',onMove);
+      renderer.domElement.removeEventListener('touchmove',onMove);
+      renderer.domElement.removeEventListener('mousedown',onTap);
+      renderer.domElement.removeEventListener('touchstart',onTap);
       renderer.dispose();
       geometry.dispose();
       material.dispose();
       if(el.contains(renderer.domElement))el.removeChild(renderer.domElement);
     };
   },[colorHex]);
-  return <div ref={mountRef} style={{width:"100%",height:"100%"}}/>;
+  return <div ref={mountRef} style={{width:"100%",height:"100%",cursor:"pointer"}}/>;
 }
 
 function startMeditationAudio(key){
@@ -1471,31 +1519,35 @@ function MeditationSession({med,onEnd}){
   const phaseLabel={inspira:"· inspira ·",tieni:"· tieni ·",espira:"· espira ·",riposa:"· riposa ·"};
   const phaseAlpha={inspira:0.9,tieni:0.65,espira:0.55,riposa:0.3};
   return(
-    <div style={{position:"fixed",inset:0,zIndex:500,background:med.bg,display:"flex",flexDirection:"column",alignItems:"center",overflow:"hidden"}}>
+    <div style={{position:"fixed",inset:0,zIndex:500,background:med.bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
       <div style={{position:"absolute",inset:0,pointerEvents:"none"}}>
         {[...Array(22)].map((_,i)=><div key={i} style={{position:"absolute",width:i%5===0?2:1,height:i%5===0?2:1,borderRadius:"50%",background:`rgba(255,255,255,${i%4===0?.45:.18})`,top:`${(i*41+7)%100}%`,left:`${(i*73+13)%100}%`,animation:`pulse ${1.5+(i*0.31)%2}s ${(i*0.19)%2}s ease-in-out infinite`}}/>)}
       </div>
-      <div style={{width:"100%",display:"flex",alignItems:"flex-start",justifyContent:"space-between",padding:`calc(env(safe-area-inset-top,0px) + 18px) 22px 0`,position:"relative",zIndex:2}}>
+      {/* header — absolute so it doesn't push ball off-center */}
+      <div style={{position:"absolute",top:0,left:0,right:0,display:"flex",alignItems:"flex-start",justifyContent:"space-between",padding:`calc(env(safe-area-inset-top,0px) + 18px) 22px 0`,zIndex:2}}>
         <div>
           <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",letterSpacing:".44em",textTransform:"uppercase",color:`${med.glow}.22)`}}>{med.name}</div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"12px",fontStyle:"italic",color:`${med.glow}.38)`,marginTop:3,maxWidth:"65vw",lineHeight:1.5}}>{med.pose}</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"13px",fontStyle:"italic",color:`${med.glow}.42)`,marginTop:3,maxWidth:"65vw",lineHeight:1.5}}>{med.pose}</div>
         </div>
         <button onClick={handleEnd} style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",letterSpacing:".24em",textTransform:"uppercase",color:`${med.glow}.32)`,background:"none",border:"none",cursor:"pointer",paddingTop:2}}>✕ fine</button>
       </div>
-      <div style={{width:"clamp(210px,56vw,280px)",height:"clamp(210px,56vw,280px)",marginTop:"auto",flexShrink:0,position:"relative",zIndex:1,filter:`drop-shadow(0 0 28px ${med.glow}.32)) drop-shadow(0 0 64px ${med.glow}.13))`}}>
+      {/* ball — truly centered */}
+      <div style={{width:"clamp(220px,58vw,290px)",height:"clamp(220px,58vw,290px)",flexShrink:0,position:"relative",zIndex:1,filter:`drop-shadow(0 0 30px ${med.glow}.35)) drop-shadow(0 0 70px ${med.glow}.14))`}}>
         <LiquidBall colorHex={med.col} breathProgressRef={breathProgressRef}/>
       </div>
-      <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,marginTop:18,position:"relative",zIndex:2}}>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(38px,11vw,52px)",fontWeight:300,color:`rgba(237,232,245,${phaseAlpha[breathState.phase]||0.5})`,transition:"color .6s",lineHeight:1,letterSpacing:"-0.01em"}}>{breathState.count}</div>
-        <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",letterSpacing:".5em",textTransform:"uppercase",color:`${med.glow}.42)`,height:16}}>{phaseLabel[breathState.phase]||breathState.phase}</div>
+      {/* breath controls below ball */}
+      <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,marginTop:20,position:"relative",zIndex:2}}>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(44px,12vw,58px)",fontWeight:300,color:`rgba(237,232,245,${phaseAlpha[breathState.phase]||0.5})`,transition:"color .6s",lineHeight:1,letterSpacing:"-0.01em"}}>{breathState.count}</div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(10px,2.8vw,13px)",letterSpacing:".42em",textTransform:"uppercase",color:`${med.glow}.55)`,height:20,display:"flex",alignItems:"center"}}>{phaseLabel[breathState.phase]||breathState.phase}</div>
         <div style={{display:"flex",gap:5,marginTop:2}}>
           {med.breathPhases.map((p,i)=>(
-            <div key={i} style={{height:2.5,width:breathState.phase===p.name?18:4,borderRadius:2,background:breathState.phase===p.name?med.col:"rgba(255,255,255,0.1)",transition:"all .3s ease"}}/>
+            <div key={i} style={{height:2.5,width:breathState.phase===p.name?20:4,borderRadius:2,background:breathState.phase===p.name?med.col:"rgba(255,255,255,0.1)",transition:"all .3s ease"}}/>
           ))}
         </div>
       </div>
-      <div style={{position:"absolute",bottom:"calc(env(safe-area-inset-bottom,0px) + 56px)",left:0,right:0,textAlign:"center",padding:"0 clamp(30px,8vw,60px)",opacity:textVis?1:0,transition:`opacity ${textVis?"1.3s":"1s"} ease`,pointerEvents:"none",zIndex:2}}>
-        {med.texts[textIdx].split("\n").map((line,i)=><div key={i} style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4.2vw,20px)",fontStyle:"italic",color:"rgba(237,232,245,0.82)",lineHeight:1.75}}>{line}</div>)}
+      {/* ephemeral meditation text */}
+      <div style={{position:"absolute",bottom:"calc(env(safe-area-inset-bottom,0px) + 48px)",left:0,right:0,textAlign:"center",padding:"0 clamp(28px,7vw,56px)",opacity:textVis?1:0,transition:`opacity ${textVis?"1.3s":"1s"} ease`,pointerEvents:"none",zIndex:2}}>
+        {med.texts[textIdx].split("\n").map((line,i)=><div key={i} style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,5vw,24px)",fontStyle:"italic",color:"rgba(237,232,245,0.82)",lineHeight:1.75}}>{line}</div>)}
       </div>
     </div>
   );
