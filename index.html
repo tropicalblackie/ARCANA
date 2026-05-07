@@ -864,13 +864,15 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
 
 // ── BOTTOM NAV ──
 function BottomNav({view,setView,t,profile}){
-  const tabs=[
+  const tabs=profile?[
     {key:"hub",icon:"⊕",label:"Hub"},
     {key:"daily",icon:"☽",label:"Oroscopo"},
     {key:"tarocchi",icon:"✦",label:"Tarocchi"},
-    {key:"home",icon:"◉",label:"Zodiac"},
+    {key:"home",icon:"◎",label:"Zodiac"},
+  ]:[
+    {key:"home",icon:"◎",label:"Zodiac"},
   ];
-  const show=["hub","daily","tarocchi","home"].includes(view);
+  const show=profile?["hub","daily","tarocchi","home"].includes(view):["home"].includes(view);
   if(!show)return null;
   return(
     <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:300,background:t.card,borderTop:`1px solid ${t.border}`,paddingBottom:"env(safe-area-inset-bottom,0px)",backdropFilter:"blur(20px) saturate(1.4)",WebkitBackdropFilter:"blur(20px) saturate(1.4)",boxShadow:`0 -4px 24px rgba(0,0,0,0.32),inset 0 1px 0 rgba(255,255,255,0.08)`}}>
@@ -1987,7 +1989,7 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
 }
 
 function App(){
-  const[view,setView]=useState("hub");
+  const[view,setView]=useState("home");
   const[selected,setSelected]=useState(null);
   const[theme,setTheme]=useState("carta");
   const[splash,setSplash]=useState(true);
@@ -2017,8 +2019,8 @@ function App(){
   return(
     <div style={{background:t.bg,color:t.text,minHeight:"100vh"}}>
       {splash&&<Splash onDone={()=>setSplash(false)} bg={t.bg} text={t.text}/>}
-      {!splash&&view==="setup"&&<ProfileSetup t={t} onDone={onSetupDone} onBack={()=>setView(profile?"daily":"hub")}/>}
-      {!splash&&view==="home"&&<Home t={t} profile={profile} onSelect={s=>{setSelected(s);setView("sign")}} onSetup={()=>setView(profile?"daily":"setup")}/>}
+      {!splash&&view==="setup"&&<ProfileSetup t={t} onDone={onSetupDone} onBack={()=>setView("home")}/>}
+      {!splash&&view==="home"&&<Home t={t} profile={profile} onSelect={s=>{setSelected(s);setView("sign")}} onSetup={()=>setView("setup")}/>}
       {!splash&&view==="hub"&&<HomeHub t={t} setView={setView} profile={profile}/>}
       {!splash&&view==="daily"&&profile&&<DailyHoroscope t={t} profile={profile} onBack={()=>setView("hub")} onProfile={()=>setView("profile")} onEdit={()=>setView("setup")}/>}
       {!splash&&view==="tarocchi"&&<Tarocchi t={t}/>}
