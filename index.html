@@ -889,6 +889,249 @@ function BottomNav({view,setView,t,profile}){
   );
 }
 
+/* ══════════════════════════════════════════════════════
+   TAROCCHI  —  dati & componente
+══════════════════════════════════════════════════════ */
+const TAROT_AREAS=[
+  {key:"amore", label:"Amore", icon:"♡",color:"#d4688a",desc:"Relazioni & Cuore"},
+  {key:"lavoro",label:"Lavoro",icon:"◈",color:"#7090d8",desc:"Carriera & Potere"},
+  {key:"salute",label:"Salute",icon:"✦",color:"#58b878",desc:"Corpo & Vitalità"},
+  {key:"soldi", label:"Soldi", icon:"◉",color:"#c8a030",desc:"Abbondanza & Flusso"},
+];
+const TROM=["0","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI"];
+const TANGLES=[-30,-20,-10,0,10,20,30];
+const TPOS=["Passato","Presente","Futuro"];
+const ARCANI=[
+  {n:0, name:"Il Matto",      sym:"◯",amore:"Un'avventura romantica ti aspetta dove meno te lo aspetti — apriti all'ignoto.",lavoro:"Il coraggio di ricominciare da zero è il tuo superpotere in questo momento.",salute:"Il tuo corpo chiede libertà e movimento: interrompi la routine.",soldi:"Un'opportunità inattesa si mostra: fidati dell'istinto prima del calcolo."},
+  {n:1, name:"Il Mago",       sym:"⊕",amore:"Hai tutti gli strumenti per sedurre: usa il tuo carisma con intenzione.",lavoro:"Le tue capacità sono al massimo — è il momento di agire, non di attendere.",salute:"Energia e concentrazione sono tue alleate: il corpo risponde alla mente.",soldi:"Manifesta ciò che vuoi: la volontà unita all'azione crea abbondanza."},
+  {n:2, name:"La Papessa",    sym:"☽",amore:"Ascolta il tuo intuito sulle emozioni di chi ami: sa più di quanto creda.",lavoro:"Il silenzio strategico è più potente di mille parole: osserva prima di agire.",salute:"Il tuo corpo ti parla sottovoce: fermati e ascoltalo davvero.",soldi:"Non rivelare i tuoi piani finanziari: la discrezione è la tua fortuna."},
+  {n:3, name:"L'Imperatrice", sym:"♀",amore:"La tua femminilità e il tuo fascino irradiano amore: lascia che fluisca.",lavoro:"La creatività che porti in ogni cosa ti apre porte inaspettate.",salute:"Nutri il corpo con piacere: cibo, natura e bellezza sono medicine.",soldi:"L'abbondanza cresce quando la curi come un giardino: pazienza e dedizione."},
+  {n:4, name:"L'Imperatore",  sym:"♂",amore:"Stabilità e solidità costruiscono l'amore duraturo: sii il fondamento.",lavoro:"Prendi il comando con autorità: la tua leadership è pronta per essere riconosciuta.",salute:"Struttura e disciplina sono le basi del tuo benessere fisico ora.",soldi:"Consolida le tue fondamenta finanziarie: pianifica con determinazione."},
+  {n:5, name:"Il Papa",       sym:"✝",amore:"Un amore autentico e tradizionale ti sostiene: cerca radici condivise.",lavoro:"Il consiglio di un mentore o una struttura consolidata ti guiderà al successo.",salute:"La saggezza classica — riposo, regolarità, cura — è la tua medicina migliore.",soldi:"Seguire metodi collaudati e consigli esperti protegge il tuo patrimonio."},
+  {n:6, name:"Gli Amanti",    sym:"⋈",amore:"Una scelta del cuore si avvicina: ascolta l'anima, non la paura.",lavoro:"Una partnership lavorativa può trasformare la tua carriera: valutala con cura.",salute:"L'armonia tra mente e corpo nasce dalle tue scelte quotidiane.",soldi:"Un accordo o una collaborazione economica porta benefici reciproci."},
+  {n:7, name:"Il Carro",      sym:"▷",amore:"Sei tu al timone: la tua determinazione conquista il cuore che desideri.",lavoro:"Avanza senza esitare: la vittoria professionale è nelle tue mani.",salute:"Sfida il tuo corpo: l'attività intensa ora porta risultati straordinari.",soldi:"Muoviti veloce verso i tuoi obiettivi finanziari: la strada è libera."},
+  {n:8, name:"La Forza",      sym:"∞",amore:"La dolcezza è più potente della passione sfrenata: tieni le briglie con grazia.",lavoro:"La perseveranza silenziosa supera ogni ostacolo professionale.",salute:"La guarigione richiede forza interiore più che medicine: credi in te.",soldi:"La costanza trasforma piccoli risparmi in grande ricchezza: non mollare."},
+  {n:9, name:"L'Eremita",     sym:"✧",amore:"Un momento di solitudine chiarisce ciò che vuoi davvero dall'amore.",lavoro:"Ritirarsi per riflettere è il gesto più produttivo che tu possa fare ora.",salute:"Il corpo si rigenera nel silenzio e nel riposo: concediti il ritiro.",soldi:"Una revisione solitaria delle tue finanze rivela soluzioni inaspettate."},
+  {n:10,name:"Ruota Fortuna", sym:"⊙",amore:"Il ciclo cambia: se soffri arriva la gioia, se sei felice proteggila.",lavoro:"Un giro di fortuna professionale è imminente: preparati a cavalcarlo.",salute:"Un cambiamento nel ciclo vitale porta nuova energia e vitalità.",soldi:"La ruota gira a tuo favore: cogli l'opportunità che si presenta ora."},
+  {n:11,name:"La Giustizia",  sym:"⚖",amore:"L'equilibrio e l'onestà sono le basi di un amore sano e duraturo.",lavoro:"Una valutazione professionale richiede la tua chiarezza e onestà.",salute:"Equilibra i tuoi eccessi: il corpo risponde alla giustizia che ti fai.",soldi:"Bilancia entrate e uscite con precisione: la chiarezza porta stabilità."},
+  {n:12,name:"L'Appeso",      sym:"⊘",amore:"Una pausa nella relazione non è la fine — è il prezzo della trasformazione.",lavoro:"Aspettare ha un significato: questo non è il momento di forzare.",salute:"Fermati: il tuo corpo chiede resa, non resistenza.",soldi:"Blocca ogni decisione finanziaria importante finché la nebbia non si dirada."},
+  {n:13,name:"La Morte",      sym:"✦",amore:"Un ciclo si chiude per aprirne uno più autentico e profondo.",lavoro:"La fine di una fase lavorativa è il seme della tua prossima rinascita.",salute:"Abbandona le abitudini che consumano la tua vitalità: è ora di rinnovare.",soldi:"Chiudi conti aperti e vecchi debiti: solo così arriva nuova abbondanza."},
+  {n:14,name:"La Temperanza", sym:"≋",amore:"La pazienza e la moderazione trasformano l'attrazione in amore vero.",lavoro:"L'equilibrio tra ambizione e pace interiore è la tua formula del successo.",salute:"Ritmo, regolarità e moderazione sono il tuo elisir di lunga vita.",soldi:"La gestione equilibrata delle risorse crea ricchezza stabile nel tempo."},
+  {n:15,name:"Il Diavolo",    sym:"⋇",amore:"Una dipendenza emotiva ti incatena: riconosci il pattern per liberartene.",lavoro:"Una situazione lavorativa tossica ti drena: vedi le catene e allontanati.",salute:"Vizi e eccessi si riflettono sul tuo corpo: è tempo di spezzare il ciclo.",soldi:"Un'ossessione per il denaro o un debito nascosto richiede attenzione urgente."},
+  {n:16,name:"La Torre",      sym:"⊓",amore:"Uno shock emotivo demolisce ciò che non era reale: resta, è purificazione.",lavoro:"Un cambiamento improvviso e dirompente porta, paradossalmente, liberazione.",salute:"Il crollo fisico è un messaggio: il tuo corpo non mente, ascoltalo.",soldi:"Una perdita finanziaria precede una ricostruzione molto più solida."},
+  {n:17,name:"La Stella",     sym:"★",amore:"Speranza e fiducia rinascono dopo il buio: l'amore che cerchi è reale.",lavoro:"Dopo la tempesta professionale arriva la chiarezza: credi nel tuo percorso.",salute:"La guarigione è in corso: il tuo sistema si sta riequilibrando.",soldi:"Una fase di rinascita finanziaria si apre: pianta i semi con fede."},
+  {n:18,name:"La Luna",       sym:"◗",amore:"Illusioni e paure offuscano la realtà: cerca la verità sotto la superficie.",lavoro:"Non tutto è come appare in ambito lavorativo: diffida delle apparenze.",salute:"I cicli emotivi influenzano il tuo corpo: ascolta i ritmi profondi.",soldi:"Attenzione agli inganni finanziari: verifica tutto prima di firmare."},
+  {n:19,name:"Il Sole",       sym:"☀",amore:"Gioia, calore e chiarezza: questo amore è luminoso e profondamente autentico.",lavoro:"Il successo professionale brilla: il tuo talento viene finalmente riconosciuto.",salute:"Vitalità piena e benessere radiante: il tuo corpo è in perfetta armonia.",soldi:"Abbondanza solare: guadagni, prosperità e opportunità affluiscono a te."},
+  {n:20,name:"Il Giudizio",   sym:"♒",amore:"Una chiamata alla rinascita nella relazione: rispondi con il cuore aperto.",lavoro:"Una valutazione finale si avvicina: sei pronto per il prossimo livello.",salute:"Il tuo corpo chiede una trasformazione profonda: rispondi all'appello.",soldi:"Un bilancio definitivo apre la strada a una nuova fase di prosperità."},
+  {n:21,name:"Il Mondo",      sym:"◎",amore:"Completezza e integrazione: un amore che ti rende intero è qui o si avvicina.",lavoro:"Il traguardo professionale è raggiunto: celebra e preparati al prossimo ciclo.",salute:"Benessere totale, corpo e anima in equilibrio: sei al culmine della forma.",soldi:"Il ciclo finanziario si completa con successo: abbondanza e piena soddisfazione."},
+];
+
+function Tarocchi({t}){
+  const[phase,setPhase]=useState("area");
+  const[area,setArea]=useState(null);
+  const[deck,setDeck]=useState([]);
+  const[picked,setPicked]=useState([]);
+  const[flipped,setFlipped]=useState([false,false,false]);
+  const[hovArea,setHovArea]=useState(null);
+  const[hovCard,setHovCard]=useState(null);
+
+  const aObj=TAROT_AREAS.find(a=>a.key===area)||TAROT_AREAS[0];
+
+  function startSpread(aKey){
+    const sh=[...ARCANI].sort(()=>Math.random()-.5).slice(0,7);
+    setDeck(sh);setPicked([]);setFlipped([false,false,false]);
+    setArea(aKey);setPhase("spread");
+  }
+  function pickCard(i){
+    if(picked.includes(i)||picked.length>=3)return;
+    setPicked(p=>[...p,i]);
+  }
+  function doReveal(){
+    setPhase("reveal");
+    [400,1150,1950].forEach((d,idx)=>
+      setTimeout(()=>setFlipped(f=>{const n=[...f];n[idx]=true;return n;}),d)
+    );
+  }
+  function reset(){
+    setPhase("area");setArea(null);setDeck([]);
+    setPicked([]);setFlipped([false,false,false]);
+  }
+
+  /* ── AREA SELECTION ── */
+  if(phase==="area") return(
+    <div style={{minHeight:"100vh",background:"#07040e",color:"#ede8f5",paddingBottom:"calc(env(safe-area-inset-bottom,0px) + 80px)",overflowX:"hidden"}}>
+      {/* Star field */}
+      <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0}}>
+        {[...Array(28)].map((_,i)=>(
+          <div key={i} style={{position:"absolute",width:i%5===0?2:1.5,height:i%5===0?2:1.5,borderRadius:"50%",background:`rgba(255,255,255,${i%3===0?0.6:0.35})`,top:`${(i*37+11)%100}%`,left:`${(i*71+7)%100}%`,animation:`pulse ${2+(i*0.29)%2.5}s ${(i*0.17)%2.5}s ease-in-out infinite`}}/>
+        ))}
+      </div>
+      <div style={{position:"relative",zIndex:1}}>
+        {/* Header */}
+        <div style={{padding:"clamp(56px,13vw,88px) 28px 40px",textAlign:"center"}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(52px,14vw,76px)",color:"rgba(200,165,80,0.88)",lineHeight:1,marginBottom:18,filter:"drop-shadow(0 0 32px rgba(200,165,80,0.4))"}}>✦</div>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"10px",fontWeight:500,letterSpacing:".44em",color:"rgba(200,165,80,0.6)",textTransform:"uppercase",marginBottom:14}}>Arcani Maggiori</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(32px,9vw,50px)",fontWeight:300,letterSpacing:"-.02em",marginBottom:12}}>I Tarocchi</div>
+          <div style={{width:40,height:1,background:"linear-gradient(to right,transparent,rgba(200,165,80,0.55),transparent)",margin:"0 auto 18px"}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",fontStyle:"italic",color:"rgba(237,232,245,0.45)"}}>Scegli il dominio da esplorare</div>
+        </div>
+        {/* 2x2 grid */}
+        <div style={{padding:"0 20px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,maxWidth:500,margin:"0 auto"}}>
+          {TAROT_AREAS.map(a=>{
+            const isHov=hovArea===a.key;
+            return(
+              <div key={a.key} onClick={()=>startSpread(a.key)}
+                onMouseEnter={()=>setHovArea(a.key)} onMouseLeave={()=>setHovArea(null)}
+                style={{background:isHov?`linear-gradient(135deg,${a.color}25,${a.color}0d)`:"rgba(255,255,255,0.035)",border:`1px solid ${isHov?a.color+"58":"rgba(255,255,255,0.07)"}`,borderRadius:20,padding:"28px 16px 24px",textAlign:"center",cursor:"pointer",transform:isHov?"translateY(-4px) scale(1.02)":"scale(1)",transition:"all .35s cubic-bezier(.16,1,.3,1)",boxShadow:isHov?`0 18px 50px ${a.color}28,0 0 0 1px ${a.color}35`:"none",position:"relative",overflow:"hidden"}}>
+                <div style={{position:"absolute",top:"40%",left:"50%",transform:"translate(-50%,-50%)",width:88,height:88,borderRadius:"50%",background:`radial-gradient(circle,${a.color}${isHov?"22":"0d"},transparent 70%)`,transition:"all .35s",pointerEvents:"none"}}/>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(34px,9vw,44px)",color:a.color,lineHeight:1,marginBottom:14,position:"relative",transition:"transform .25s",transform:isHov?"scale(1.12)":"scale(1)"}}>{a.icon}</div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4.5vw,21px)",fontWeight:500,color:"#ede8f5",marginBottom:7,position:"relative"}}>{a.label}</div>
+                <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,letterSpacing:".08em",color:"rgba(237,232,245,0.32)",textTransform:"uppercase",position:"relative"}}>{a.desc}</div>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{textAlign:"center",marginTop:44}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"12px",fontStyle:"italic",color:"rgba(200,165,80,0.22)",letterSpacing:".06em"}}>22 Arcani · 3 carte · 1 verità</div>
+        </div>
+      </div>
+    </div>
+  );
+
+  /* ── CARD SPREAD ── */
+  if(phase==="spread") return(
+    <div style={{minHeight:"100vh",background:"#07040e",color:"#ede8f5",paddingBottom:"calc(env(safe-area-inset-bottom,0px) + 80px)",overflow:"hidden"}}>
+      {/* Star field */}
+      <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0}}>
+        {[...Array(20)].map((_,i)=>(
+          <div key={i} style={{position:"absolute",width:1.5,height:1.5,borderRadius:"50%",background:"rgba(255,255,255,0.4)",top:`${(i*41+9)%100}%`,left:`${(i*67+17)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
+        ))}
+      </div>
+      <div style={{position:"relative",zIndex:1}}>
+        {/* Header */}
+        <div style={{padding:"clamp(44px,10vw,68px) 24px 16px",textAlign:"center"}}>
+          <div style={{display:"inline-flex",alignItems:"center",gap:8,background:`${aObj.color}18`,border:`1px solid ${aObj.color}48`,borderRadius:20,padding:"7px 18px",marginBottom:22}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:aObj.color}}>{aObj.icon}</span>
+            <span style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:600,color:aObj.color,letterSpacing:".06em",textTransform:"uppercase"}}>{aObj.label}</span>
+          </div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(22px,6vw,30px)",fontWeight:300,marginBottom:7}}>Scegli tre carte</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",fontStyle:"italic",color:`rgba(237,232,245,${picked.length===3?0.65:0.38})`,transition:"color .3s"}}>
+            {picked.length===0?"Affida la tua domanda al cosmo":picked.length===3?"Le tue carte sono pronte":`${picked.length} di 3 selezionate`}
+          </div>
+        </div>
+
+        {/* Card fan */}
+        <div style={{position:"relative",height:210,margin:"16px 0 16px"}}>
+          {deck.map((card,i)=>{
+            const isPicked=picked.includes(i);
+            const pickOrder=picked.indexOf(i);
+            const isHov=hovCard===i;
+            const angle=TANGLES[i];
+            let ty=0;
+            if(isPicked) ty=-56;
+            else if(isHov&&picked.length<3) ty=-26;
+            return(
+              <div key={i} onClick={()=>pickCard(i)}
+                onMouseEnter={()=>setHovCard(i)} onMouseLeave={()=>setHovCard(null)}
+                style={{position:"absolute",left:"50%",bottom:0,width:70,height:112,marginLeft:-35,borderRadius:10,cursor:isPicked||picked.length>=3?"default":"pointer",transform:`rotate(${angle}deg) translateY(${ty}px)`,transformOrigin:"center bottom",transition:"transform .45s cubic-bezier(.16,1,.3,1),box-shadow .3s",zIndex:isPicked?20:isHov?15:10-Math.abs(i-3),boxShadow:isPicked?`0 22px 55px ${aObj.color}55,0 0 0 1.5px ${aObj.color}65`:isHov?"0 10px 32px rgba(0,0,0,.9)":"0 4px 16px rgba(0,0,0,.7)"}}>
+                <div style={{width:"100%",height:"100%",borderRadius:10,background:isPicked?`linear-gradient(145deg,${aObj.color}38,${aObj.color}14,rgba(7,4,14,.9))`:"linear-gradient(145deg,#1e1030,#0c0820,#07040e)",border:`1px solid ${isPicked?aObj.color+"72":"rgba(200,165,80,0.18)"}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:5,position:"relative",overflow:"hidden",transition:"background .4s,border .4s"}}>
+                  <div style={{position:"absolute",inset:6,border:`0.5px solid ${isPicked?aObj.color+"52":"rgba(200,165,80,0.12)"}`,borderRadius:6,transition:"border .4s"}}/>
+                  <div style={{position:"absolute",top:9,left:9,fontSize:"7px",color:isPicked?aObj.color:"rgba(200,165,80,0.28)",fontFamily:"'Cormorant Garamond',serif"}}>✦</div>
+                  <div style={{position:"absolute",top:9,right:9,fontSize:"7px",color:isPicked?aObj.color:"rgba(200,165,80,0.28)",fontFamily:"'Cormorant Garamond',serif"}}>✦</div>
+                  <div style={{position:"absolute",bottom:9,left:9,fontSize:"7px",color:isPicked?aObj.color:"rgba(200,165,80,0.28)",fontFamily:"'Cormorant Garamond',serif"}}>✦</div>
+                  <div style={{position:"absolute",bottom:9,right:9,fontSize:"7px",color:isPicked?aObj.color:"rgba(200,165,80,0.28)",fontFamily:"'Cormorant Garamond',serif"}}>✦</div>
+                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:isPicked?"20px":"16px",color:isPicked?aObj.color:"rgba(200,165,80,0.4)",transition:"all .3s",lineHeight:1}}>{isPicked?aObj.icon:"✦"}</div>
+                  {isPicked&&pickOrder>=0&&<div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"11px",color:aObj.color,opacity:.9,letterSpacing:".06em"}}>{["I","II","III"][pickOrder]}</div>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Position slots */}
+        <div style={{display:"flex",gap:10,padding:"0 24px",marginBottom:picked.length===3?16:0,maxWidth:380,margin:"0 auto",marginBottom:picked.length===3?16:8}}>
+          {TPOS.map((pos,i)=>(
+            <div key={pos} style={{flex:1,textAlign:"center",padding:"10px 6px",background:picked.length>i?`${aObj.color}18`:"rgba(255,255,255,0.03)",border:`1px solid ${picked.length>i?aObj.color+"45":"rgba(255,255,255,0.06)"}`,borderRadius:12,fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,letterSpacing:".08em",color:picked.length>i?aObj.color:"rgba(237,232,245,0.2)",textTransform:"uppercase",transition:"all .35s"}}>{pos}</div>
+          ))}
+        </div>
+
+        {/* Reveal CTA */}
+        {picked.length===3&&(
+          <div className="fade-in-up" style={{padding:"12px 24px 0",maxWidth:400,margin:"0 auto"}}>
+            <button onClick={doReveal}
+              onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"}
+              onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}
+              style={{width:"100%",padding:"18px 24px",background:`linear-gradient(135deg,${aObj.color}ee,${aObj.color}aa)`,border:"none",borderRadius:16,color:"#fff",fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",letterSpacing:".04em",cursor:"pointer",boxShadow:`0 8px 32px ${aObj.color}48`,transition:"transform .2s"}}>Rivela il Destino ✦</button>
+          </div>
+        )}
+        <div style={{textAlign:"center",marginTop:20}}>
+          <button onClick={reset} style={{background:"none",border:"none",color:"rgba(237,232,245,0.28)",fontFamily:"'Inter',sans-serif",fontSize:"11px",letterSpacing:".06em",cursor:"pointer"}}>← cambia dominio</button>
+        </div>
+      </div>
+    </div>
+  );
+
+  /* ── REVEAL ── */
+  const pickedCards=picked.map(i=>deck[i]);
+  return(
+    <div style={{minHeight:"100vh",background:"#f2f2f7",paddingBottom:"calc(env(safe-area-inset-bottom,0px) + 80px)"}}>
+      {/* Dark header */}
+      <div style={{background:"#07040e",padding:"clamp(44px,10vw,64px) 24px 28px",textAlign:"center"}}>
+        <div style={{display:"inline-flex",alignItems:"center",gap:8,background:`${aObj.color}22`,border:`1px solid ${aObj.color}52`,borderRadius:20,padding:"7px 18px",marginBottom:16}}>
+          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:aObj.color}}>{aObj.icon}</span>
+          <span style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:600,color:aObj.color,letterSpacing:".06em",textTransform:"uppercase"}}>{aObj.label}</span>
+        </div>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(24px,7vw,34px)",fontWeight:300,color:"#ede8f5",marginBottom:4}}>La Tua Lettura</div>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",fontStyle:"italic",color:"rgba(237,232,245,0.4)"}}>Passato · Presente · Futuro</div>
+        <div style={{width:40,height:1,background:`linear-gradient(to right,transparent,${aObj.color}72,transparent)`,margin:"16px auto 0"}}/>
+      </div>
+      <div style={{height:36,background:"linear-gradient(to bottom,#07040e,#f2f2f7)"}}/>
+
+      {/* Cards */}
+      <div style={{padding:"4px 16px 0",display:"flex",flexDirection:"column",gap:14,maxWidth:560,margin:"0 auto"}}>
+        {pickedCards.map((card,i)=>(
+          <div key={i}>
+            {!flipped[i]?(
+              <div style={{borderRadius:16,height:72,background:"linear-gradient(135deg,#1e1030,#0c0820)",border:`1px solid ${aObj.color}25`,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 2px 12px rgba(0,0,0,0.12)"}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:`${aObj.color}40`,animation:"pulse 1.8s ease-in-out infinite"}}>✦</div>
+              </div>
+            ):(
+              <div className="fade-in-up" style={{background:"#ffffff",borderRadius:16,boxShadow:"0 4px 20px rgba(0,0,0,0.08),0 0 0 0.5px rgba(0,0,0,0.05)",overflow:"hidden"}}>
+                <div style={{background:`linear-gradient(135deg,${aObj.color}15,${aObj.color}06)`,borderBottom:`0.5px solid ${aObj.color}28`,padding:"16px 20px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:14}}>
+                    <div style={{width:40,height:40,borderRadius:10,background:`${aObj.color}18`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:aObj.color,lineHeight:1}}>{TROM[card.n]}</div>
+                    </div>
+                    <div>
+                      <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:600,letterSpacing:".1em",color:`${aObj.color}95`,textTransform:"uppercase",marginBottom:3}}>{TPOS[i]}</div>
+                      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"19px",fontWeight:500,color:"#000",letterSpacing:"-.01em"}}>{card.name}</div>
+                    </div>
+                  </div>
+                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"30px",color:`${aObj.color}52`,lineHeight:1,flexShrink:0}}>{card.sym}</div>
+                </div>
+                <div style={{padding:"18px 20px"}}>
+                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4.2vw,18px)",color:"#000",lineHeight:1.9,fontStyle:"italic"}}>{card[aObj.key]}</div>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Done */}
+      {flipped.every(Boolean)&&(
+        <div className="fade-in" style={{padding:"28px 20px 0",textAlign:"center",maxWidth:560,margin:"0 auto"}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"13px",fontStyle:"italic",color:"rgba(60,60,67,0.38)",marginBottom:22}}>La lettura è completa ✦</div>
+          <button onClick={reset}
+            onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"}
+            onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}
+            style={{padding:"16px 44px",background:"#000",border:"none",borderRadius:14,color:"#fff",fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",letterSpacing:".04em",cursor:"pointer",transition:"transform .2s"}}>Nuova Lettura</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ComingSoon({t,title,icon,desc}){
   return(
     <div style={{minHeight:"100vh",background:t.bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 32px",textAlign:"center"}}>
@@ -1679,7 +1922,7 @@ function App(){
       {!splash&&view==="setup"&&<ProfileSetup t={t} onDone={onSetupDone} onBack={()=>setView(profile?"daily":"home")}/>}
       {!splash&&view==="home"&&<Home t={t} profile={profile} onSelect={s=>{setSelected(s);setView("sign")}} onSetup={()=>setView(profile?"daily":"setup")}/>}
       {!splash&&view==="daily"&&profile&&<DailyHoroscope t={t} profile={profile} onBack={()=>setView("home")} onProfile={()=>setView("profile")} onEdit={()=>setView("setup")}/>}
-      {!splash&&view==="tarocchi"&&<ComingSoon t={t} title="Tarocchi" icon="✦" desc="Tre carte. Un momento. La tua verità interiore rivelata attraverso gli arcani maggiori."/>}
+      {!splash&&view==="tarocchi"&&<Tarocchi t={t}/>}
       {!splash&&view==="sfera"&&<ComingSoon t={t} title="Sfera di Cristallo" icon="◎" desc="Il respiro del futuro è già qui. Ascolta ciò che il cosmo vuole dirti in questo preciso istante."/>}
       {!splash&&view==="profile"&&profile&&<PersonalProfile t={t} profile={profile} onEdit={()=>setView("setup")} onBack={()=>setView("daily")}/>}
       {!splash&&view==="sign"&&selected&&<SignScreen sg={selected} t={t} onBack={()=>setView("home")} journal={journal} saveEntry={saveEntry}/>}
