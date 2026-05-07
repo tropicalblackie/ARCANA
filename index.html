@@ -1529,11 +1529,23 @@ function PersonalProfile({t,profile,onEdit,onBack}){
 }
 
 // ── PROFILE SETUP ──
+async function geocodeCity(cityName){
+  if(!cityName.trim())return null;
+  try{
+    const response=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cityName)}&format=json&limit=1`);
+    const results=await response.json();
+    if(results.length>0){
+      const{display_name,lat,lon}=results[0];
+      return{name:display_name,lat:parseFloat(lat),lon:parseFloat(lon)};
+    }
+    return null;
+  }catch(e){console.error("Geocoding error:",e);return null;}
+}
 const SETUP_STEPS=[
   {key:"name",         q:"Come ti chiami?",                                    type:"text",   placeholder:"Il tuo nome"},
   {key:"gender",       q:"Come ti identifichi?",                               type:"choice", options:["Donna","Uomo","Non binario","Preferisco non dirlo"]},
   {key:"birthday",     q:"Quando sei nato/a?",                                 type:"date"},
-  {key:"birthcity",    q:"In quale città sei nato/a?",                         type:"text",   placeholder:"Città di nascita"},
+  {key:"birthcity",    q:"In quale città sei nato/a?",                         type:"text",   placeholder:"Città di nascita",validate:true},
   {key:"birthtime",    q:"A che ora sei nato/a?",                              type:"time"},
   {key:"relationship", q:"Qual è il tuo stato sentimentale?",                  type:"choice", options:["Single","Impegnato/a","Fidanzato/a","Sposato/a","Flirt","Platonica","Appena separato/a","Divorziato/a","Vedovo/a","È complicato"]},
   {key:"work",         q:"Come descriveresti la tua situazione lavorativa?",   type:"choice", options:["Studente","Neolaureato/a","In cerca di lavoro","Disoccupato/a","Dipendente pubblico","Dipendente privato","Imprenditore/trice","Capo","Pensionato/a","Casalinga/o","Nessuno di questi"]},
@@ -1543,19 +1555,36 @@ function ProfileSetup({t,onDone,onBack}){
   const[step,setStep]=useState(0);
   const[data,setData]=useState({});
   const[val,setVal]=useState("");
+  const[geoLoading,setGeoLoading]=useState(false);
+  const[geoError,setGeoError]=useState("");
+  const[geoResult,setGeoResult]=useState(null);
   const s=SETUP_STEPS[step];
   const total=SETUP_STEPS.length;
   const isDark=parseInt(t.bg.slice(1,3),16)<128;
 
-  const next=useCallback((v)=>{
+  const next=useCallback(async(v)=>{
     const chosen=v!==undefined?v:val;
-    const newData={...data,[s.key]:chosen};
-    if(step<total-1){setData(newData);setVal("");setStep(step+1);}
+    let finalValue=chosen;
+    if(s.key==="birthcity"&&s.validate&&chosen.trim()){
+      setGeoLoading(true);
+      setGeoError("");
+      const geo=await geocodeCity(chosen);
+      setGeoLoading(false);
+      if(geo){
+        finalValue=`${geo.name}, ${geo.lat}, ${geo.lon}`;
+        setGeoResult(geo);
+      }else{
+        setGeoError("Città non trovata. Prova di nuovo.");
+        return;
+      }
+    }
+    const newData={...data,[s.key]:finalValue};
+    if(step<total-1){setData(newData);setVal("");setStep(step+1);setGeoLoading(false);setGeoError("");setGeoResult(null);}
     else{try{localStorage.setItem("arcana_profile",JSON.stringify(newData))}catch(e){}onDone(newData);}
   },[step,val,data,s,total,onDone]);
 
   const back=()=>{if(step>0){setStep(p=>{const ns=p-1;setVal(data[SETUP_STEPS[ns].key]||"");return ns;});}};
-  const canContinue=(s.type==="text"||s.type==="date")&&val.trim().length>0;
+  const canContinue=(s.type==="text"||s.type==="date")&&val.trim().length>0&&(s.key!=="birthcity"||geoResult!==null);
 
   return(
     <div className="screen-h" style={{background:t.bg,display:"flex",flexDirection:"column",padding:"env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)"}}>
@@ -1572,8 +1601,13 @@ function ProfileSetup({t,onDone,onBack}){
         <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(24px,6vw,38px)",fontStyle:"italic",color:t.text,lineHeight:1.2,marginBottom:36}}>{s.q}</div>
 
         {s.type==="text"&&(
-          <input autoFocus value={val} onChange={e=>setVal(e.target.value)} onKeyDown={e=>e.key==="Enter"&&canContinue&&next()} placeholder={s.placeholder}
-            style={{background:"transparent",border:"none",borderBottom:`1px solid ${t.border}`,color:t.text,fontSize:"clamp(20px,5vw,28px)",fontFamily:"'Cormorant Garamond',serif",padding:"10px 0",outline:"none",caretColor:t.accent,width:"100%","::placeholder":{color:t.muted}}}/>
+          <div>
+            <input autoFocus value={val} onChange={e=>{setVal(e.target.value);if(s.validate){setGeoError("");setGeoResult(null);}}} onKeyDown={e=>e.key==="Enter"&&canContinue&&next()} placeholder={s.placeholder} disabled={geoLoading}
+              style={{background:"transparent",border:"none",borderBottom:`1px solid ${geoError?"#d4544f":geoResult?"#58b878":t.border}`,color:t.text,fontSize:"clamp(20px,5vw,28px)",fontFamily:"'Cormorant Garamond',serif",padding:"10px 0",outline:"none",caretColor:t.accent,width:"100%",opacity:geoLoading?0.6:1,"::placeholder":{color:t.muted}}}/>
+            {s.validate&&geoLoading&&<div style={{marginTop:16,fontSize:"12px",color:t.muted,display:"flex",alignItems:"center",gap:8}}>🔍 Cercando su OpenStreetMap...</div>}
+            {s.validate&&geoError&&<div style={{marginTop:12,fontSize:"13px",color:"#d4544f"}}>✗ {geoError}</div>}
+            {s.validate&&geoResult&&<div style={{marginTop:12,fontSize:"13px",color:"#58b878"}}>✓ Trovato: {geoResult.name}</div>}
+          </div>
         )}
 
         {s.type==="date"&&(
