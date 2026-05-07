@@ -403,14 +403,28 @@ const CometCard=memo(({children,accentColor="#fff"})=>{
 function useCandleLight(){
   useEffect(()=>{
     const el=document.documentElement;
-    let raf=null;let tx=50,ty=35,cx=50,cy=35;
-    function loop(){cx+=(tx-cx)*.07;cy+=(ty-cy)*.07;el.style.setProperty('--cx',cx.toFixed(1)+'%');el.style.setProperty('--cy',cy.toFixed(1)+'%');raf=requestAnimationFrame(loop);}
-    raf=requestAnimationFrame(loop);
+    // target, velocity, position — double-spring for buttery smooth follow
+    let tx=50,ty=35,vx=0,vy=0,cx=50,cy=35;
+    let last=performance.now();
+    const stiffness=0.028, damping=0.72; // very soft spring
+    function loop(now){
+      const dt=Math.min((now-last)/16.667,3); // normalized to 60fps, cap 3 frames
+      last=now;
+      // spring physics: F = stiffness*(target-pos) - damping*vel
+      vx=(vx+stiffness*(tx-cx)*dt)*Math.pow(damping,dt);
+      vy=(vy+stiffness*(ty-cy)*dt)*Math.pow(damping,dt);
+      cx+=vx*dt;
+      cy+=vy*dt;
+      el.style.setProperty('--cx',cx.toFixed(3)+'%');
+      el.style.setProperty('--cy',cy.toFixed(3)+'%');
+      raf=requestAnimationFrame(loop);
+    }
+    let raf=requestAnimationFrame(loop);
     function onMouse(e){tx=e.clientX/window.innerWidth*100;ty=e.clientY/window.innerHeight*100;}
     function onOrient(e){
-      const g=Math.max(-50,Math.min(50,e.gamma||0));
-      const b=Math.max(-50,Math.min(50,(e.beta||0)-25));
-      tx=50+g*(100/100);ty=50+b*(100/100);
+      const g=Math.max(-55,Math.min(55,e.gamma||0));
+      const b=Math.max(-55,Math.min(55,(e.beta||0)-20));
+      tx=50+g;ty=35+b;
     }
     window.addEventListener('mousemove',onMouse,{passive:true});
     window.addEventListener('deviceorientation',onOrient,{passive:true});
