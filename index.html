@@ -8,6 +8,8 @@
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.2.5/source/astronomy.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -1267,7 +1269,270 @@ const MEDITATIONS=[
    texts:["È notte profonda.\nIl cielo è un oceano di stelle accecanti.","Sei inginocchiato davanti a uno specchio d'acqua.\nNon c'è freddo, solo pace.","Hai due anfore tra le mani.\nContengono il peso che hai portato finora.","Versa l'acqua.\nSvuotale completamente nel lago.","Senti la leggerezza.\nNon devi più trattenere nulla.","Sei libero. Sei amato. Sei casa."]},
 ];
 /* ── Perlin 4D noise GLSL (Stefan Gustavson) ── */
-function startMeditationAudio(key){
+
+/* ══════════════════════════════════════════════════════
+   SHADER BALL — Three.js simplex noise sphere + particles
+══════════════════════════════════════════════════════ */
+const VERT_SHADER = `
+  varying vec2 vUv;
+  varying vec3 v_color;
+  varying vec3 v_normal;
+  uniform float u_time;
+  uniform float u_progress;
+
+  vec3 hsv2rgb(vec3 c) {
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+  }
+
+  vec4 permute(vec4 x) { return mod(((x * 34.0) + 1.0) * x, 289.0); }
+  vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+  float snoise(vec3 v) {
+    const vec2 C = vec2(1.0 / 6.0, 1.0 / 3.0);
+    const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+    vec3 i  = floor(v + dot(v, C.yyy));
+    vec3 x0 = v - i + dot(i, C.xxx);
+    vec3 g  = step(x0.yzx, x0.xyz);
+    vec3 l  = 1.0 - g;
+    vec3 i1 = min(g.xyz, l.zxy);
+    vec3 i2 = max(g.xyz, l.zxy);
+    vec3 x1 = x0 - i1 + 1.0 * C.xxx;
+    vec3 x2 = x0 - i2 + 2.0 * C.xxx;
+    vec3 x3 = x0 - 1.0 + 3.0 * C.xxx;
+    i = mod(i, 289.0);
+    vec4 p = permute(permute(permute(
+          i.z + vec4(0.0, i1.z, i2.z, 1.0))
+        + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+        + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+    float n_ = 1.0 / 7.0;
+    vec3 ns = n_ * D.wyz - D.xzx;
+    vec4 j  = p - 49.0 * floor(p * ns.z * ns.z);
+    vec4 x_ = floor(j * ns.z);
+    vec4 y_ = floor(j - 7.0 * x_);
+    vec4 x  = x_ * ns.x + ns.yyyy;
+    vec4 y  = y_ * ns.x + ns.yyyy;
+    vec4 h  = 1.0 - abs(x) - abs(y);
+    vec4 b0 = vec4(x.xy, y.xy);
+    vec4 b1 = vec4(x.zw, y.zw);
+    vec4 s0 = floor(b0) * 2.0 + 1.0;
+    vec4 s1 = floor(b1) * 2.0 + 1.0;
+    vec4 sh = -step(h, vec4(0.0));
+    vec4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
+    vec4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+    vec3 p0 = vec3(a0.xy, h.x);
+    vec3 p1 = vec3(a0.zw, h.y);
+    vec3 p2 = vec3(a1.xy, h.z);
+    vec3 p3 = vec3(a1.zw, h.w);
+    vec4 norm = taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+    p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
+    vec4 m = max(0.6 - vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)), 0.0);
+    m = m * m;
+    return 42.0 * dot(m * m, vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+  }
+
+  void main() {
+    vUv = uv;
+    float noise = snoise(position * u_progress + u_time / 10.0);
+    vec3 newPos = position * (noise + 0.7);
+    v_color = hsv2rgb(vec3(noise * 0.1 + 0.03, 0.7, 0.7));
+    v_normal = normal;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);
+  }
+`;
+
+const FRAG_SHADER = `
+  varying vec2 vUv;
+  varying vec3 v_color;
+  varying vec3 v_normal;
+  void main() {
+    vec3 skyColor    = vec3(1.000, 1.000, 0.547);
+    vec3 groundColor = vec3(0.562, 0.275, 0.111);
+    vec3 lightDirection = normalize(vec3(0.0, -1.0, -1.0));
+    vec3 light = mix(skyColor, groundColor, dot(lightDirection, v_normal));
+    gl_FragColor = vec4(light * v_color, 1.0);
+  }
+`;
+
+const PARTICLE_VERT = `
+  uniform float u_time;
+  void main() {
+    vec3 p = position;
+    p.y += 0.25 * (sin(p.y * 5.0 + u_time) * 0.5 + 0.5);
+    p.z += 0.05 * (sin(p.y * 10.0 + u_time) * 0.5 + 0.5);
+    vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
+    gl_PointSize = 10.0 * (1.0 / -mvPosition.z);
+    gl_Position = projectionMatrix * mvPosition;
+  }
+`;
+
+const PARTICLE_FRAG = `
+  uniform float u_progress;
+  void main() {
+    gl_FragColor = vec4(0.4, 0.4, 0.4, u_progress);
+  }
+`;
+
+const BG_VERT = `
+  varying vec2 vUv;
+  uniform float u_time;
+  void main() {
+    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * mvPosition;
+    vUv = uv;
+  }
+`;
+
+const BG_FRAG = `
+  float hue2rgb(float f1, float f2, float hue) {
+    if (hue < 0.0) hue += 1.0;
+    else if (hue > 1.0) hue -= 1.0;
+    if ((6.0 * hue) < 1.0) return f1 + (f2 - f1) * 6.0 * hue;
+    else if ((2.0 * hue) < 1.0) return f2;
+    else if ((3.0 * hue) < 2.0) return f1 + (f2 - f1) * ((2.0 / 3.0) - hue) * 6.0;
+    return f1;
+  }
+  vec3 hsl2rgb(vec3 hsl) {
+    if (hsl.y == 0.0) return vec3(hsl.z);
+    float f2 = hsl.z < 0.5 ? hsl.z * (1.0 + hsl.y) : hsl.z + hsl.y - hsl.y * hsl.z;
+    float f1 = 2.0 * hsl.z - f2;
+    return vec3(hue2rgb(f1,f2,hsl.x+(1.0/3.0)), hue2rgb(f1,f2,hsl.x), hue2rgb(f1,f2,hsl.x-(1.0/3.0)));
+  }
+  vec3 hsl2rgb(float h, float s, float l) { return hsl2rgb(vec3(h,s,l)); }
+
+  vec3 random3(vec3 c) {
+    float j = 4096.0 * sin(dot(c, vec3(17.0, 59.4, 15.0)));
+    vec3 r;
+    r.z = fract(512.0 * j); j *= 0.125;
+    r.x = fract(512.0 * j); j *= 0.125;
+    r.y = fract(512.0 * j);
+    return r - 0.5;
+  }
+  const float F3 = 0.3333333;
+  const float G3 = 0.1666667;
+  float simplex3d(vec3 p) {
+    vec3 s  = floor(p + dot(p, vec3(F3)));
+    vec3 x  = p - s + dot(s, vec3(G3));
+    vec3 e  = step(vec3(0.0), x - x.yzx);
+    vec3 i1 = e * (1.0 - e.zxy);
+    vec3 i2 = 1.0 - e.zxy * (1.0 - e);
+    vec3 x1 = x - i1 + G3;
+    vec3 x2 = x - i2 + 2.0 * G3;
+    vec3 x3 = x - 1.0 + 3.0 * G3;
+    vec4 w, d;
+    w.x = dot(x,x); w.y = dot(x1,x1); w.z = dot(x2,x2); w.w = dot(x3,x3);
+    w = max(0.6 - w, 0.0);
+    d.x = dot(random3(s),       x);
+    d.y = dot(random3(s + i1), x1);
+    d.z = dot(random3(s + i2), x2);
+    d.w = dot(random3(s + 1.0),x3);
+    w *= w; w *= w; d *= w;
+    return dot(d, vec4(52.0));
+  }
+  float hash(vec2 p) { return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x)))); }
+
+  varying vec2 vUv;
+  uniform float u_time;
+  uniform float u_progress;
+
+  void main() {
+    float n = simplex3d(vec3(vUv.xy, u_time * 1.0));
+    vec3 color = hsl2rgb(0.0 + n * 0.1, 0.0, 0.03);
+    float val = hash(vUv + u_time);
+    gl_FragColor = vec4(color + vec3(val / 20.0), 1.0);
+  }
+`;
+
+function ShaderBall(){
+  const mountRef=useRef(null);
+  useEffect(()=>{
+    const container=mountRef.current;
+    if(!container||!window.THREE)return;
+    const THREE=window.THREE;
+    const scene=new THREE.Scene();
+    const w=container.clientWidth, h=container.clientHeight;
+    const camera=new THREE.PerspectiveCamera(40,w/h,0.1,10000);
+    camera.position.set(0,0,10);
+    const renderer=new THREE.WebGLRenderer({antialias:true});
+    renderer.setSize(w,h);
+    renderer.setPixelRatio(window.devicePixelRatio||1);
+    container.appendChild(renderer.domElement);
+
+    // main sphere
+    const material=new THREE.ShaderMaterial({
+      vertexShader:VERT_SHADER,fragmentShader:FRAG_SHADER,wireframe:false,
+      uniforms:{u_time:{value:0},u_progress:{value:0}}
+    });
+    const sphere=new THREE.Mesh(new THREE.SphereGeometry(1,162,162),material);
+    scene.add(sphere);
+
+    // particles
+    const pointsMaterial=new THREE.ShaderMaterial({
+      vertexShader:PARTICLE_VERT,fragmentShader:PARTICLE_FRAG,wireframe:false,
+      side:THREE.DoubleSide,transparent:true,
+      uniforms:{u_time:{value:0},u_progress:{value:0}}
+    });
+    const N=30000;const pos=new Float32Array(N*3);
+    const inc=Math.PI*(3-Math.sqrt(5));const offset=2/N;const radius=2;
+    for(let i=0;i<N;i++){
+      const y=i*offset-1+offset/2;const r=Math.sqrt(1-y*y);const phi=i*inc;
+      pos[3*i]=radius*Math.cos(phi)*r;pos[3*i+1]=radius*y;pos[3*i+2]=radius*Math.sin(phi)*r;
+    }
+    const particleGeo=new THREE.BufferGeometry();
+    particleGeo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    const points=new THREE.Points(particleGeo,pointsMaterial);
+    scene.add(points);
+
+    // background plane
+    const bgMaterial=new THREE.ShaderMaterial({
+      vertexShader:BG_VERT,fragmentShader:BG_FRAG,wireframe:false,
+      uniforms:{u_time:{value:0},u_progress:{value:0}}
+    });
+    const bgMesh=new THREE.Mesh(new THREE.PlaneGeometry(100,15,16),bgMaterial);
+    bgMesh.position.z=-2;
+    scene.add(bgMesh);
+
+    // GSAP animation
+    if(window.gsap){
+      window.gsap.timeline({repeat:-1,yoyo:true})
+        .to(material.uniforms.u_progress,{value:5,duration:5,ease:'power3.inOut'})
+        .to(material.uniforms.u_progress,{value:1,duration:5,ease:'power3.inOut'});
+      window.gsap.to(pointsMaterial.uniforms.u_progress,{value:0.4,duration:5,ease:'power3.inOut'});
+    }
+
+    const clock=new THREE.Clock();
+    let rafId;
+    const render=()=>{
+      rafId=requestAnimationFrame(render);
+      const t=clock.getElapsedTime();
+      material.uniforms.u_time.value=t;
+      pointsMaterial.uniforms.u_time.value=t;
+      bgMaterial.uniforms.u_time.value=t;
+      points.rotation.y+=0.005;
+      camera.lookAt(scene.position);
+      renderer.render(scene,camera);
+    };
+    render();
+
+    const onResize=()=>{
+      const nw=container.clientWidth,nh=container.clientHeight;
+      camera.aspect=nw/nh;camera.updateProjectionMatrix();
+      renderer.setSize(nw,nh);
+    };
+    window.addEventListener('resize',onResize);
+
+    return()=>{
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize',onResize);
+      renderer.dispose();
+      if(renderer.domElement.parentNode)renderer.domElement.parentNode.removeChild(renderer.domElement);
+    };
+  },[]);
+  return <div ref={mountRef} style={{position:"absolute",inset:0,zIndex:0}}/>;
+}
+
+
   try{
     const ctx=new(window.AudioContext||window.webkitAudioContext)();ctx.resume();
     const master=ctx.createGain();master.gain.setValueAtTime(0,ctx.currentTime);master.gain.linearRampToValueAtTime(0.22,ctx.currentTime+3.5);master.connect(ctx.destination);
@@ -1333,37 +1598,33 @@ function MeditationSession({med,onEnd}){
   const phaseLabel={inspira:"· inspira ·",tieni:"· tieni ·",espira:"· espira ·",riposa:"· riposa ·"};
   const phaseAlpha={inspira:0.9,tieni:0.65,espira:0.55,riposa:0.3};
   return(
-    <div style={{position:"fixed",inset:0,zIndex:500,background:"#f7f5fc",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
-      <div style={{position:"absolute",inset:0,pointerEvents:"none"}}>
-        {[...Array(18)].map((_,i)=><div key={i} style={{position:"absolute",width:i%5===0?2:1,height:i%5===0?2:1,borderRadius:"50%",background:`rgba(10,5,30,${i%4===0?.12:.06})`,top:`${(i*41+7)%100}%`,left:`${(i*73+13)%100}%`,animation:`pulse ${1.5+(i*0.31)%2}s ${(i*0.19)%2}s ease-in-out infinite`}}/>)}
+    <div style={{position:"fixed",inset:0,zIndex:500,background:"#050508",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
+      {/* full-screen shader ball canvas */}
+      <ShaderBall/>
+      <div style={{position:"absolute",inset:0,pointerEvents:"none",zIndex:1}}>
+        {[...Array(18)].map((_,i)=><div key={i} style={{position:"absolute",width:i%5===0?2:1,height:i%5===0?2:1,borderRadius:"50%",background:`rgba(255,255,255,${i%4===0?.10:.04})`,top:`${(i*41+7)%100}%`,left:`${(i*73+13)%100}%`,animation:`pulse ${1.5+(i*0.31)%2}s ${(i*0.19)%2}s ease-in-out infinite`}}/>)}
       </div>
       {/* header */}
-      <div style={{position:"absolute",top:0,left:0,right:0,padding:`calc(env(safe-area-inset-top,0px) + 14px) 22px 0`,zIndex:2}}>
-        <button onClick={handleEnd} style={{position:"absolute",top:`calc(env(safe-area-inset-top,0px) + 10px)`,right:22,fontFamily:"'Inter',sans-serif",fontSize:"12px",fontWeight:600,letterSpacing:".16em",textTransform:"uppercase",color:"rgba(10,5,30,0.55)",background:"none",border:"none",cursor:"pointer",paddingTop:2}}>✕ fine</button>
+      <div style={{position:"absolute",top:0,left:0,right:0,padding:`calc(env(safe-area-inset-top,0px) + 14px) 22px 0`,zIndex:3}}>
+        <button onClick={handleEnd} style={{position:"absolute",top:`calc(env(safe-area-inset-top,0px) + 10px)`,right:22,fontFamily:"'Inter',sans-serif",fontSize:"12px",fontWeight:600,letterSpacing:".16em",textTransform:"uppercase",color:"rgba(237,232,245,0.55)",background:"none",border:"none",cursor:"pointer",paddingTop:2}}>✕ fine</button>
         <div style={{textAlign:"center",padding:"2px 56px 0"}}>
-          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(13px,3.4vw,18px)",fontWeight:600,letterSpacing:".18em",textTransform:"uppercase",color:"rgba(10,5,30,0.78)"}}>{med.name}</div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(20px,4.8vw,28px)",fontStyle:"italic",color:"rgba(10,5,30,0.72)",marginTop:4,lineHeight:1.35}}>{med.pose}</div>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(13px,3.4vw,18px)",fontWeight:600,letterSpacing:".18em",textTransform:"uppercase",color:"rgba(237,232,245,0.78)"}}>{med.name}</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(20px,4.8vw,28px)",fontStyle:"italic",color:"rgba(237,232,245,0.72)",marginTop:4,lineHeight:1.35}}>{med.pose}</div>
         </div>
       </div>
-      {/* center placeholder (no liquid ball) */}
-      <div style={{width:"clamp(170px,44vw,210px)",height:"clamp(170px,44vw,210px)",flexShrink:0,position:"relative",zIndex:1,display:"flex",alignItems:"center",justifyContent:"center"}}>
-        <div style={{position:"absolute",inset:0,borderRadius:"50%",background:`radial-gradient(circle, ${med.col}22 0%, ${med.col}10 45%, transparent 75%)`,transform:`scale(${0.92+breathState.progress*0.2})`,transition:"transform .25s ease"}}/>
-        <div style={{position:"absolute",inset:"14%",borderRadius:"50%",border:`1px solid ${med.col}55`,transform:`scale(${0.95+breathState.progress*0.12})`,transition:"transform .25s ease"}}/>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(52px,14vw,72px)",lineHeight:1,color:"rgba(10,5,30,0.7)",transform:`scale(${0.92+breathState.progress*0.16})`,transition:"transform .25s ease"}}>{med.symbol}</div>
-      </div>
       {/* breath controls */}
-      <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,marginTop:20,position:"relative",zIndex:2}}>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(54px,14vw,72px)",fontWeight:500,color:`rgba(10,5,30,${phaseAlpha[breathState.phase]||0.5})`,transition:"color .6s",lineHeight:1,letterSpacing:"-0.01em",textAlign:"center"}}>{breathState.count}</div>
-        <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(15px,3.8vw,20px)",fontWeight:600,letterSpacing:".18em",textTransform:"uppercase",color:"rgba(10,5,30,0.78)",height:28,display:"flex",alignItems:"center",justifyContent:"center",textAlign:"center"}}>{phaseLabel[breathState.phase]||breathState.phase}</div>
+      <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,position:"relative",zIndex:3}}>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(54px,14vw,72px)",fontWeight:500,color:`rgba(237,232,245,${phaseAlpha[breathState.phase]||0.5})`,transition:"color .6s",lineHeight:1,letterSpacing:"-0.01em",textAlign:"center"}}>{breathState.count}</div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(15px,3.8vw,20px)",fontWeight:600,letterSpacing:".18em",textTransform:"uppercase",color:"rgba(237,232,245,0.78)",height:28,display:"flex",alignItems:"center",justifyContent:"center",textAlign:"center"}}>{phaseLabel[breathState.phase]||breathState.phase}</div>
         <div style={{display:"flex",gap:5,marginTop:2}}>
           {med.breathPhases.map((p,i)=>(
-            <div key={i} style={{height:4,width:breathState.phase===p.name?24:7,borderRadius:4,background:breathState.phase===p.name?"rgba(10,5,30,0.72)":"rgba(10,5,30,0.14)",transition:"all .3s ease"}}/>
+            <div key={i} style={{height:4,width:breathState.phase===p.name?24:7,borderRadius:4,background:breathState.phase===p.name?"rgba(237,232,245,0.72)":"rgba(237,232,245,0.22)",transition:"all .3s ease"}}/>
           ))}
         </div>
       </div>
       {/* ephemeral text */}
-      <div style={{position:"absolute",bottom:"calc(env(safe-area-inset-bottom,0px) + 48px)",left:0,right:0,textAlign:"center",padding:"0 clamp(28px,7vw,56px)",opacity:textVis?1:0,transition:`opacity ${textVis?"1.3s":"1s"} ease`,pointerEvents:"none",zIndex:2}}>
-        {med.texts[textIdx].split("\n").map((line,i)=><div key={i} style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(24px,6.2vw,34px)",fontWeight:500,fontStyle:"italic",color:"rgba(10,5,30,0.84)",lineHeight:1.5,textAlign:"center"}}>{line}</div>)}
+      <div style={{position:"absolute",bottom:"calc(env(safe-area-inset-bottom,0px) + 48px)",left:0,right:0,textAlign:"center",padding:"0 clamp(28px,7vw,56px)",opacity:textVis?1:0,transition:`opacity ${textVis?"1.3s":"1s"} ease`,pointerEvents:"none",zIndex:3}}>
+        {med.texts[textIdx].split("\n").map((line,i)=><div key={i} style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(24px,6.2vw,34px)",fontWeight:500,fontStyle:"italic",color:"rgba(237,232,245,0.84)",lineHeight:1.5,textAlign:"center"}}>{line}</div>)}
       </div>
     </div>
   );
