@@ -872,7 +872,7 @@ function BottomNav({view,setView,t,profile}){
   ]:[
     {key:"home",icon:"◎",label:"Zodiac"},
   ];
-  const show=profile?["hub","daily","tarocchi","home"].includes(view):["home"].includes(view);
+  const show=profile&&["hub","daily","tarocchi","home"].includes(view);
   if(!show)return null;
   return(
     <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:300,background:t.card,borderTop:`1px solid ${t.border}`,paddingBottom:"env(safe-area-inset-bottom,0px)",backdropFilter:"blur(20px) saturate(1.4)",WebkitBackdropFilter:"blur(20px) saturate(1.4)",boxShadow:`0 -4px 24px rgba(0,0,0,0.32),inset 0 1px 0 rgba(255,255,255,0.08)`}}>
