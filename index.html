@@ -933,10 +933,8 @@ function PersonalProfile({t,profile,onEdit,onBack}){
   const WORK_CTX={"Studente":"Fase di accumulo. Il tuo segno solare è la materia prima, non ancora il capolavoro.","Neolaureato/a":"Soglia. Stai entrando nel mondo con la tua prima versione adulta.","In cerca di lavoro":"L'attesa non è vuoto — è fermento. Il tuo pianeta governante apre porte invisibili.","Disoccupato/a":"Il vuoto professionale spesso precede la chiamata più vera. Ascolta cosa manca.","Dipendente pubblico":"Stabilità come radice. Da qui puoi costruire verso qualcosa di più tuo.","Dipendente privato":"Struttura nel movimento. Il tuo archetipo solare chiede più spazio per esprimersi.","Imprenditore/trice":"Creatore. Il tuo cielo natale è anche il cielo del tuo progetto.","Capo":"Guidi gli altri — ma il tuo segno lunare ti dice come ti guidi tu.","Pensionato/a":"Hai guadagnato il diritto alla pienezza. Il tuo segno solare ora può fiorire liberamente.","Casalinga/o":"Il lavoro invisibile è spesso il più vitale. Il tuo archetipo nutre ciò che c'è attorno.","Nessuno di questi":"Non appartieni a nessuna categoria. È un dono travestito da problema."};
 
   const Divider=({label})=>(
-    <div style={{display:"flex",alignItems:"center",gap:14,margin:"64px 0 44px"}}>
-      <div style={{height:"1px",flex:1,background:`linear-gradient(to right,transparent,${t.accent}70)`}}/>
-      <div style={{fontSize:"6px",letterSpacing:".6em",color:t.accent,textTransform:"uppercase",opacity:.9,paddingLeft:".6em"}}>{label}</div>
-      <div style={{height:"1px",flex:1,background:`linear-gradient(to left,transparent,${t.accent}70)`}}/>
+    <div style={{paddingTop:36,paddingBottom:10}}>
+      <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".06em",color:"rgba(60,60,67,0.45)",textTransform:"uppercase",paddingLeft:2}}>{label}</div>
     </div>
   );
   const TriadCard=({sg,label,icon,primary})=>(
@@ -955,7 +953,7 @@ function PersonalProfile({t,profile,onEdit,onBack}){
   );
 
   return(
-    <div className="screen-h" style={{overflowY:"auto",background:"#faf9f8",color:"#1a1612"}}>
+    <div className="screen-h" style={{overflowY:"auto",background:"#f2f2f7",color:"#000000"}}>
 
       {/* ── HERO ── */}
       <div style={{position:"relative",minHeight:"100dvh",display:"flex",flexDirection:"column",justifyContent:"flex-end",overflow:"hidden"}}>
@@ -983,14 +981,14 @@ function PersonalProfile({t,profile,onEdit,onBack}){
           </div>
         </div>
       </div>
-      {/* bridge from black hero to t.bg */}
-      <div style={{height:48,background:`linear-gradient(to bottom,rgba(0,0,0,0.96),${t.bg})`,marginTop:-2}}/>
+      {/* bridge from black hero to #f2f2f7 */}
+      <div style={{height:48,background:`linear-gradient(to bottom,rgba(0,0,0,0.96),#f2f2f7)`,marginTop:-2}}/>
 
       <div style={{maxWidth:680,margin:"0 auto",padding:"0 clamp(20px,5vw,40px)"}}>
 
         {/* ── TRINITÀ ── */}
         <div style={{paddingTop:12}}>
-          <div style={{fontSize:"6px",letterSpacing:".56em",color:t.muted,textTransform:"uppercase",textAlign:"center",marginBottom:32,paddingLeft:".56em"}}>La tua trinità celeste</div>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".06em",color:"rgba(60,60,67,0.45)",textTransform:"uppercase",textAlign:"center",marginBottom:20,paddingLeft:".06em"}}>La tua trinità celeste</div>
           <div className="hs" style={{display:"flex",gap:16,paddingBottom:8}}>
             <TriadCard sg={sunSg} label="Segno Solare" icon="☀" primary={true}/>
             <TriadCard sg={moonSg} label="Segno Lunare" icon="☽" primary={false}/>
@@ -1007,22 +1005,22 @@ function PersonalProfile({t,profile,onEdit,onBack}){
 
         {/* ── MAPPA ── */}
         <Divider label="La Tua Mappa Celeste"/>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:1,background:t.border}}>
-          {[{l:"Elemento",v:sunSg.element,c:sunSg.colorLight},{l:"Polarità",v:sp.polarity,c:t.text},{l:"Modalità",v:sunSg.modality,c:t.text},{l:"Pianeta",v:sunSg.planet,c:t.accent},{l:"Numero fortunato",v:sunSg.number,c:t.accent},{l:"Giorno fortunato",v:sunSg.day,c:t.muted}].map(d=>(
-            <div key={d.l} style={{padding:"24px 10px",background:t.card,textAlign:"center",position:"relative",overflow:"hidden"}}>
-              <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse at 50% 100%,rgba(${sunSg.rgb},0.04),transparent 70%)`,pointerEvents:"none"}}/>
-              <div style={{fontSize:"6px",letterSpacing:".3em",color:t.muted,textTransform:"uppercase",marginBottom:10}}>{d.l}</div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(14px,4vw,19px)",color:d.c,fontWeight:300}}>{d.v}</div>
-            </div>
-          ))}
+        <div style={{background:"#ffffff",borderRadius:16,overflow:"hidden",boxShadow:"0 2px 8px rgba(0,0,0,0.06),0 0 0 0.5px rgba(0,0,0,0.04)"}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"0.5px",background:"rgba(60,60,67,0.06)"}}>
+            {[{l:"Elemento",v:sunSg.element,c:sunSg.colorLight},{l:"Polarità",v:sp.polarity,c:"#000000"},{l:"Modalità",v:sunSg.modality,c:"#000000"},{l:"Pianeta",v:sunSg.planet,c:t.accent},{l:"N. fortunato",v:sunSg.number,c:t.accent},{l:"Giorno",v:sunSg.day,c:"rgba(60,60,67,0.6)"}].map(d=>(
+              <div key={d.l} style={{padding:"20px 10px",background:"#ffffff",textAlign:"center"}}>
+                <div style={{fontFamily:"'Inter',sans-serif",fontSize:"10px",fontWeight:500,letterSpacing:".04em",color:"rgba(60,60,67,0.45)",textTransform:"uppercase",marginBottom:8}}>{d.l}</div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(14px,4vw,18px)",color:d.c,fontWeight:400,lineHeight:1.2}}>{d.v}</div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* ── PERSONALITÀ ── */}
         <Divider label="Personalità"/>
-        <div style={{position:"relative",padding:"36px 32px",border:`1px solid ${t.border}`,background:t.card,overflow:"hidden"}}>
-
-          <div style={{position:"absolute",left:0,top:0,bottom:0,width:3,background:`linear-gradient(to bottom,transparent,${sunSg.color},transparent)`}}/>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,4.5vw,24px)",fontStyle:"italic",color:t.text,lineHeight:2,position:"relative"}}>{sp.personality}</div>
+        <div style={{background:"#ffffff",borderRadius:16,overflow:"hidden",boxShadow:"0 2px 8px rgba(0,0,0,0.06),0 0 0 0.5px rgba(0,0,0,0.04)",position:"relative"}}>
+          <div style={{position:"absolute",left:0,top:0,bottom:0,width:3,background:sunSg.color||t.accent,borderRadius:"16px 0 0 16px"}}/>
+          <div style={{padding:"22px 22px 22px 28px",fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4.5vw,21px)",fontStyle:"italic",color:"#000",lineHeight:1.9}}>{sp.personality}</div>
         </div>
 
         {/* ── LUCE & OMBRA ── */}
@@ -1052,39 +1050,36 @@ function PersonalProfile({t,profile,onEdit,onBack}){
 
         {/* ── CARISMA ── */}
         <Divider label="Tratti Carismatici"/>
-        {sp.charismatic.map((c,i)=>(
-          <div key={i} style={{marginBottom:12,padding:"28px 30px",background:t.card,border:`1px solid ${i===0?sunSg.color+"70":i===1?sunSg.color+"35":t.border}`,position:"relative",overflow:"hidden"}}>
-            <div style={{position:"absolute",top:0,left:0,bottom:0,width:2,background:i===0?sunSg.color:i===1?sunSg.color+"60":t.border}}/>
-            <div style={{position:"absolute",right:20,top:"50%",transform:"translateY(-50%)",fontFamily:"'Cormorant Garamond',serif",fontSize:"44px",color:sunSg.colorLight,opacity:i===0?.1:.05,lineHeight:1,userSelect:"none"}}>{i===0?"I":i===1?"II":"III"}</div>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4vw,21px)",color:t.text,lineHeight:1.85,fontStyle:"italic",position:"relative"}}>{c}</div>
-          </div>
-        ))}
+        <div style={{display:"flex",flexDirection:"column",gap:10}}>
+          {sp.charismatic.map((c,i)=>(
+            <div key={i} style={{background:"#ffffff",borderRadius:16,padding:"20px 22px",boxShadow:"0 2px 8px rgba(0,0,0,0.06),0 0 0 0.5px rgba(0,0,0,0.04)",display:"flex",alignItems:"flex-start",gap:14}}>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"26px",fontWeight:300,color:i===0?sunSg.colorLight||t.accent:"rgba(60,60,67,0.18)",lineHeight:1,flexShrink:0,marginTop:-2}}>{i===0?"I":i===1?"II":"III"}</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,19px)",color:"#000",lineHeight:1.85,fontStyle:"italic"}}>{c}</div>
+            </div>
+          ))}
+        </div>
 
         {/* ── REGALO ── */}
         <Divider label="Il Regalo Perfetto"/>
-        <div style={{display:"grid",gridTemplateColumns:profile.gender==="Donna"||profile.gender==="Uomo"?"1fr":"1fr 1fr",gap:14}}>
+        <div style={{display:"grid",gridTemplateColumns:profile.gender==="Donna"||profile.gender==="Uomo"?"1fr":"1fr 1fr",gap:10}}>
           {profile.gender!=="Donna"&&(
-            <div style={{padding:"30px 28px",border:`1px solid ${t.accent}45`,background:`${t.accent}06`,position:"relative",overflow:"hidden"}}>
-              <div style={{position:"absolute",top:0,right:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${t.accent}60,transparent)`}}/>
-              <div style={{position:"absolute",top:12,right:20,fontFamily:"'Cormorant Garamond',serif",fontSize:"52px",color:t.accent,opacity:.07,lineHeight:1,userSelect:"none"}}>♂</div>
-              <div style={{fontSize:"6px",letterSpacing:".44em",color:t.accent,textTransform:"uppercase",marginBottom:18}}>Per lui</div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,19px)",color:t.text,lineHeight:1.85}}>{sp.gift_him}</div>
+            <div style={{background:"#ffffff",borderRadius:16,padding:"20px 22px",boxShadow:"0 2px 8px rgba(0,0,0,0.06),0 0 0 0.5px rgba(0,0,0,0.04)"}}>
+              <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".06em",color:t.accent,textTransform:"uppercase",marginBottom:14}}>Per lui</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,19px)",color:"#000",lineHeight:1.85}}>{sp.gift_him}</div>
             </div>
           )}
           {profile.gender!=="Uomo"&&(
-            <div style={{padding:"30px 28px",border:`1px solid ${t.accent}45`,background:`${t.accent}06`,position:"relative",overflow:"hidden"}}>
-              <div style={{position:"absolute",top:0,left:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${t.accent}60,transparent)`}}/>
-              <div style={{position:"absolute",top:12,right:20,fontFamily:"'Cormorant Garamond',serif",fontSize:"52px",color:t.accent,opacity:.07,lineHeight:1,userSelect:"none"}}>♀</div>
-              <div style={{fontSize:"6px",letterSpacing:".44em",color:t.accent,textTransform:"uppercase",marginBottom:18}}>Per lei</div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,19px)",color:t.text,lineHeight:1.85}}>{sp.gift_her}</div>
+            <div style={{background:"#ffffff",borderRadius:16,padding:"20px 22px",boxShadow:"0 2px 8px rgba(0,0,0,0.06),0 0 0 0.5px rgba(0,0,0,0.04)"}}>
+              <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".06em",color:t.accent,textTransform:"uppercase",marginBottom:14}}>Per lei</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,19px)",color:"#000",lineHeight:1.85}}>{sp.gift_her}</div>
             </div>
           )}
         </div>
 
         {/* ── COMPATIBILITÀ ── */}
         <Divider label="Affinità & Tensioni"/>
-        <div style={{marginBottom:36}}>
-          <div style={{fontSize:"7px",letterSpacing:".4em",color:"#6aaa6a",textTransform:"uppercase",marginBottom:20}}>✦ Anime affini</div>
+        <div style={{marginBottom:16}}>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".04em",color:"#6aaa6a",textTransform:"uppercase",marginBottom:14,paddingLeft:2}}>Anime affini</div>
           <div className="hs" style={{display:"flex",gap:14,paddingBottom:8}}>
             {sp.best_compat.map(k=>{
               const s=SIGNS.find(x=>x.key===k);
@@ -1100,8 +1095,8 @@ function PersonalProfile({t,profile,onEdit,onBack}){
             })}
           </div>
         </div>
-        <div>
-          <div style={{fontSize:"7px",letterSpacing:".4em",color:"#aa6a6a",textTransform:"uppercase",marginBottom:20}}>◈ Maggiore tensione</div>
+        <div style={{marginBottom:16}}>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".04em",color:"#aa6a6a",textTransform:"uppercase",marginBottom:14,paddingLeft:2}}>Maggiore tensione</div>
           <div className="hs" style={{display:"flex",gap:14,paddingBottom:8}}>
             {sp.worst_compat.map(k=>{
               const s=SIGNS.find(x=>x.key===k);
@@ -1120,11 +1115,12 @@ function PersonalProfile({t,profile,onEdit,onBack}){
 
         {/* ── FAMOSI ── */}
         <Divider label="Stessa Energia"/>
-        <div style={{display:"flex",flexWrap:"wrap",gap:10}}>
+        <div style={{background:"#ffffff",borderRadius:16,overflow:"hidden",boxShadow:"0 2px 8px rgba(0,0,0,0.06),0 0 0 0.5px rgba(0,0,0,0.04)"}}>
           {sp.famous.map((name,i)=>(
-            <div key={name} style={{padding:"13px 24px",border:`1px solid ${i===0?sunSg.color+"80":t.border}`,background:i===0?`rgba(${sunSg.rgb},0.12)`:t.card,fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(14px,3.8vw,17px)",color:i===0?sunSg.colorLight:t.text,letterSpacing:".08em",position:"relative",overflow:"hidden"}}>
-              {i===0&&<div style={{position:"absolute",bottom:-10,right:-4,fontFamily:"'Cormorant Garamond',serif",fontSize:"36px",color:sunSg.colorLight,opacity:.1,lineHeight:1}}>✦</div>}
-              {name}
+            <div key={name} style={{display:"flex",alignItems:"center",padding:"15px 20px",borderBottom:i<sp.famous.length-1?"0.5px solid rgba(60,60,67,0.07)":"none"}}>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"12px",color:"rgba(60,60,67,0.3)",marginRight:14,minWidth:18}}>0{i+1}</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,18px)",color:i===0?sunSg.colorLight||t.accent:"#000",flex:1}}>{name}</div>
+              {i===0&&<div style={{fontSize:"11px",color:sunSg.colorLight||t.accent,opacity:.7}}>✦</div>}
             </div>
           ))}
         </div>
@@ -1133,20 +1129,28 @@ function PersonalProfile({t,profile,onEdit,onBack}){
         {(profile.relationship||profile.work)&&(
           <div>
             <Divider label="Il Tuo Momento"/>
-            {profile.relationship&&REL_CTX[profile.relationship]&&(
-              <div style={{marginBottom:14,padding:"30px 30px",border:`1px solid ${t.accent}40`,background:`${t.accent}07`,position:"relative",overflow:"hidden"}}>
-                <div style={{position:"absolute",top:0,left:0,right:0,height:1,background:`linear-gradient(to right,${t.accent}60,transparent)`}}/>
-                <div style={{fontSize:"6px",letterSpacing:".44em",color:t.accent,textTransform:"uppercase",marginBottom:16}}>Cuore · {profile.relationship}</div>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4vw,21px)",color:t.text,lineHeight:1.95,fontStyle:"italic"}}>{REL_CTX[profile.relationship]}</div>
-              </div>
-            )}
-            {profile.work&&WORK_CTX[profile.work]&&(
-              <div style={{padding:"30px 30px",border:`1px solid ${t.border}`,background:t.surface,position:"relative",overflow:"hidden"}}>
-                <div style={{position:"absolute",top:0,left:0,right:0,height:1,background:`linear-gradient(to right,${t.muted}40,transparent)`}}/>
-                <div style={{fontSize:"6px",letterSpacing:".44em",color:t.muted,textTransform:"uppercase",marginBottom:16}}>Percorso · {profile.work}</div>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4vw,21px)",color:t.text,lineHeight:1.95,fontStyle:"italic"}}>{WORK_CTX[profile.work]}</div>
-              </div>
-            )}
+            <div style={{display:"flex",flexDirection:"column",gap:10}}>
+              {profile.relationship&&REL_CTX[profile.relationship]&&(
+                <div style={{background:"#ffffff",borderRadius:16,overflow:"hidden",boxShadow:"0 2px 8px rgba(0,0,0,0.06),0 0 0 0.5px rgba(0,0,0,0.04)"}}>
+                  <div style={{background:`${t.accent}10`,padding:"12px 20px",borderBottom:"0.5px solid rgba(60,60,67,0.06)"}}>
+                    <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:600,color:t.accent,letterSpacing:".04em",textTransform:"uppercase"}}>Cuore · {profile.relationship}</div>
+                  </div>
+                  <div style={{padding:"18px 20px"}}>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,19px)",color:"#000",lineHeight:1.9,fontStyle:"italic"}}>{REL_CTX[profile.relationship]}</div>
+                  </div>
+                </div>
+              )}
+              {profile.work&&WORK_CTX[profile.work]&&(
+                <div style={{background:"#ffffff",borderRadius:16,overflow:"hidden",boxShadow:"0 2px 8px rgba(0,0,0,0.06),0 0 0 0.5px rgba(0,0,0,0.04)"}}>
+                  <div style={{background:"rgba(60,60,67,0.04)",padding:"12px 20px",borderBottom:"0.5px solid rgba(60,60,67,0.06)"}}>
+                    <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,color:"rgba(60,60,67,0.55)",letterSpacing:".04em",textTransform:"uppercase"}}>Percorso · {profile.work}</div>
+                  </div>
+                  <div style={{padding:"18px 20px"}}>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,19px)",color:"#000",lineHeight:1.9,fontStyle:"italic"}}>{WORK_CTX[profile.work]}</div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
@@ -1445,16 +1449,16 @@ function BioChart({birthday,dateStr,t}){
 
 // ── DAILY HOROSCOPE ──
 function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
-  // override colori per sfondo chiaro
+  // Apple Premium override
   const localT={
-    bg:"#faf9f8",
-    text:"#1a1612",
-    card:"#f0ede8",
-    border:"#d8d3cc",
-    muted:"#6a5f54",
-    surface:"#e8e5e0",
+    bg:"#f2f2f7",
+    text:"#000000",
+    card:"#ffffff",
+    border:"rgba(60,60,67,0.12)",
+    muted:"rgba(60,60,67,0.55)",
+    surface:"#f2f2f7",
     accent:t.accent,
-    cardRgb:"240,237,232"
+    cardRgb:"255,255,255"
   };
   const sunKey=getSunSignKey(profile.birthday);
   const moonKey=getMoonSignKey(profile.birthday);
@@ -1479,7 +1483,7 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
   ];
   const trinity=[{sg:sunSg,label:"Solare",icon:"☀"},{sg:moonSg,label:"Lunare",icon:"☽"},...(ascSg?[{sg:ascSg,label:"Ascendente",icon:"↑"}]:[])];
   return(
-    <div style={{minHeight:"100vh",background:"#faf9f8",color:"#1a1612",overflowY:"auto"}}>
+    <div style={{minHeight:"100vh",background:"#f2f2f7",color:"#000000",overflowY:"auto"}}>
       {/* ── HERO (full screen, tutto dentro) ── */}
       <div style={{position:"relative",minHeight:"100dvh",display:"flex",flexDirection:"column",justifyContent:"flex-end",overflow:"hidden"}}>
         {sunSg.img&&<img src={sunSg.img} loading="eager" decoding="async" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",filter:"brightness(0.48) saturate(1.1)"}}/>}
@@ -1527,107 +1531,112 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
       </div>
 
       {/* bridge + scroll hint */}
-      <div style={{height:32,background:`linear-gradient(to bottom,rgba(0,0,0,0.98),#faf9f8)`}}/>
-      <div style={{textAlign:"center",padding:"4px 0 24px"}}>
-        <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,letterSpacing:".38em",color:localT.muted,textTransform:"uppercase",marginBottom:6}}>Il tuo oroscopo di oggi</div>
-        <div style={{color:localT.muted,fontSize:"14px",opacity:.45}}>↓</div>
+      <div style={{height:40,background:`linear-gradient(to bottom,rgba(0,0,0,0.98),#f2f2f7)`}}/>
+      <div style={{textAlign:"center",padding:"6px 0 28px"}}>
+        <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".04em",color:"rgba(60,60,67,0.45)",textTransform:"uppercase",marginBottom:6}}>Il tuo oroscopo di oggi</div>
+        <div style={{color:"rgba(60,60,67,0.3)",fontSize:"13px"}}>↓</div>
       </div>
 
       {/* ── 4 CATEGORIE ── */}
-      <div style={{maxWidth:640,margin:"0 auto",padding:"0 clamp(16px,5vw,32px)"}}>
+      <div style={{maxWidth:640,margin:"0 auto",padding:"0 16px"}}>
         {CATS.map(cat=>{
           const d=horo[cat.key];
           return(
-            <div key={cat.key} style={{marginBottom:12,padding:"22px 22px 20px",background:`rgba(240,237,232,0.78)`,backdropFilter:"blur(20px) saturate(1.3) brightness(1.03)",WebkitBackdropFilter:"blur(20px) saturate(1.3) brightness(1.03)",border:"1px solid rgba(0,0,0,0.08)",boxShadow:`inset 0 1.5px 0 rgba(255,255,255,0.6),inset 0 -1px 0 rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.08)`,position:"relative",overflow:"hidden"}}>
-              <GlassOverlay/>
-              <div style={{position:"absolute",top:0,left:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${cat.col}70,transparent)`}}/>
-              <div style={{position:"absolute",right:0,top:"50%",transform:"translateY(-50%)",fontFamily:"'Cormorant Garamond',serif",fontSize:"88px",color:cat.col,opacity:.038,lineHeight:1,pointerEvents:"none",userSelect:"none"}}>{cat.icon}</div>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:13}}>
-                <div style={{display:"flex",alignItems:"center",gap:10}}>
-                  <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:cat.col,lineHeight:1}}>{cat.icon}</span>
-                  <span style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:700,letterSpacing:".28em",color:cat.col,textTransform:"uppercase"}}>{cat.label}</span>
+            <div key={cat.key} style={{marginBottom:10,background:"#ffffff",borderRadius:16,boxShadow:"0 2px 8px rgba(0,0,0,0.07),0 0 0 0.5px rgba(0,0,0,0.04)",overflow:"hidden",transition:"transform .25s cubic-bezier(.16,1,.3,1)"}} onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"} onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}>
+              <div style={{padding:"18px 20px 20px"}}>
+                <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:14}}>
+                  <div style={{width:38,height:38,borderRadius:10,background:`${cat.col}18`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                    <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:cat.col,lineHeight:1}}>{cat.icon}</span>
+                  </div>
+                  <div style={{flex:1}}>
+                    <div style={{fontFamily:"'Inter',sans-serif",fontSize:"13px",fontWeight:600,color:"#000",letterSpacing:"-.01em",marginBottom:5}}>{cat.label}</div>
+                    <div style={{display:"flex",gap:4}}>
+                      {[1,2,3,4,5].map(n=>(
+                        <div key={n} style={{width:6,height:6,borderRadius:"50%",background:n<=d.stars?cat.col:"rgba(60,60,67,0.1)"}}/>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <div style={{display:"flex",gap:4}}>
-                  {[1,2,3,4,5].map(n=>(
-                    <div key={n} style={{width:6,height:6,borderRadius:"50%",background:n<=d.stars?cat.col:"transparent",border:`1px solid ${n<=d.stars?cat.col:cat.col+"44"}`}}/>
-                  ))}
-                </div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4.4vw,20px)",fontWeight:400,color:"#000",lineHeight:1.85,letterSpacing:"-.005em"}}>{d.text}</div>
               </div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4.2vw,19px)",fontWeight:400,color:localT.text,lineHeight:1.88}}>{d.text}</div>
             </div>
           );
         })}
-        {/* ── DIVIDER ── */}
-        <div style={{margin:"32px 0 20px",display:"flex",alignItems:"center",gap:12}}>
-          <div style={{flex:1,height:"1px",background:`linear-gradient(to right,transparent,${localT.border})`}}/>
-          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"7px",fontWeight:500,letterSpacing:".44em",color:localT.muted,textTransform:"uppercase"}}>cielo di oggi</div>
-          <div style={{flex:1,height:"1px",background:`linear-gradient(to left,transparent,${localT.border})`}}/>
+        {/* ── SECTION HEADER ── */}
+        <div style={{padding:"28px 4px 12px"}}>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".06em",color:"rgba(60,60,67,0.45)",textTransform:"uppercase"}}>Cielo di oggi</div>
         </div>
 
         {/* ── PROSSIMO EVENTO ── */}
-        <div style={{marginBottom:12,padding:"20px 22px",background:t.card,border:`1px solid ${t.border}`,position:"relative",overflow:"hidden",boxShadow:`inset 0 1px 0 rgba(255,255,255,0.12),0 4px 20px rgba(0,0,0,0.12)`}}>
-          <GlassOverlay/>
-          <div style={{position:"absolute",top:0,left:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${nextEv.col}80,transparent)`}}/>
-          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"7px",fontWeight:500,letterSpacing:".4em",color:localT.muted,textTransform:"uppercase",marginBottom:10,position:"relative",zIndex:1}}>Prossimo evento celeste</div>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12,marginBottom:10,position:"relative",zIndex:1}}>
-            <div style={{display:"flex",alignItems:"center",gap:10,flex:1,minWidth:0}}>
-              <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"26px",color:nextEv.col,lineHeight:1,flexShrink:0}}>{nextEv.icon}</span>
-              <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(13px,3.8vw,16px)",fontWeight:700,color:localT.text,lineHeight:1.2}}>{nextEv.n}</div>
+        <div style={{marginBottom:10,background:"#ffffff",borderRadius:16,boxShadow:"0 2px 8px rgba(0,0,0,0.07),0 0 0 0.5px rgba(0,0,0,0.04)",overflow:"hidden"}}>
+          <div style={{padding:"18px 20px"}}>
+            <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:14}}>
+              <div style={{width:48,height:48,borderRadius:12,background:`${nextEv.col}15`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",color:nextEv.col,lineHeight:1}}>{nextEv.icon}</span>
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontFamily:"'Inter',sans-serif",fontSize:"13px",fontWeight:600,color:"#000",letterSpacing:"-.01em",marginBottom:2}}>{nextEv.n}</div>
+                <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(60,60,67,0.5)",letterSpacing:"-.005em"}}>
+                  {new Date(nextEv.d+"T12:00:00").toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long"})}
+                </div>
+              </div>
+              <div style={{padding:"6px 14px",background:`${nextEv.col}14`,borderRadius:20,flexShrink:0}}>
+                <div style={{fontFamily:"'Inter',sans-serif",fontSize:"12px",fontWeight:600,color:nextEv.col}}>
+                  {nextEv.daysAway===0?"oggi":nextEv.daysAway===1?"domani":`${nextEv.daysAway}g`}
+                </div>
+              </div>
             </div>
-            <div style={{padding:"5px 11px",background:`${nextEv.col}18`,border:`1px solid ${nextEv.col}45`,flexShrink:0}}>
-              <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:700,color:nextEv.col,whiteSpace:"nowrap"}}>{nextEv.daysAway===0?"oggi":nextEv.daysAway===1?"domani":`tra ${nextEv.daysAway}g`}</div>
-            </div>
-          </div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.8vw,16px)",fontStyle:"italic",color:localT.muted,lineHeight:1.62,marginBottom:10,position:"relative",zIndex:1}}>{nextEv.desc}</div>
-          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",letterSpacing:".18em",color:localT.muted,opacity:.55,position:"relative",zIndex:1}}>
-            {new Date(nextEv.d+"T12:00:00").toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long"})}
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,18px)",fontStyle:"italic",color:"rgba(60,60,67,0.65)",lineHeight:1.72}}>{nextEv.desc}</div>
           </div>
         </div>
 
         {/* ── FASE LUNARE ── */}
-        <div style={{marginBottom:14,padding:"24px 26px",background:`linear-gradient(135deg,rgba(250,249,248,0.92),rgba(240,237,232,0.86))`,border:"1.5px solid rgba(200,168,104,.18)",borderRadius:12,boxShadow:`0 8px 28px rgba(200,168,104,.06),inset 0 1px 0 rgba(255,255,255,0.8)`,position:"relative",overflow:"hidden",animation:"slideUpStagger .5s ease-out .24s both",transition:"all .3s cubic-bezier(.16,1,.3,1)"}} onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 12px 36px rgba(200,168,104,.12),inset 0 1px 0 rgba(255,255,255,0.9)"}} onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow="0 8px 28px rgba(200,168,104,.06),inset 0 1px 0 rgba(255,255,255,0.8)"}}>
-          <div style={{position:"absolute",top:0,left:0,bottom:0,width:3,background:"linear-gradient(180deg,#c8a86400,#c8a86430,#c8a86400)",borderRadius:"12px 0 0 12px"}}/>
-          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:600,letterSpacing:".3em",color:t.accent,textTransform:"uppercase",marginBottom:10,position:"relative",zIndex:1}}>Luna & Cicli</div>
-          <div style={{display:"flex",gap:16,alignItems:"center",position:"relative",zIndex:1}}>
-            <div style={{flexShrink:0}}><MoonSVG pd={lunar.pd}/></div>
-            <div style={{flex:1,minWidth:0}}>
-              <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(14px,4vw,17px)",fontWeight:700,color:localT.text,marginBottom:6,lineHeight:1.1}}>{lunar.name}</div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.8vw,16px)",fontStyle:"italic",color:localT.muted,lineHeight:1.62,marginBottom:11}}>{lunar.desc}</div>
-              <div style={{display:"inline-flex",alignItems:"center",gap:6,padding:"7px 14px",background:`${t.accent}16`,border:`1.5px solid ${t.accent}32`,borderRadius:6}}>
-                <span style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:600,letterSpacing:".2em",color:t.accent}}>{lunar.nextEvent.type} tra {lunar.nextEvent.days}g</span>
+        <div style={{marginBottom:10,background:"#ffffff",borderRadius:16,boxShadow:"0 2px 8px rgba(0,0,0,0.07),0 0 0 0.5px rgba(0,0,0,0.04)",overflow:"hidden"}}>
+          <div style={{padding:"18px 20px"}}>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".06em",color:"rgba(60,60,67,0.45)",textTransform:"uppercase",marginBottom:14}}>Fase Lunare</div>
+            <div style={{display:"flex",gap:16,alignItems:"center"}}>
+              <div style={{flexShrink:0}}><MoonSVG pd={lunar.pd}/></div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontFamily:"'Inter',sans-serif",fontSize:"16px",fontWeight:600,color:"#000",marginBottom:6,letterSpacing:"-.01em"}}>{lunar.name}</div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(14px,3.8vw,17px)",fontStyle:"italic",color:"rgba(60,60,67,0.6)",lineHeight:1.68,marginBottom:12}}>{lunar.desc}</div>
+                <div style={{display:"inline-flex",alignItems:"center",gap:6,padding:"6px 14px",background:`${t.accent}12`,borderRadius:20}}>
+                  <span style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,color:t.accent}}>{lunar.nextEvent.type} tra {lunar.nextEvent.days}g</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* ── BIORITMOGRAMMA ── */}
-        <div style={{marginBottom:14,padding:"22px 26px",background:`linear-gradient(135deg,rgba(250,249,248,0.92),rgba(240,237,232,0.86))`,border:"1.5px solid rgba(88,144,216,.15)",borderRadius:12,boxShadow:`0 8px 28px rgba(88,144,216,.05),inset 0 1px 0 rgba(255,255,255,0.8)`,position:"relative",overflow:"hidden",animation:"slideUpStagger .5s ease-out .32s both"}}>
-          <div style={{position:"absolute",top:0,left:0,bottom:0,width:3,background:"linear-gradient(180deg,#5890d800,#5890d828,#5890d800)",borderRadius:"12px 0 0 12px"}}/>
-          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:600,letterSpacing:".3em",color:"#5890d8",textTransform:"uppercase",marginBottom:12,position:"relative",zIndex:1}}>Bioritmi Settimanali</div>
-          <div style={{position:"relative",zIndex:1,marginBottom:12}}><BioChart birthday={profile.birthday} dateStr={dateStr} t={localT}/></div>
-          <div style={{display:"flex",flexWrap:"wrap",gap:"10px 16px",position:"relative",zIndex:1}}>
-            {[["Fisico","#e07060","23g"],["Emotivo","#b060a8","28g"],["Intellettuale","#5890d8","33g"],["Sociale","#48b870","26g"]].map(([l,c,p])=>(
-              <div key={l} style={{display:"flex",alignItems:"center",gap:7}}>
-                <div style={{width:14,height:3,background:c,borderRadius:2}}/>
-                <span style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,color:localT.text}}>{l}</span>
-                <span style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",color:localT.muted,opacity:.5}}>({p})</span>
-              </div>
-            ))}
+        <div style={{marginBottom:10,background:"#ffffff",borderRadius:16,boxShadow:"0 2px 8px rgba(0,0,0,0.07),0 0 0 0.5px rgba(0,0,0,0.04)",overflow:"hidden"}}>
+          <div style={{padding:"18px 20px"}}>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".06em",color:"rgba(60,60,67,0.45)",textTransform:"uppercase",marginBottom:14}}>Bioritmi Settimanali</div>
+            <div style={{marginBottom:14}}><BioChart birthday={profile.birthday} dateStr={dateStr} t={localT}/></div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:"8px 18px"}}>
+              {[["Fisico","#e07060","23g"],["Emotivo","#b060a8","28g"],["Intellettuale","#5890d8","33g"],["Sociale","#48b870","26g"]].map(([l,c,p])=>(
+                <div key={l} style={{display:"flex",alignItems:"center",gap:7}}>
+                  <div style={{width:12,height:3,background:c,borderRadius:2}}/>
+                  <span style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(60,60,67,0.65)"}}>{l}</span>
+                  <span style={{fontFamily:"'Inter',sans-serif",fontSize:"10px",color:"rgba(60,60,67,0.35)"}}>({p})</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* ── NUMERI FORTUNATI ── */}
-        <div style={{marginBottom:20,padding:"26px 26px",background:`linear-gradient(135deg,rgba(250,249,248,0.95),rgba(240,237,232,0.88))`,border:`1.5px solid ${t.accent}22`,borderRadius:12,boxShadow:`0 8px 28px rgba(200,168,104,.08),inset 0 1px 0 rgba(255,255,255,0.85),0 0 20px rgba(200,168,104,.08)`,position:"relative",overflow:"hidden",animation:"slideUpStagger .5s ease-out .4s both"}}>
-          <div style={{position:"absolute",top:0,left:0,bottom:0,width:3,background:`linear-gradient(180deg,${t.accent}00,${t.accent}35,${t.accent}00)`,borderRadius:"12px 0 0 12px"}}/>
-          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:600,letterSpacing:".3em",color:t.accent,textTransform:"uppercase",marginBottom:14,position:"relative",zIndex:1}}>Numeri della Settimana</div>
-          <div style={{display:"flex",gap:10,flexWrap:"wrap",position:"relative",zIndex:1}}>
-            {lucky.map((n,i)=>(
-              <div key={n} style={{width:56,height:56,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:"50%",border:`2px solid ${t.accent}${i===0?"ff":i===1?"dd":i===2?"bb":i===3?"99":"77"}`,background:i===0?`linear-gradient(135deg,${t.accent}25,${t.accent}12)`:`${t.accent}${i===1?"12":"0a"}`,boxShadow:i===0?`0 0 24px ${t.accent}45,inset 0 1px 0 rgba(255,255,255,0.4),0 4px 16px rgba(200,168,104,.12)`:i===1?`0 0 16px ${t.accent}28,inset 0 1px 0 rgba(255,255,255,0.2)`:"inset 0 1px 0 rgba(255,255,255,0.1)",transition:"all .3s cubic-bezier(.16,1,.3,1)",cursor:"pointer",animation:`scaleInSmooth .5s ease-out ${i*0.05}s both`}} onMouseEnter={e=>{e.currentTarget.style.transform="scale(1.15)";e.currentTarget.style.boxShadow=i===0?`0 0 32px ${t.accent}60,inset 0 1px 0 rgba(255,255,255,0.5),0 8px 24px rgba(200,168,104,.18)`:i===1?`0 0 24px ${t.accent}40,inset 0 1px 0 rgba(255,255,255,0.3)`:`0 4px 12px rgba(200,168,104,.15),inset 0 1px 0 rgba(255,255,255,0.2)`}} onMouseLeave={e=>{e.currentTarget.style.transform="scale(1)";e.currentTarget.style.boxShadow=i===0?`0 0 24px ${t.accent}45,inset 0 1px 0 rgba(255,255,255,0.4),0 4px 16px rgba(200,168,104,.12)`:i===1?`0 0 16px ${t.accent}28,inset 0 1px 0 rgba(255,255,255,0.2)`:"inset 0 1px 0 rgba(255,255,255,0.1)"}}>
-                <span style={{fontFamily:"'Inter',sans-serif",fontSize:i===0?"22px":i<2?"18px":"16px",fontWeight:i<2?800:700,color:i===0?t.accent:`${t.accent}${i===1?"dd":"99"}`,lineHeight:1}}>{n}</span>
-              </div>
-            ))}
+        <div style={{marginBottom:24,background:"#ffffff",borderRadius:16,boxShadow:"0 2px 8px rgba(0,0,0,0.07),0 0 0 0.5px rgba(0,0,0,0.04)",overflow:"hidden"}}>
+          <div style={{padding:"18px 20px 22px"}}>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".06em",color:"rgba(60,60,67,0.45)",textTransform:"uppercase",marginBottom:18}}>Numeri della Settimana</div>
+            <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
+              {lucky.map((n,i)=>(
+                <div key={n} style={{width:56,height:56,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:"50%",background:i===0?t.accent:`rgba(60,60,67,${i===1?0.08:0.05})`,border:`1.5px solid ${i===0?t.accent:i===1?"rgba(60,60,67,0.15)":"rgba(60,60,67,0.08)"}`,boxShadow:i===0?`0 4px 16px ${t.accent}40`:"",transition:"all .2s cubic-bezier(.16,1,.3,1)"}} onMouseEnter={e=>{e.currentTarget.style.transform="scale(1.12)";e.currentTarget.style.boxShadow=i===0?`0 8px 24px ${t.accent}55,0 2px 8px ${t.accent}30`:"0 2px 8px rgba(0,0,0,0.1)"}} onMouseLeave={e=>{e.currentTarget.style.transform="scale(1)";e.currentTarget.style.boxShadow=i===0?`0 4px 16px ${t.accent}40`:""}}>
+                  <span style={{fontFamily:"'Inter',sans-serif",fontSize:i===0?"20px":i===1?"16px":"14px",fontWeight:i===0?700:i===1?600:500,color:i===0?"#ffffff":`rgba(60,60,67,${i===1?0.7:0.4})`,lineHeight:1}}>{n}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{marginTop:16,fontFamily:"'Cormorant Garamond',serif",fontSize:"13px",fontStyle:"italic",color:"rgba(60,60,67,0.4)",textAlign:"center"}}>Calcolati in base al tuo segno e al ciclo settimanale</div>
           </div>
-          <div style={{marginTop:14,fontFamily:"'Cormorant Garamond',serif",fontSize:"12px",fontStyle:"italic",color:localT.muted,opacity:.6,position:"relative",zIndex:1,textAlign:"center"}}>Calcolati in base al tuo segno e al ciclo settimanale</div>
         </div>
 
         <div style={{height:"calc(env(safe-area-inset-bottom,0px) + 90px)"}}/>
