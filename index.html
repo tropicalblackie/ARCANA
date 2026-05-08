@@ -46,6 +46,7 @@ textarea{font-family:inherit;resize:none;outline:none;border:none;-webkit-appear
 .gold-text{background:linear-gradient(90deg,#c8a868 0%,#f0d898 40%,#c8a868 60%,#a07840 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gold-sweep 4s linear infinite}
 @keyframes candle-flicker{0%,100%{opacity:1}93%{opacity:.92}94%{opacity:.85}95%{opacity:.93}97%{opacity:.88}98%{opacity:.96}}
 @keyframes med-breathe{0%,100%{transform:scale(1);opacity:.38}40%{transform:scale(1.58);opacity:.82}}
+@keyframes pendulum{0%{transform:rotate(-24deg)}100%{transform:rotate(24deg)}}
 </style>
 </head>
 <body>
@@ -1881,7 +1882,6 @@ function Meditazione({onBack}){
    HOME HUB
 ══════════════════════════════════════════════════════ */
 const HUB_COMING=[
-  {key:"sogni",        label:"Sogni",                icon:"◗",  col:"#9468d8", shape:"pill"},
   {key:"compatibilita",label:"Compatibilità",        icon:"⋈",  col:"#d4688a", shape:"sq"},
   {key:"druido",       label:"Oroscopo Druido",      icon:"⊕",  col:"#60b870", shape:"pill"},
   {key:"cinese",       label:"Oroscopo Cinese",      icon:"◈",  col:"#d87840", shape:"sq"},
@@ -1933,6 +1933,19 @@ function HomeHub({t,setView,profile}){
             <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(31,31,36,0.45)",letterSpacing:".02em"}}>4 portali · Respiro guidato · Audio</div>
           </div>
           <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"rgba(88,200,144,0.35)"}}>›</span>
+        </div>
+
+        {/* ── Sogni ── */}
+        <div onClick={()=>profile?setView("sogni"):setView("setup")} onMouseEnter={()=>setHov("sogni")} onMouseLeave={()=>setHov(null)}
+          style={{marginBottom:10,padding:"20px 24px",background:hov==="sogni"?"rgba(148,104,216,0.10)":"#ffffff",border:`1px solid ${hov==="sogni"?"rgba(148,104,216,0.50)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="sogni"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="sogni"?"0 14px 26px rgba(148,104,216,0.18)":"0 8px 24px rgba(20,20,30,0.07)"}}>
+          <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(148,104,216,0.12)",border:"1px solid rgba(148,104,216,0.22)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#9468d8",lineHeight:1}}>◗</span>
+          </div>
+          <div style={{flex:1}}>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4.5vw,21px)",fontWeight:600,color:"#1f1f24",marginBottom:2}}>Sogni</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(31,31,36,0.45)",letterSpacing:".02em"}}>Scrivi e interpreta i tuoi sogni</div>
+          </div>
+          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"rgba(148,104,216,0.35)"}}>›</span>
         </div>
 
         {/* ── Tema Natale ── */}
@@ -2619,6 +2632,162 @@ const NATAL_SECTIONS=[
    ]},
 ];
 
+function SogniView({t,profile,onBack}){
+  const [step,setStep]=useState('write');
+  const [dreamText,setDreamText]=useState('');
+  const [interpretation,setInterpretation]=useState('');
+  const [apiKey,setApiKey]=useState(()=>{try{return localStorage.getItem('arcana_openai_key')||'';}catch(e){return '';}});
+  const [showKeySetup,setShowKeySetup]=useState(false);
+  const [keyInput,setKeyInput]=useState('');
+  const [history,setHistory]=useState(()=>{try{const s=localStorage.getItem('arcana_sogni');return s?JSON.parse(s):[];}catch(e){return [];}});
+  const [expandedId,setExpandedId]=useState(null);
+
+  const SYSTEM_PROMPT="Sei uno psicoanalista junghiano esperto dell'inconscio collettivo e degli archetipi. L'utente ti descriverà un sogno. Non fare previsioni del futuro e non dare consigli medici. Decodifica i simboli archetipici, individua quale aspetto dell'Ombra o quale archetipo sta cercando di emergere, e scrivi un'interpretazione poetica, diretta e profonda di massimo 150 parole. Parla in seconda persona all'utente, come se leggessi la sua anima. Scrivi in italiano.";
+
+  const saveKey=useCallback(()=>{
+    if(!keyInput.trim())return;
+    const k=keyInput.trim();
+    try{localStorage.setItem('arcana_openai_key',k);}catch(e){}
+    setApiKey(k);setShowKeySetup(false);setKeyInput('');
+  },[keyInput]);
+
+  const interrogate=useCallback(async()=>{
+    if(!dreamText.trim())return;
+    if(!apiKey){setShowKeySetup(true);return;}
+    setStep('loading');
+    try{
+      const resp=await fetch('https://api.openai.com/v1/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
+        body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'system',content:SYSTEM_PROMPT},{role:'user',content:dreamText.trim()}],max_tokens:320,temperature:0.82})
+      });
+      if(!resp.ok){const err=await resp.json();throw new Error(err.error?.message||'Errore API');}
+      const data=await resp.json();
+      const interp=data.choices[0].message.content.trim();
+      setInterpretation(interp);
+      const entry={id:Date.now().toString(),date:new Date().toISOString().slice(0,10),dateIt:new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}),dream:dreamText.trim(),interpretation:interp};
+      setHistory(prev=>{const updated=[entry,...prev];try{localStorage.setItem('arcana_sogni',JSON.stringify(updated));}catch(e){}return updated;});
+      setStep('result');
+    }catch(e){setInterpretation(`Errore: ${e.message}`);setStep('result');}
+  },[dreamText,apiKey]);
+
+  const reset=useCallback(()=>{setDreamText('');setInterpretation('');setStep('write');},[]);
+
+  const card={background:'#ffffff',border:'1px solid rgba(31,31,36,0.10)',borderRadius:16,boxShadow:'0 2px 8px rgba(0,0,0,0.06),0 0 0 0.5px rgba(0,0,0,0.03)'};
+
+  return(
+    <div style={{minHeight:'100vh',background:'#f2f2f7',color:'#1f1f24',overflowY:'auto',paddingBottom:'calc(env(safe-area-inset-bottom,0px) + 80px)'}}>
+      <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
+        {[...Array(22)].map((_,i)=>(
+          <div key={i} style={{position:'absolute',width:1.5,height:1.5,borderRadius:'50%',background:`rgba(31,31,36,${i%3===0?0.07:0.04})`,top:`${(i*43+17)%100}%`,left:`${(i*71+11)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
+        ))}
+      </div>
+      <div style={{position:'relative',zIndex:1,maxWidth:640,margin:'0 auto',padding:'0 16px'}}>
+
+        {/* NAV */}
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'calc(env(safe-area-inset-top,0px) + 14px) 4px 0'}}>
+          <button onClick={onBack} style={{color:'rgba(31,31,36,0.45)',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:400,letterSpacing:'.14em',padding:'12px 4px',background:'none',border:'none',cursor:'pointer'}}>← indietro</button>
+          <button onClick={()=>setShowKeySetup(true)} style={{color:'rgba(31,31,36,0.28)',fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.18em',padding:'12px 4px',background:'none',border:'none',cursor:'pointer',textTransform:'uppercase'}}>⚙ api</button>
+        </div>
+
+        {/* HEADER */}
+        <div style={{textAlign:'center',padding:'clamp(24px,6vw,40px) 0 32px'}}>
+          <div className="gold-text" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(9px,2.4vw,11px)',fontWeight:500,letterSpacing:'.52em',textTransform:'uppercase',marginBottom:14}}>ARCANA</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(32px,8.5vw,50px)',fontWeight:500,color:'#1f1f24',letterSpacing:'-.02em',lineHeight:1,marginBottom:10}}>Sogni</div>
+          <div style={{width:36,height:1,background:'linear-gradient(to right,transparent,rgba(200,165,80,0.55),transparent)',margin:'0 auto 14px'}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontWeight:300,fontStyle:'italic',color:'rgba(31,31,36,0.48)',lineHeight:1.5}}>Il diario dell'inconscio</div>
+        </div>
+
+        {/* API KEY OVERLAY */}
+        {showKeySetup&&(
+          <div style={{position:'fixed',inset:0,background:'rgba(7,4,15,0.72)',backdropFilter:'blur(12px)',zIndex:100,display:'flex',alignItems:'center',justifyContent:'center',padding:'0 24px'}}>
+            <div style={{...card,width:'100%',maxWidth:380,padding:'32px 28px 28px'}}>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'24px',fontWeight:600,color:'#1f1f24',marginBottom:8,textAlign:'center'}}>Chiave OpenAI</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'15px',fontStyle:'italic',color:'rgba(31,31,36,0.55)',lineHeight:1.7,textAlign:'center',marginBottom:24}}>Inserisci la tua chiave API.<br/>Verrà salvata solo sul tuo dispositivo.</div>
+              <input type="password" value={keyInput} onChange={e=>setKeyInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&saveKey()} placeholder="sk-..." style={{width:'100%',padding:'14px 16px',background:'#f2f2f7',border:'1px solid rgba(31,31,36,0.15)',borderRadius:8,fontFamily:"'Inter',sans-serif",fontSize:'14px',color:'#1f1f24',marginBottom:16,outline:'none',boxSizing:'border-box'}}/>
+              <button onClick={saveKey} style={{width:'100%',padding:'14px',background:'#9468d8',color:'#fff',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:600,letterSpacing:'.22em',textTransform:'uppercase',borderRadius:100,cursor:'pointer',border:'none',marginBottom:10}}>Salva</button>
+              {apiKey&&<button onClick={()=>setShowKeySetup(false)} style={{width:'100%',padding:'12px',color:'rgba(31,31,36,0.45)',fontFamily:"'Inter',sans-serif",fontSize:'11px',letterSpacing:'.12em',cursor:'pointer',background:'none',border:'none'}}>Annulla</button>}
+            </div>
+          </div>
+        )}
+
+        {/* STEP: WRITE */}
+        {step==='write'&&(
+          <div className="fade-in">
+            <div style={{...card,marginBottom:12}}>
+              <textarea value={dreamText} onChange={e=>setDreamText(e.target.value)} placeholder="Racconta il sogno di questa notte… anche solo frammenti, sensazioni, colori." style={{width:'100%',minHeight:240,padding:'22px 22px 0',background:'transparent',fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(17px,4.5vw,21px)',color:'#1f1f24',lineHeight:1.85,letterSpacing:'.005em',border:'none',outline:'none',resize:'vertical',boxSizing:'border-box'}}/>
+              <div style={{padding:'12px 22px 16px',display:'flex',justifyContent:'flex-end'}}>
+                <span style={{fontFamily:"'Inter',sans-serif",fontSize:'10px',color:'rgba(31,31,36,0.28)'}}>{dreamText.length}</span>
+              </div>
+            </div>
+            <button onClick={interrogate} disabled={!dreamText.trim()} style={{width:'100%',padding:'16px',background:dreamText.trim()?'#1f1f24':'rgba(31,31,36,0.12)',color:dreamText.trim()?'#f2f2f7':'rgba(31,31,36,0.35)',fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.5vw,20px)',fontWeight:500,fontStyle:'italic',letterSpacing:'.04em',borderRadius:100,cursor:dreamText.trim()?'pointer':'default',transition:'all .3s cubic-bezier(.16,1,.3,1)',boxShadow:dreamText.trim()?'0 4px 20px rgba(0,0,0,0.15)':'none',marginBottom:32,border:'none'}}>
+              Interroga l'Inconscio
+            </button>
+          </div>
+        )}
+
+        {/* STEP: LOADING — pendolo */}
+        {step==='loading'&&(
+          <div style={{textAlign:'center',padding:'48px 0 36px'}}>
+            <div style={{display:'inline-block',transformOrigin:'10px 2px',animation:'pendulum 1.5s ease-in-out infinite alternate'}}>
+              <svg width="20" height="98" viewBox="0 0 20 98" fill="none">
+                <line x1="10" y1="2" x2="10" y2="74" stroke="rgba(31,31,36,0.28)" strokeWidth="1.5" strokeLinecap="round"/>
+                <circle cx="10" cy="85" r="11" stroke="rgba(148,104,216,0.55)" strokeWidth="1.4"/>
+                <circle cx="10" cy="85" r="4.5" fill="rgba(148,104,216,0.35)"/>
+              </svg>
+            </div>
+            <div style={{marginTop:36,fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(17px,4.5vw,20px)',fontStyle:'italic',color:'rgba(31,31,36,0.52)',lineHeight:1.7}}>L'inconscio elabora…</div>
+            <div style={{marginTop:8,fontFamily:"'Inter',sans-serif",fontSize:'10px',letterSpacing:'.22em',color:'rgba(31,31,36,0.28)',textTransform:'uppercase'}}>analisi junghiana in corso</div>
+          </div>
+        )}
+
+        {/* STEP: RESULT */}
+        {step==='result'&&(
+          <div>
+            <div style={{...card,marginBottom:12,padding:'24px 22px 22px'}} className="fade-in-up">
+              <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',fontWeight:500,letterSpacing:'.32em',color:'rgba(148,104,216,0.7)',textTransform:'uppercase',marginBottom:16}}>◎ Lettura dell'Inconscio</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(17px,4.5vw,21px)',fontWeight:400,color:'#1f1f24',lineHeight:1.9,fontStyle:'italic'}}>{interpretation}</div>
+            </div>
+            <details style={{marginBottom:24}}>
+              <summary style={{fontFamily:"'Inter',sans-serif",fontSize:'10px',letterSpacing:'.18em',color:'rgba(31,31,36,0.38)',textTransform:'uppercase',cursor:'pointer',padding:'10px 4px',listStyle:'none'}}>↓ Il tuo racconto</summary>
+              <div style={{...card,padding:'18px 20px',marginTop:8}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',color:'rgba(31,31,36,0.65)',lineHeight:1.85}}>{dreamText}</div>
+              </div>
+            </details>
+            <button onClick={reset} style={{width:'100%',padding:'15px',border:'1px solid rgba(31,31,36,0.15)',background:'#ffffff',color:'#1f1f24',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:500,letterSpacing:'.22em',textTransform:'uppercase',borderRadius:100,cursor:'pointer',marginBottom:32}}>Scrivi un nuovo sogno</button>
+          </div>
+        )}
+
+        {/* HISTORY */}
+        {history.length>0&&step!=='loading'&&(
+          <div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:500,letterSpacing:'.06em',color:'rgba(60,60,67,0.45)',textTransform:'uppercase',marginBottom:12,paddingLeft:2}}>Archivio ({history.length})</div>
+            {history.map(entry=>(
+              <div key={entry.id} style={{...card,marginBottom:8}}>
+                <button onClick={()=>setExpandedId(expandedId===entry.id?null:entry.id)} style={{width:'100%',padding:'16px 20px',display:'flex',alignItems:'flex-start',gap:12,textAlign:'left',cursor:'pointer',background:'none',border:'none'}}>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontFamily:"'Inter',sans-serif",fontSize:'10px',letterSpacing:'.12em',color:'rgba(31,31,36,0.38)',textTransform:'uppercase',marginBottom:5}}>{entry.dateIt}</div>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(14px,3.8vw,17px)',color:'rgba(31,31,36,0.72)',lineHeight:1.5,overflow:'hidden',display:'-webkit-box',WebkitLineClamp:expandedId===entry.id?'unset':2,WebkitBoxOrient:'vertical'}}>{entry.dream}</div>
+                  </div>
+                  <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'18px',color:'rgba(31,31,36,0.28)',transform:expandedId===entry.id?'rotate(90deg)':'rotate(0)',transition:'transform .3s',flexShrink:0,marginTop:18}}>›</span>
+                </button>
+                {expandedId===entry.id&&(
+                  <div style={{padding:'0 20px 18px',borderTop:'1px solid rgba(31,31,36,0.07)'}} className="fade-in">
+                    <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',fontWeight:500,letterSpacing:'.28em',color:'rgba(148,104,216,0.6)',textTransform:'uppercase',padding:'14px 0 10px'}}>◎ Lettura</div>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontStyle:'italic',color:'#1f1f24',lineHeight:1.85}}>{entry.interpretation}</div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div style={{height:'calc(env(safe-area-inset-bottom,0px) + 20px)'}}/>
+      </div>
+    </div>
+  );
+}
+
 function TemanataleView({t,profile,onBack}){
   const [open,setOpen]=useState([true,true,true,true]);
   const toggle=useCallback((i)=>setOpen(o=>{const n=[...o];n[i]=!n[i];return n;}),[]);
@@ -2940,6 +3109,7 @@ function App(){
       {!splash&&view==="hub"&&<HomeHub t={t} setView={setView} profile={profile}/>}
       {!splash&&view==="daily"&&profile&&<DailyHoroscope t={t} profile={profile} onBack={()=>setView("hub")} onProfile={()=>setView("profile")} onEdit={()=>setView("setup")}/>}
       {!splash&&view==="natale"&&profile&&<TemanataleView t={t} profile={profile} onBack={()=>setView("hub")}/>}
+      {!splash&&view==="sogni"&&profile&&<SogniView t={t} profile={profile} onBack={()=>setView("hub")}/>}
       {!splash&&view==="tarocchi"&&<Tarocchi t={t}/>}
       {!splash&&view==="meditazione"&&<Meditazione onBack={()=>setView("hub")}/>}
       {!splash&&view==="profile"&&profile&&<PersonalProfile t={t} profile={profile} onEdit={()=>setView("setup")} onBack={()=>setView("daily")}/>}
