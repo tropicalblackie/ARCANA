@@ -1535,35 +1535,167 @@ function ShaderBall(){
 function startMeditationAudio(key){
   try{
     const ctx=new(window.AudioContext||window.webkitAudioContext)();ctx.resume();
-    const master=ctx.createGain();master.gain.setValueAtTime(0,ctx.currentTime);master.gain.linearRampToValueAtTime(0.22,ctx.currentTime+3.5);master.connect(ctx.destination);
+    const master=ctx.createGain();
+    master.gain.setValueAtTime(0,ctx.currentTime);
+    master.gain.linearRampToValueAtTime(0.30,ctx.currentTime+5);
+    master.connect(ctx.destination);
     const nodes=[];const ivals=[];
-    if(key==="papessa"){
-      const bsz=ctx.sampleRate*4;const buf=ctx.createBuffer(1,bsz,ctx.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<bsz;i++)d[i]=Math.random()*2-1;
+
+    /* ── Tibetan singing bowl (realistic: non-harmonic partials 1 : 2.756 : 5.1 : 8.9)
+       Short attack, very long exponential decay, slight pitch glide on strike ── */
+    const bowl=(freq,vol,when)=>{
+      try{
+        const t=when||ctx.currentTime;
+        const dur=22;
+        [[1,vol],[2.756,vol*0.38],[5.1,vol*0.14],[8.9,vol*0.04]].forEach(([r,v])=>{
+          const o=ctx.createOscillator();const g=ctx.createGain();
+          o.type="sine";
+          // tiny pitch glide down on attack (real bowl behaviour)
+          o.frequency.setValueAtTime(freq*r*1.004,t);
+          o.frequency.linearRampToValueAtTime(freq*r,t+0.12);
+          g.gain.setValueAtTime(0,t);
+          g.gain.linearRampToValueAtTime(v,t+0.03);
+          g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+          o.connect(g);g.connect(master);
+          o.start(t);o.stop(t+dur+0.1);
+        });
+      }catch(e){}
+    };
+
+    /* ── Pad: 3 detuned sines per note → lush slow beating ── */
+    const pad=(freqs,vol)=>{
+      freqs.forEach(f=>{
+        [-1.2,0,1.2].forEach(c=>{
+          const o=ctx.createOscillator();const g=ctx.createGain();
+          o.type="sine";
+          o.frequency.value=f*(1+c*0.001);
+          g.gain.value=vol*(1-Math.abs(c)*0.18);
+          o.connect(g);g.connect(master);
+          o.start();nodes.push(o);
+        });
+      });
+    };
+
+    /* ── Universal slow-breath LFO on master (~30s period) ── */
+    const blfo=ctx.createOscillator();const blg=ctx.createGain();
+    blfo.type="sine";blfo.frequency.value=0.033;blg.gain.value=0.055;
+    blfo.connect(blg);blg.connect(master.gain);blfo.start();nodes.push(blfo);
+
+    /* ── Soft brown-noise bed (filtered, very quiet) ── */
+    const makeBed=(lpFreq,vol)=>{
+      const sr=ctx.sampleRate;
+      const buf=ctx.createBuffer(2,sr*6,sr);
+      for(let c=0;c<2;c++){
+        const d=buf.getChannelData(c);
+        let last=0;
+        for(let i=0;i<d.length;i++){d[i]=last=last*0.996+(Math.random()*2-1)*0.004;}
+      }
       const ns=ctx.createBufferSource();ns.buffer=buf;ns.loop=true;
-      const hp=ctx.createBiquadFilter();hp.type="highpass";hp.frequency.value=2400;hp.Q.value=0.6;
-      const ng=ctx.createGain();ng.gain.value=0.05;ns.connect(hp);hp.connect(ng);ng.connect(master);ns.start();nodes.push(ns);
-      const dn=ctx.createOscillator();const dg=ctx.createGain();dn.type="sine";dn.frequency.value=220;dg.gain.value=0.025;dn.connect(dg);dg.connect(master);dn.start();nodes.push(dn);
-      const bf=[880,1174,1318,1046,1568];
-      const ring=()=>{try{const o=ctx.createOscillator();const g=ctx.createGain();o.type="sine";o.frequency.value=bf[Math.floor(Math.random()*bf.length)];g.gain.setValueAtTime(0,ctx.currentTime);g.gain.linearRampToValueAtTime(0.10,ctx.currentTime+0.05);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+4.5);o.connect(g);g.connect(master);o.start();o.stop(ctx.currentTime+4.6);}catch(e){}};
-      setTimeout(ring,1200);ivals.push(setInterval(ring,8000+Math.random()*7000));
+      const lp=ctx.createBiquadFilter();lp.type="lowpass";lp.frequency.value=lpFreq;lp.Q.value=0.5;
+      const ng=ctx.createGain();ng.gain.value=vol;
+      ns.connect(lp);lp.connect(ng);ng.connect(master);ns.start();nodes.push(ns);
+    };
+
+    /* ════════════════════════════════════════════════
+       LA PAPESSA — 432 Hz · Silenzio · Luna
+       Drone: 108 Hz (432/4, numero sacro), 216, 432
+       Ciotole tibetane a 432 Hz (quinta giusta: 288)
+       Rumore molto basso di vento lontano
+    ════════════════════════════════════════════════ */
+    if(key==="papessa"){
+      pad([108,216,432],[0.055,0.040,0.028]);
+      bowl(432,0.20);
+      setTimeout(()=>bowl(288,0.15),12000);
+      setTimeout(()=>bowl(432,0.13),24000);
+      ivals.push(setInterval(()=>{
+        const picks=[432,288,576];
+        bowl(picks[Math.floor(Math.random()*picks.length)],0.10+Math.random()*0.09);
+      },15000+Math.random()*13000));
+      makeBed(280,0.013);
     }
+
+    /* ════════════════════════════════════════════════
+       LA TEMPERANZA — 528 Hz · Guarigione · DNA
+       Frequenza Solfeggio "Mi" (riparazione DNA, amore)
+       Bordone: 174 Hz (fondamento), 528, 1056
+       Ciotola di cristallo a 528 Hz
+    ════════════════════════════════════════════════ */
     if(key==="temperanza"){
-      [[528,.09],[1056,.025],[264,.04],[792,.015]].forEach(([f,v])=>{const o=ctx.createOscillator();const g=ctx.createGain();o.type="sine";o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(master);o.start();nodes.push(o);});
-      const lfo=ctx.createOscillator();const lg=ctx.createGain();lfo.type="sine";lfo.frequency.value=0.04;lg.gain.value=0.025;lfo.connect(lg);lg.connect(master.gain);lfo.start();nodes.push(lfo);
-      const bsz2=ctx.sampleRate*2;const buf2=ctx.createBuffer(1,bsz2,ctx.sampleRate);const d2=buf2.getChannelData(0);for(let i=0;i<bsz2;i++)d2[i]=Math.random()*2-1;
-      const ns2=ctx.createBufferSource();ns2.buffer=buf2;ns2.loop=true;const bp=ctx.createBiquadFilter();bp.type="bandpass";bp.frequency.value=600;bp.Q.value=8;const ng2=ctx.createGain();ng2.gain.value=0.01;ns2.connect(bp);bp.connect(ng2);ng2.connect(master);ns2.start();nodes.push(ns2);
+      pad([174,528,1056],[0.065,0.085,0.022]);
+      bowl(528,0.22);
+      setTimeout(()=>bowl(528,0.17),9000);
+      setTimeout(()=>bowl(1056,0.11),19000);
+      ivals.push(setInterval(()=>{
+        bowl(Math.random()<0.65?528:1056,0.12+Math.random()*0.08);
+      },11000+Math.random()*9000));
+      // Shimmer acquatico: AM noise intorno a 2 kHz
+      const sr2=ctx.sampleRate;
+      const buf2=ctx.createBuffer(1,sr2*4,sr2);
+      const d2=buf2.getChannelData(0);
+      let lv2=0;for(let i=0;i<d2.length;i++){d2[i]=lv2=lv2*0.994+(Math.random()*2-1)*0.006;}
+      const ns2=ctx.createBufferSource();ns2.buffer=buf2;ns2.loop=true;
+      const bp2=ctx.createBiquadFilter();bp2.type="bandpass";bp2.frequency.value=2000;bp2.Q.value=2.5;
+      const amLfo=ctx.createOscillator();const amG=ctx.createGain();
+      amLfo.frequency.value=0.10;amG.gain.value=0.006;
+      amLfo.connect(amG);amG.connect(master.gain);amLfo.start();nodes.push(amLfo);
+      const ng2=ctx.createGain();ng2.gain.value=0.007;
+      ns2.connect(bp2);bp2.connect(ng2);ng2.connect(master);ns2.start();nodes.push(ns2);
     }
+
+    /* ════════════════════════════════════════════════
+       L'EREMITA — 396 Hz · Radicamento · Chakra Radice
+       Solfeggio "Ut" — libera dalla paura, radica
+       Bordone: 99 Hz (396/4), 198, 396
+       Ciotola profonda, presenza, cuore della montagna
+    ════════════════════════════════════════════════ */
     if(key==="eremita"){
-      [[80,.14],[160,.07],[240,.035]].forEach(([f,v])=>{[[f,v],[f*1.003,v*.5]].forEach(([fr,vl])=>{const o=ctx.createOscillator();const g=ctx.createGain();o.type="sine";o.frequency.value=fr;g.gain.value=vl;o.connect(g);g.connect(master);o.start();nodes.push(o);});});
-      const lfo=ctx.createOscillator();const lg=ctx.createGain();lfo.type="sine";lfo.frequency.value=0.07;lg.gain.value=0.04;lfo.connect(lg);lg.connect(master.gain);lfo.start();nodes.push(lfo);
+      pad([99,198,396,792],[0.080,0.065,0.055,0.018]);
+      bowl(396,0.24);
+      setTimeout(()=>bowl(396,0.19),10000);
+      setTimeout(()=>bowl(198,0.15),21000);
+      ivals.push(setInterval(()=>{
+        bowl(Math.random()<0.55?396:264,0.14+Math.random()*0.07);
+      },13000+Math.random()*11000));
+      // Pulsazione lenta della terra: LFO sub-bassa
+      const earthLfo=ctx.createOscillator();const eg=ctx.createGain();
+      earthLfo.type="sine";earthLfo.frequency.value=0.014;eg.gain.value=0.038;
+      earthLfo.connect(eg);eg.connect(master.gain);earthLfo.start();nodes.push(earthLfo);
+      makeBed(180,0.014);
     }
+
+    /* ════════════════════════════════════════════════
+       LA STELLA — 963 Hz · Chakra Corona · Pineal
+       Solfeggio "Si" — connessione cosmica, luce
+       639 Hz: connessioni, armonia (chakra cuore)
+       Ciotola di cristallo trasparente, eterea
+    ════════════════════════════════════════════════ */
     if(key==="stella"){
-      const arp=[220,277,329,440,277,220,165];let ai=0;
-      const play=()=>{try{[arp[ai%arp.length]*2,arp[ai%arp.length]].forEach((f,hi)=>{const o=ctx.createOscillator();const g=ctx.createGain();o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(0,ctx.currentTime);g.gain.linearRampToValueAtTime(hi===0?.055:.035,ctx.currentTime+.25);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+5);o.connect(g);g.connect(master);o.start();o.stop(ctx.currentTime+5.1);});ai++;}catch(e){}};
-      play();ivals.push(setInterval(play,3400));
-      const pad=ctx.createOscillator();const pg=ctx.createGain();pad.type="sine";pad.frequency.value=110;pg.gain.value=0.04;pad.connect(pg);pg.connect(master);pad.start();nodes.push(pad);
+      pad([240,480,639,963],[0.042,0.060,0.055,0.032]);
+      bowl(963,0.16);
+      setTimeout(()=>bowl(639,0.15),8000);
+      setTimeout(()=>bowl(963,0.13),17000);
+      setTimeout(()=>bowl(1278,0.09),26000); // 963 * 4/3
+      ivals.push(setInterval(()=>{
+        const picks=[963,852,639];
+        bowl(picks[Math.floor(Math.random()*picks.length)],0.10+Math.random()*0.07);
+      },10000+Math.random()*12000));
+      // Scintillio celeste: rumore filtrato molto acuto, quasi impercettibile
+      const sr3=ctx.sampleRate;
+      const buf3=ctx.createBuffer(1,sr3*3,sr3);
+      const d3=buf3.getChannelData(0);for(let i=0;i<d3.length;i++)d3[i]=Math.random()*2-1;
+      const ns3=ctx.createBufferSource();ns3.buffer=buf3;ns3.loop=true;
+      const hp3=ctx.createBiquadFilter();hp3.type="highpass";hp3.frequency.value=5500;hp3.Q.value=0.4;
+      const ng3=ctx.createGain();ng3.gain.value=0.004;
+      ns3.connect(hp3);hp3.connect(ng3);ng3.connect(master);ns3.start();nodes.push(ns3);
     }
-    return()=>{ivals.forEach(iv=>clearInterval(iv));try{master.gain.setTargetAtTime(0,ctx.currentTime,0.6);setTimeout(()=>{try{nodes.forEach(n=>{try{n.stop();}catch(e){}});ctx.close();}catch(e){}},2500);}catch(e){};};
+
+    return()=>{
+      ivals.forEach(iv=>clearInterval(iv));
+      try{
+        master.gain.setTargetAtTime(0,ctx.currentTime,1.0);
+        setTimeout(()=>{try{nodes.forEach(n=>{try{n.stop();}catch(e){}});ctx.close();}catch(e){}},4000);
+      }catch(e){}
+    };
   }catch(e){return()=>{};}
 }
 function MeditationSession({med,onEnd}){
