@@ -562,14 +562,10 @@ function SignFlipCard({sg,t,i,onSelect}){
           applyAngle(p.angle+p.vel);
         }
       } else if(p.mode==='coast'){
-        // spring toward nearest face; re-evaluates every frame so flip works
-        const norm=((p.angle%360)+360)%360;
-        const snapBack=norm>90&&norm<=270;
-        const rounds=Math.floor(p.angle/360);
-        p.snapTarget=rounds*360+(snapBack?180:0);
+        // snapTarget fixed at mode entry — never recalculate mid-coast
         p.vel=(p.vel+(p.snapTarget-p.angle)*KC)*DC;
         applyAngle(p.angle+p.vel);
-        if(Math.abs(p.vel)<0.12&&Math.abs(p.angle-p.snapTarget)<0.8) snapToFace();
+        if(Math.abs(p.vel)<0.10&&Math.abs(p.angle-p.snapTarget)<0.5) snapToFace();
       }
       rafRef.current=requestAnimationFrame(tick);
     };
@@ -610,7 +606,20 @@ function SignFlipCard({sg,t,i,onSelect}){
     if(!d.active)return;
     d.active=false; setCursor("grab");
     if(d.moved<8){snapToFace();onSelect(sg);return;}
-    p.vel=d.rawVel*12;
+    // Decide target face ONCE here — coast loop never changes it
+    const norm=((p.angle%360)+360)%360;
+    const rounds=Math.floor(p.angle/360);
+    const onBack=norm>90&&norm<=270;
+    const spd=Math.abs(d.rawVel);
+    // Fast flick → flip to opposite face; slow release → nearest face
+    if(spd>1.8){
+      p.snapTarget=onBack
+        ?(d.rawVel<0 ? rounds*360+180 : rounds*360+360)
+        :(d.rawVel>0 ? rounds*360+180 : rounds*360);
+    } else {
+      p.snapTarget=rounds*360+(onBack?180:0);
+    }
+    p.vel=d.rawVel*10;
     p.mode='coast';
   },[onSelect,sg,snapToFace]);
 
