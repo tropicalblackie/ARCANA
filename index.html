@@ -540,15 +540,20 @@ function SignFlipCard({sg,t,i,onSelect}){
 
   // Master rAF loop — runs forever
   useEffect(()=>{
+    const phase=i*1.17; // unique phase per card so they don't sync
     const tick=()=>{
       const p=phys.current;
       if(p.mode==='idle'){
-        const s=(performance.now()-p.idleOscT)*0.001;
-        const settle=Math.exp(-s*4.0);
-        // gentle continuous breathing oscillation ±7° once settled
-        const osc=Math.sin(s*0.9)*7*(1-Math.exp(-s*1.2));
+        const s=(performance.now()-p.idleOscT)*0.001+phase;
+        const settle=Math.exp(-((performance.now()-p.idleOscT)*0.001)*3.5);
+        // layered oscillation: primary Y-flip ±18° + secondary harmonic ±6°
+        const osc=Math.sin(s*0.65)*18*(1-Math.exp(-((performance.now()-p.idleOscT)*0.001)*0.9))
+                 +Math.sin(s*1.4+1.1)*6*(1-Math.exp(-((performance.now()-p.idleOscT)*0.001)*1.5));
         const a=p.idleSnapTarget+(p.idleStartAngle-p.idleSnapTarget)*settle+osc;
         commit(a);
+        // also float up/down on Y axis
+        const floatY=Math.sin(s*0.55)*8+Math.sin(s*0.93+0.7)*4;
+        if(innerRef.current) innerRef.current.style.marginTop=`${floatY}px`;
       } else if(p.mode==='drag'){
         const d=p.drag;
         if(d.active&&d.locked){
