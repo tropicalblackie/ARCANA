@@ -534,8 +534,8 @@ function SignFlipCard({sg,t,i,onSelect}){
     idleT0.current=performance.now();
     const tick=now=>{
       const s=(now-idleT0.current)*0.001;
-      const settle=Math.exp(-s*2.8);
-      const osc=Math.sin(s*1.6)*4*(1-Math.exp(-s*1.4));
+      const settle=Math.exp(-s*3.4);
+      const osc=Math.sin(s*1.2)*2.5*(1-Math.exp(-s*1.8));
       applyAngle(target+(startAngle-target)*settle+osc);
       raf.current=requestAnimationFrame(tick);
     };
@@ -571,10 +571,10 @@ function SignFlipCard({sg,t,i,onSelect}){
     const now=performance.now();
     const dt=Math.max(now-d.lt,4);
     const dx=e.clientX-d.lx;
-    d.vel=d.vel*0.55+(dx/dt)*16*0.45; // EMA velocity
+    d.vel=d.vel*0.72+(dx/dt)*16*0.28; // EMA velocity — smoothed
     d.moved+=Math.abs(dx);
     d.lx=e.clientX;d.lt=now;
-    applyAngle(d.sa+totalDx*1.55); // 1.55x: 65px drag ≈ 100°
+    applyAngle(d.sa+totalDx*1.30); // 1.30x: smoother mapping
   },[applyAngle,startIdle]);
 
   const onUp=useCallback(()=>{
@@ -585,8 +585,8 @@ function SignFlipCard({sg,t,i,onSelect}){
     if(d.moved<8){onSelect(sg);return;}
     let vel=d.vel;
     const coast=()=>{
-      vel*=0.97; // long smooth glide
-      if(Math.abs(vel)<0.05){startIdle();return;}
+      vel*=0.93; // glide with crisp stop
+      if(Math.abs(vel)<0.08){startIdle();return;}
       applyAngle(angle.current+vel);
       raf.current=requestAnimationFrame(coast);
     };
@@ -602,7 +602,7 @@ function SignFlipCard({sg,t,i,onSelect}){
   return(
     <div className="fade-in-up" style={{animationDelay:`${i*.06}s`,opacity:0}}>
       <div
-        style={{perspective:"820px",perspectiveOrigin:"50% 40%",touchAction:"pan-y",userSelect:"none",WebkitUserSelect:"none",cursor}}
+        style={{perspective:"1100px",perspectiveOrigin:"50% 40%",touchAction:"pan-y",userSelect:"none",WebkitUserSelect:"none",cursor}}
         onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onCancel}>
         <div ref={innerRef} style={{transformStyle:"preserve-3d",WebkitTransformStyle:"preserve-3d",transform:"rotateY(0deg)",willChange:"transform",position:"relative"}}>
 
