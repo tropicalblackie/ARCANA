@@ -363,6 +363,127 @@ function getAscendantKey(bday,birthtime,birthplace){
 }
 
 
+// ── NATAL PLANET SIGN CALCULATOR (mean motion from J2000) ──
+function getNatalPlanetKey(planet,bday){
+  if(!bday)return"ariete";
+  try{
+    const days=(new Date(bday+"T12:00:00Z")-new Date("2000-01-01T12:00:00Z"))/86400000;
+    const R={mercury:{l:252.25,m:4.0923},venus:{l:181.98,m:1.6021},mars:{l:355.45,m:0.5240},jupiter:{l:34.40,m:0.0831},saturn:{l:50.08,m:0.0335},chiron:{l:151.0,m:0.01988},northnode:{l:125.0,m:-0.05299}};
+    const r=R[planet];if(!r)return"ariete";
+    return SIGN_ORDER[Math.floor(((r.l+r.m*days)%360+360)%360/30)];
+  }catch(e){return"ariete";}
+}
+
+// ── NATAL ART NOUVEAU SVG SYMBOLS ──
+function NatalSvg({planet,size=60,col}){
+  const c=col||"#1f1f24";
+  const s={fill:"none",stroke:c,strokeLinecap:"round",strokeLinejoin:"round"};
+  const f={fill:c,stroke:"none"};
+  if(planet==="sole")return(
+    <svg width={size} height={size} viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="10" {...s} strokeWidth="1.7"/>
+      <circle cx="32" cy="32" r="16" {...s} strokeWidth=".6" strokeDasharray="1.5 3.5"/>
+      <line x1="32" y1="4" x2="32" y2="14" {...s} strokeWidth="1.5"/>
+      <line x1="32" y1="50" x2="32" y2="60" {...s} strokeWidth="1.5"/>
+      <line x1="4" y1="32" x2="14" y2="32" {...s} strokeWidth="1.5"/>
+      <line x1="50" y1="32" x2="60" y2="32" {...s} strokeWidth="1.5"/>
+      <line x1="12" y1="12" x2="19" y2="19" {...s} strokeWidth="1"/>
+      <line x1="52" y1="12" x2="45" y2="19" {...s} strokeWidth="1"/>
+      <line x1="12" y1="52" x2="19" y2="45" {...s} strokeWidth="1"/>
+      <line x1="52" y1="52" x2="45" y2="45" {...s} strokeWidth="1"/>
+      <polygon points="32,2 33.4,5 32,8 30.6,5" {...f}/>
+      <polygon points="32,62 33.4,59 32,56 30.6,59" {...f}/>
+      <polygon points="2,32 5,33.4 8,32 5,30.6" {...f}/>
+      <polygon points="62,32 59,33.4 56,32 59,30.6" {...f}/>
+    </svg>
+  );
+  if(planet==="luna")return(
+    <svg width={size} height={size} viewBox="0 0 64 64">
+      <path d="M40,8 A26,26 0 1,0 40,56 A20,20 0 1,1 40,8 Z" {...s} strokeWidth="1.7"/>
+      <circle cx="24" cy="22" r="2.2" {...f}/>
+      <circle cx="20" cy="36" r="1.5" {...f}/>
+      <circle cx="29" cy="16" r="1" {...f}/>
+    </svg>
+  );
+  if(planet==="ascendente")return(
+    <svg width={size} height={size} viewBox="0 0 64 64">
+      <path d="M12,46 Q14,12 32,8 Q50,12 52,46 Q43,55 32,57 Q21,55 12,46 Z" {...s} strokeWidth="1.4"/>
+      <ellipse cx="23" cy="30" rx="4.2" ry="5.8" {...s} strokeWidth="1.3"/>
+      <ellipse cx="41" cy="30" rx="4.2" ry="5.8" {...s} strokeWidth="1.3"/>
+      <path d="M19,21 Q23,15 27,21" {...s} strokeWidth="1.2"/>
+      <path d="M37,21 Q41,15 45,21" {...s} strokeWidth="1.2"/>
+      <path d="M23,44 Q32,52 41,44" {...s} strokeWidth="1.5"/>
+    </svg>
+  );
+  if(planet==="mercurio")return(
+    <svg width={size} height={size} viewBox="0 0 64 64">
+      <path d="M50,6 C52,22 44,36 32,46 L18,60" {...s} strokeWidth="1.5"/>
+      <path d="M50,6 C60,20 54,36 42,50" {...s} strokeWidth="1.1"/>
+      <path d="M50,6 C42,16 36,28 26,42" {...s} strokeWidth="1.1"/>
+      <path d="M50,6 C44,8 38,10 30,12" {...s} strokeWidth=".7" strokeDasharray="2 2"/>
+      <path d="M18,60 L15,58 L19,56" {...s} strokeWidth="1"/>
+    </svg>
+  );
+  if(planet==="venere")return(
+    <svg width={size} height={size} viewBox="0 0 64 64">
+      <circle cx="32" cy="24" r="16" {...s} strokeWidth="1.6"/>
+      <line x1="32" y1="40" x2="32" y2="57" {...s} strokeWidth="1.5"/>
+      <line x1="23" y1="51" x2="41" y2="51" {...s} strokeWidth="1.5"/>
+      <circle cx="32" cy="24" r="7" {...s} strokeWidth=".8" strokeDasharray="2 2.5"/>
+      <circle cx="32" cy="24" r="2.5" {...f}/>
+    </svg>
+  );
+  if(planet==="marte")return(
+    <svg width={size} height={size} viewBox="0 0 64 64">
+      <path d="M32,6 L43,27 L32,23 L21,27 Z" {...s} strokeWidth="1.5"/>
+      <line x1="32" y1="23" x2="32" y2="58" {...s} strokeWidth="1.5"/>
+      <line x1="22" y1="41" x2="42" y2="41" {...s} strokeWidth="1.3"/>
+      <path d="M25,27 Q32,29 39,27" {...s} strokeWidth=".8"/>
+    </svg>
+  );
+  if(planet==="giove")return(
+    <svg width={size} height={size} viewBox="0 0 64 64">
+      <path d="M10,20 L10,50 Q10,54 14,54 L50,54 Q54,54 54,50 L54,20 Q54,16 50,16 L14,16 Q10,16 10,20 Z" {...s} strokeWidth="1.4"/>
+      <line x1="32" y1="16" x2="32" y2="54" {...s} strokeWidth="1.2"/>
+      <path d="M10,20 Q22,12 32,16 Q42,12 54,20" {...s} strokeWidth="1.1"/>
+      <line x1="14" y1="26" x2="28" y2="26" {...s} strokeWidth=".9"/>
+      <line x1="14" y1="33" x2="28" y2="33" {...s} strokeWidth=".9"/>
+      <line x1="14" y1="40" x2="28" y2="40" {...s} strokeWidth=".9"/>
+      <line x1="36" y1="26" x2="50" y2="26" {...s} strokeWidth=".9"/>
+      <line x1="36" y1="33" x2="50" y2="33" {...s} strokeWidth=".9"/>
+      <line x1="36" y1="40" x2="50" y2="40" {...s} strokeWidth=".9"/>
+    </svg>
+  );
+  if(planet==="saturno")return(
+    <svg width={size} height={size} viewBox="0 0 64 64">
+      <path d="M16,6 L48,6 L34,30 L34,34 L48,58 L16,58 L30,34 L30,30 Z" {...s} strokeWidth="1.5"/>
+      <line x1="13" y1="6" x2="51" y2="6" {...s} strokeWidth="1"/>
+      <line x1="13" y1="58" x2="51" y2="58" {...s} strokeWidth="1"/>
+      <ellipse cx="32" cy="49" rx="6" ry="5" {...s} strokeWidth=".8"/>
+      <line x1="32" y1="30" x2="32" y2="34" {...s} strokeWidth="1.5"/>
+    </svg>
+  );
+  if(planet==="chirone")return(
+    <svg width={size} height={size} viewBox="0 0 64 64">
+      <circle cx="32" cy="46" r="13" {...s} strokeWidth="1.5"/>
+      <line x1="32" y1="5" x2="32" y2="33" {...s} strokeWidth="1.5"/>
+      <line x1="16" y1="19" x2="48" y2="19" {...s} strokeWidth="1.5"/>
+      <path d="M22,33 Q32,40 42,33" {...s} strokeWidth="1.2"/>
+      <circle cx="32" cy="46" r="4.5" {...s} strokeWidth="1"/>
+    </svg>
+  );
+  if(planet==="nodilunari")return(
+    <svg width={size} height={size} viewBox="0 0 64 64">
+      <circle cx="20" cy="32" r="13" {...s} strokeWidth="1.5"/>
+      <circle cx="44" cy="32" r="13" {...s} strokeWidth="1.5"/>
+      <path d="M20,19 Q32,12 44,19" {...s} strokeWidth="1.2"/>
+      <path d="M20,45 Q32,52 44,45" {...s} strokeWidth="1.2"/>
+      <circle cx="32" cy="32" r="3.5" {...f}/>
+    </svg>
+  );
+  return <svg width={size} height={size} viewBox="0 0 64 64"><circle cx="32" cy="32" r="20" {...s} strokeWidth="1.4"/></svg>;
+}
+
 // ── StarField ──
 const StarField=memo(({color="#fff",count=80,opacity=.5})=>{
   const s=useMemo(()=>Array.from({length:count},(_,i)=>({id:i,x:Math.random()*100,y:Math.random()*100,sz:Math.random()*1.8+.4,delay:Math.random()*6,dur:Math.random()*4+2})),[]);
@@ -1760,7 +1881,6 @@ function Meditazione({onBack}){
    HOME HUB
 ══════════════════════════════════════════════════════ */
 const HUB_COMING=[
-  {key:"natale",       label:"Tema Natale",          icon:"✧",  col:"#7090d8", shape:"sq"},
   {key:"sogni",        label:"Sogni",                icon:"◗",  col:"#9468d8", shape:"pill"},
   {key:"compatibilita",label:"Compatibilità",        icon:"⋈",  col:"#d4688a", shape:"sq"},
   {key:"druido",       label:"Oroscopo Druido",      icon:"⊕",  col:"#60b870", shape:"pill"},
@@ -1813,6 +1933,19 @@ function HomeHub({t,setView,profile}){
             <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(31,31,36,0.45)",letterSpacing:".02em"}}>4 portali · Respiro guidato · Audio</div>
           </div>
           <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"rgba(88,200,144,0.35)"}}>›</span>
+        </div>
+
+        {/* ── Tema Natale ── */}
+        <div onClick={()=>profile?setView("natale"):setView("setup")} onMouseEnter={()=>setHov("natale")} onMouseLeave={()=>setHov(null)}
+          style={{marginBottom:10,padding:"20px 24px",background:hov==="natale"?"rgba(112,144,216,0.10)":"#ffffff",border:`1px solid ${hov==="natale"?"rgba(112,144,216,0.50)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="natale"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="natale"?"0 14px 26px rgba(112,144,216,0.18)":"0 8px 24px rgba(20,20,30,0.07)"}}>
+          <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(112,144,216,0.12)",border:"1px solid rgba(112,144,216,0.22)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#7090d8",lineHeight:1}}>✧</span>
+          </div>
+          <div style={{flex:1}}>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4.5vw,21px)",fontWeight:600,color:"#1f1f24",marginBottom:2}}>Tema Natale</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(31,31,36,0.45)",letterSpacing:".02em"}}>10 pianeti · 4 stanze · Mappa dell'anima</div>
+          </div>
+          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"rgba(112,144,216,0.35)"}}>›</span>
         </div>
 
         {/* ── Tarocchi + Profilo — 2 col ── */}
@@ -2460,6 +2593,129 @@ function BioChart({birthday,dateStr,t}){
   );
 }
 
+// ── TEMA NATALE ──
+const NATAL_SECTIONS=[
+  {key:"pilastri",title:"I Tre Pilastri",sub:"Fondamenta dell'Anima",col:"#7090d8",
+   planets:[
+     {key:"sole",    name:"Sole",       sub:"L'Ego",             col:"#c8920a", desc:"L'essenza cosciente e il viaggio principale della tua vita.", calc:"sun"},
+     {key:"luna",    name:"Luna",       sub:"L'Inconscio",       col:"#7888c8", desc:"Il tuo linguaggio emotivo e il bisogno profondo di sicurezza.", calc:"moon"},
+     {key:"ascendente",name:"Ascendente",sub:"La Maschera",      col:"#50a8d8", desc:"Come ti presenti al mondo e come inizi le cose nuove.", calc:"asc"},
+   ]},
+  {key:"psiche",title:"Psiche Relazionale",sub:"Mente e Desiderio",col:"#d4688a",
+   planets:[
+     {key:"mercurio",name:"Mercurio",   sub:"Il Messaggero",     col:"#70b870", desc:"Come processi le informazioni, come impari e come racconti la tua verità.", calc:"mercury"},
+     {key:"venere",  name:"Venere",     sub:"L'Amante",          col:"#d87880", desc:"Cosa consideri bello, come seduci e come ami essere amato.", calc:"venus"},
+     {key:"marte",   name:"Marte",      sub:"Il Guerriero",      col:"#d86040", desc:"Come difendi i tuoi confini e la tua energia primordiale.", calc:"mars"},
+   ]},
+  {key:"guardiani",title:"I Guardiani",sub:"Evoluzione e Limiti",col:"#60b880",
+   planets:[
+     {key:"giove",   name:"Giove",      sub:"Il Cercatore",      col:"#6880d0", desc:"Dove trovi fortuna, crescita e la tua personale filosofia di vita.", calc:"jupiter"},
+     {key:"saturno", name:"Saturno",    sub:"Il Maestro Severo", col:"#907840", desc:"Il tuo tallone d'Achille che, con il tempo, diventerà la tua più grande maestria.", calc:"saturn"},
+   ]},
+  {key:"karma",title:"Il Karma",sub:"Ferite e Destino",col:"#9878d8",
+   planets:[
+     {key:"chirone", name:"Chirone",    sub:"Il Guaritore Ferito",col:"#a890c8", desc:"Il dolore che non guarisce mai del tutto, ma che diventa il tuo dono per curare gli altri.", calc:"chiron"},
+     {key:"nodilunari",name:"Nodi Lunari",sub:"La Bussola",      col:"#c8b040", desc:"Il passaggio dalla tua comfort zone karmica alla tua vera missione di vita.", calc:"northnode"},
+   ]},
+];
+
+function TemanataleView({t,profile,onBack}){
+  const [open,setOpen]=useState([true,true,true,true]);
+  const toggle=useCallback((i)=>setOpen(o=>{const n=[...o];n[i]=!n[i];return n;}),[]);
+
+  const bday=profile.birthday;
+  const sunKey=getSunSignKey(bday);
+  const moonKey=getMoonSignKey(bday);
+  const ascKey=getAscendantKey(bday,profile.birthtime,profile.birthplace);
+
+  function getPlanetSign(calc){
+    if(calc==="sun")return sunKey;
+    if(calc==="moon")return moonKey;
+    if(calc==="asc")return ascKey||"—";
+    return getNatalPlanetKey(calc,bday);
+  }
+
+  const card={background:"#ffffff",border:"1px solid rgba(31,31,36,0.10)",borderRadius:16,boxShadow:"0 2px 8px rgba(0,0,0,0.06),0 0 0 0.5px rgba(0,0,0,0.03)",overflow:"hidden"};
+
+  return(
+    <div style={{minHeight:"100vh",background:"#f2f2f7",color:"#1f1f24",overflowY:"auto",paddingBottom:"calc(env(safe-area-inset-bottom,0px) + 80px)"}}>
+
+      {/* subtle stars */}
+      <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0}}>
+        {[...Array(24)].map((_,i)=>(
+          <div key={i} style={{position:"absolute",width:1.5,height:1.5,borderRadius:"50%",background:`rgba(31,31,36,${i%3===0?0.07:0.04})`,top:`${(i*43+17)%100}%`,left:`${(i*71+11)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
+        ))}
+      </div>
+
+      <div style={{position:"relative",zIndex:1,maxWidth:640,margin:"0 auto",padding:"0 16px"}}>
+
+        {/* ── TOP NAV ── */}
+        <div style={{padding:"calc(env(safe-area-inset-top,0px) + 14px) 4px 0"}}>
+          <button onClick={onBack} style={{color:"rgba(31,31,36,0.45)",fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:400,letterSpacing:".14em",padding:"12px 4px",background:"none",border:"none",cursor:"pointer"}}>← indietro</button>
+        </div>
+
+        {/* ── HEADER ── */}
+        <div style={{textAlign:"center",padding:"clamp(20px,5vw,36px) 0 32px"}}>
+          <div className="gold-text" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(9px,2.4vw,11px)",fontWeight:500,letterSpacing:".52em",textTransform:"uppercase",marginBottom:14}}>ARCANA</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(32px,8.5vw,50px)",fontWeight:500,color:"#1f1f24",letterSpacing:"-.02em",lineHeight:1,marginBottom:10}}>Tema Natale</div>
+          <div style={{width:36,height:1,background:"linear-gradient(to right,transparent,rgba(200,165,80,0.55),transparent)",margin:"0 auto 14px"}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,18px)",fontWeight:300,fontStyle:"italic",color:"rgba(31,31,36,0.48)",lineHeight:1.5}}>La mappa psicologica dell'anima di {profile.name}</div>
+        </div>
+
+        {/* ── ACCORDION SECTIONS ── */}
+        {NATAL_SECTIONS.map((sec,si)=>(
+          <div key={sec.key} style={{marginBottom:16}}>
+
+            {/* section header */}
+            <button onClick={()=>toggle(si)} style={{width:"100%",display:"flex",alignItems:"center",gap:14,padding:"18px 20px",background:"#ffffff",border:`1px solid rgba(31,31,36,0.10)`,borderRadius:open[si]?"16px 16px 0 0":16,boxShadow:"0 2px 8px rgba(0,0,0,0.05)",cursor:"pointer",transition:"border-radius .25s"}}>
+              <div style={{width:4,height:36,borderRadius:2,background:sec.col,flexShrink:0}}/>
+              <div style={{flex:1,textAlign:"left"}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,4.8vw,22px)",fontWeight:600,color:"#1f1f24",lineHeight:1.1,marginBottom:3}}>{sec.title}</div>
+                <div style={{fontFamily:"'Inter',sans-serif",fontSize:"10px",fontWeight:400,letterSpacing:".22em",color:"rgba(31,31,36,0.38)",textTransform:"uppercase"}}>{sec.sub}</div>
+              </div>
+              <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:sec.col,transform:open[si]?"rotate(90deg)":"rotate(0deg)",transition:"transform .3s cubic-bezier(.16,1,.3,1)",display:"block"}}>›</span>
+            </button>
+
+            {/* section body */}
+            {open[si]&&(
+              <div style={{background:"#f8f7f5",border:`1px solid rgba(31,31,36,0.10)`,borderTop:"none",borderRadius:"0 0 16px 16px",padding:"12px 12px 16px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+                {sec.planets.map(pl=>{
+                  const signKey=getPlanetSign(pl.calc);
+                  const sg=typeof signKey==="string"&&signKey!=="—"?SIGNS.find(s=>s.key===signKey):null;
+                  return(
+                    <div key={pl.key} style={{...card,padding:"20px 16px 18px",display:"flex",flexDirection:"column",alignItems:"center",gap:0}}>
+                      {/* SVG symbol */}
+                      <div style={{width:64,height:64,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:12}}>
+                        <NatalSvg planet={pl.key} size={54} col={pl.col}/>
+                      </div>
+                      {/* planet name */}
+                      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,18px)",fontWeight:600,color:"#1f1f24",textAlign:"center",marginBottom:3,lineHeight:1.1}}>{pl.name}</div>
+                      {/* subtitle */}
+                      <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,letterSpacing:".20em",color:"rgba(31,31,36,0.38)",textTransform:"uppercase",textAlign:"center",marginBottom:10}}>{pl.sub}</div>
+                      {/* sign badge */}
+                      <div style={{display:"inline-flex",alignItems:"center",gap:6,padding:"5px 12px",background:sg?`rgba(${sg.rgb},0.10)`:"rgba(31,31,36,0.06)",border:`1px solid ${sg?`rgba(${sg.rgb},0.28)`:"rgba(31,31,36,0.12)"}`,borderRadius:20,marginBottom:12}}>
+                        {sg&&<span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",color:sg.colorLight||pl.col,lineHeight:1}}>{sg.symbol}</span>}
+                        <span style={{fontFamily:"'Inter',sans-serif",fontSize:"10px",fontWeight:600,letterSpacing:".08em",color:sg?`rgba(${sg.rgb},0.85)`:"rgba(31,31,36,0.50)",textTransform:"capitalize"}}>{sg?sg.name:signKey}</span>
+                      </div>
+                      {/* description */}
+                      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.4vw,15px)",fontStyle:"italic",color:"rgba(31,31,36,0.58)",lineHeight:1.7,textAlign:"center"}}>{pl.desc}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        ))}
+
+        {/* footer */}
+        <div style={{textAlign:"center",marginTop:8,paddingBottom:8}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"11px",fontStyle:"italic",color:"rgba(184,138,43,0.45)",letterSpacing:".06em"}}>Le stelle inclinano, non costringono ✦</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── DAILY HOROSCOPE ──
 function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
   const sunKey=getSunSignKey(profile.birthday);
@@ -2683,6 +2939,7 @@ function App(){
       {!splash&&view==="home"&&<Home t={t} profile={profile} onSelect={s=>{setSelected(s);setView("sign")}} onSetup={()=>setView("setup")}/>}
       {!splash&&view==="hub"&&<HomeHub t={t} setView={setView} profile={profile}/>}
       {!splash&&view==="daily"&&profile&&<DailyHoroscope t={t} profile={profile} onBack={()=>setView("hub")} onProfile={()=>setView("profile")} onEdit={()=>setView("setup")}/>}
+      {!splash&&view==="natale"&&profile&&<TemanataleView t={t} profile={profile} onBack={()=>setView("hub")}/>}
       {!splash&&view==="tarocchi"&&<Tarocchi t={t}/>}
       {!splash&&view==="meditazione"&&<Meditazione onBack={()=>setView("hub")}/>}
       {!splash&&view==="profile"&&profile&&<PersonalProfile t={t} profile={profile} onEdit={()=>setView("setup")} onBack={()=>setView("daily")}/>}
