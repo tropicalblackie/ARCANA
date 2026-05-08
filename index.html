@@ -1234,7 +1234,7 @@ function Tarocchi({t}){
    MEDITAZIONE
 ══════════════════════════════════════════════════════ */
 const MEDITATIONS=[
-  {key:"papessa",name:"La Papessa",number:"II",subtitle:"Calma · Chiarezza · Silenzio",col:"#7888d8",glow:"rgba(120,136,216,",symbol:"☽",bg:"radial-gradient(ellipse at 50% 40%, rgba(70,80,180,0.38) 0%, #030008 65%)",
+  {key:"papessa",name:"La Papessa",number:"II",subtitle:"Calma · Chiarezza · Silenzio",col:"#7888d8",glow:"rgba(120,136,216,",symbol:"☽",bg:"radial-gradient(ellipse at 50% 40%, rgba(70,80,180,0.38) 0%, #030008 65%)",ballColor:[0.12,0.38,1.0],
    pose:"Schiena dritta · mani sulle ginocchia · occhi chiusi",
    breathPhases:[
      {name:"inspira",dur:4,p0:0,p1:1},
@@ -1243,14 +1243,14 @@ const MEDITATIONS=[
      {name:"riposa",dur:2,p0:0,p1:0},
    ],
    texts:["Immagina un tempio di pietra fredda,\nilluminato solo dalla luce della luna.","Davanti a te siede la Papessa.\nIl suo volto è coperto dal velo dell'invisibile.","Siediti ai suoi piedi.\nSenti il freddo del marmo sotto di te.","Qui non c'è nulla da risolvere.\nNulla da capire.","Lascia che l'acqua ai lati del tempio\nporti via il rumore dei tuoi pensieri...","Sei nel silenzio più profondo.\nE in quel silenzio, sei intero."]},
-  {key:"temperanza",name:"La Temperanza",number:"XIV",subtitle:"Guarigione · Equilibrio · 528Hz",col:"#58c890",glow:"rgba(88,200,144,",symbol:"⊕",bg:"radial-gradient(ellipse at 50% 40%, rgba(40,140,90,0.35) 0%, #030008 65%)",
+  {key:"temperanza",name:"La Temperanza",number:"XIV",subtitle:"Guarigione · Equilibrio · 528Hz",col:"#58c890",glow:"rgba(88,200,144,",symbol:"⊕",bg:"radial-gradient(ellipse at 50% 40%, rgba(40,140,90,0.35) 0%, #030008 65%)",ballColor:[0.18,0.85,0.42],
    pose:"Seduto · piedi a terra · palme aperte verso l'alto",
    breathPhases:[
      {name:"inspira",dur:4,p0:0,p1:1},
      {name:"espira",dur:8,p0:1,p1:0},
    ],
    texts:["Ti trovi sulla riva di un ruscello incontaminato.\nL'aria profuma di terra umida e iris.","L'Angelo della Temperanza è davanti a te.\nUn piede nell'acqua, uno sulla terra.","Immagina di immergere anche tu i piedi\nin quell'acqua fresca.","Senti l'energia curativa che sale dalle radici...\nSciogliendo ogni tensione nel corpo.","Il dolore non ti appartiene.\nLascialo scorrere via con la corrente...","Sei già intero.\nSei già guarito."]},
-  {key:"eremita",name:"L'Eremita",number:"IX",subtitle:"Radicamento · Coraggio · Presenza",col:"#c8a050",glow:"rgba(200,160,80,",symbol:"◎",bg:"radial-gradient(ellipse at 50% 40%, rgba(140,100,20,0.35) 0%, #030008 65%)",
+  {key:"eremita",name:"L'Eremita",number:"IX",subtitle:"Radicamento · Coraggio · Presenza",col:"#c8a050",glow:"rgba(200,160,80,",symbol:"◎",bg:"radial-gradient(ellipse at 50% 40%, rgba(140,100,20,0.35) 0%, #030008 65%)",ballColor:[0.60,0.28,0.95],
    pose:"Seduto a terra · gambe incrociate · mani sul cuore",
    breathPhases:[
      {name:"inspira",dur:4,p0:0,p1:1},
@@ -1259,7 +1259,7 @@ const MEDITATIONS=[
      {name:"riposa",dur:4,p0:0,p1:0},
    ],
    texts:["Sei all'ingresso di una caverna sicura,\nin cima a una montagna innevata.","L'Eremita ti attende.\nNella sua mano, una lanterna con una singola stella.","Entra.\nQui dentro sei completamente al sicuro dagli sguardi del mondo.","Fissa la luce dorata della lanterna.\nÈ l'unica cosa che esiste ora.","Tutta la tua saggezza è già qui, nel buio.\nDevi solo ricordarla...","La montagna ti sostiene.\nSei radicato. Sei al sicuro."]},
-  {key:"stella",name:"La Stella",number:"XVII",subtitle:"Rilascio · Perdono · Speranza",col:"#9888e8",glow:"rgba(152,136,232,",symbol:"✦",bg:"radial-gradient(ellipse at 50% 40%, rgba(90,70,190,0.35) 0%, #030008 65%)",
+  {key:"stella",name:"La Stella",number:"XVII",subtitle:"Rilascio · Perdono · Speranza",col:"#9888e8",glow:"rgba(152,136,232,",symbol:"✦",bg:"radial-gradient(ellipse at 50% 40%, rgba(90,70,190,0.35) 0%, #030008 65%)",ballColor:[0.92,0.92,1.0],
    pose:"Sdraiato sul dorso · braccia lungo i fianchi · lascia andare",
    breathPhases:[
      {name:"inspira",dur:4,p0:0,p1:1},
@@ -1346,12 +1346,14 @@ const FRAG_SHADER = `
   varying vec2 vUv;
   varying vec3 v_color;
   varying vec3 v_normal;
+  uniform vec3 u_baseColor;
   void main() {
     vec3 skyColor    = vec3(1.000, 1.000, 0.547);
     vec3 groundColor = vec3(0.562, 0.275, 0.111);
     vec3 lightDirection = normalize(vec3(0.0, -1.0, -1.0));
     vec3 light = mix(skyColor, groundColor, dot(lightDirection, v_normal));
-    gl_FragColor = vec4(light * v_color, 1.0);
+    vec3 tinted = mix(light * v_color, u_baseColor, 0.72);
+    gl_FragColor = vec4(tinted, 1.0);
   }
 `;
 
@@ -1444,7 +1446,7 @@ const BG_FRAG = `
   }
 `;
 
-function ShaderBall(){
+function ShaderBall({color=[0.60,0.28,0.95]}){
   const mountRef=useRef(null);
   useEffect(()=>{
     const container=mountRef.current;
@@ -1462,7 +1464,7 @@ function ShaderBall(){
     // main sphere
     const material=new THREE.ShaderMaterial({
       vertexShader:VERT_SHADER,fragmentShader:FRAG_SHADER,wireframe:false,
-      uniforms:{u_time:{value:0},u_progress:{value:0}}
+      uniforms:{u_time:{value:0},u_progress:{value:0},u_baseColor:{value:new THREE.Vector3(...color)}}
     });
     const sphere=new THREE.Mesh(new THREE.SphereGeometry(1,162,162),material);
     scene.add(sphere);
@@ -1592,23 +1594,21 @@ function startMeditationAudio(key){
     return()=>{
       ivals.forEach(iv=>clearInterval(iv));
       try{
-        master.gain.setTargetAtTime(0,ctx.currentTime,1.2);
-        setTimeout(()=>{
-          try{
-            if(trackSrc){trackSrc.stop();}
-            nodes.forEach(n=>{try{n.stop();}catch(e){}});
-            ctx.close();
-          }catch(e){}
-        },4500);
+        master.gain.setValueAtTime(0,ctx.currentTime);
+        if(trackSrc){try{trackSrc.stop();}catch(e){}}
+        nodes.forEach(n=>{try{n.stop();}catch(e){}});
+        ctx.close();
       }catch(e){}
     };
   }catch(e){return()=>{};}
 }
+const MEDITATION_DURATION=120;
 function MeditationSession({med,onEnd}){
   const[textIdx,setTextIdx]=useState(0);
   const[textVis,setTextVis]=useState(false);
   const[breathState,setBreathState]=useState({phase:'inspira',count:med.breathPhases[0].dur,progress:0});
-  const tmrRef=useRef(null);const idxRef=useRef(0);
+  const[elapsed,setElapsed]=useState(0);
+  const tmrRef=useRef(null);const idxRef=useRef(0);const elapsedRef=useRef(0);
   useEffect(()=>{
     const phases=med.breathPhases;
     const cycleLen=phases.reduce((s,p)=>s+p.dur,0);
@@ -1632,13 +1632,25 @@ function MeditationSession({med,onEnd}){
     tmrRef.current=setTimeout(showNext,2200);
     return()=>{if(tmrRef.current)clearTimeout(tmrRef.current);};
   },[med]);
+  useEffect(()=>{
+    const iv=setInterval(()=>{
+      elapsedRef.current+=1;
+      setElapsed(elapsedRef.current);
+      if(elapsedRef.current>=MEDITATION_DURATION){
+        clearInterval(iv);
+        if(tmrRef.current)clearTimeout(tmrRef.current);
+        onEnd();
+      }
+    },1000);
+    return()=>clearInterval(iv);
+  },[]);
   const handleEnd=()=>{if(tmrRef.current)clearTimeout(tmrRef.current);onEnd();};
   const phaseLabel={inspira:"· inspira ·",tieni:"· tieni ·",espira:"· espira ·",riposa:"· riposa ·"};
   const phaseAlpha={inspira:0.9,tieni:0.65,espira:0.55,riposa:0.3};
   return(
     <div style={{position:"fixed",inset:0,zIndex:500,background:"#050508",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
       {/* full-screen shader ball canvas */}
-      <ShaderBall/>
+      <ShaderBall color={med.ballColor}/>
       <div style={{position:"absolute",inset:0,pointerEvents:"none",zIndex:1}}>
         {[...Array(18)].map((_,i)=><div key={i} style={{position:"absolute",width:i%5===0?2:1,height:i%5===0?2:1,borderRadius:"50%",background:`rgba(255,255,255,${i%4===0?.10:.04})`,top:`${(i*41+7)%100}%`,left:`${(i*73+13)%100}%`,animation:`pulse ${1.5+(i*0.31)%2}s ${(i*0.19)%2}s ease-in-out infinite`}}/>)}
       </div>
@@ -1661,8 +1673,17 @@ function MeditationSession({med,onEnd}){
         </div>
       </div>
       {/* ephemeral text */}
-      <div style={{position:"absolute",bottom:"calc(env(safe-area-inset-bottom,0px) + 48px)",left:0,right:0,textAlign:"center",padding:"0 clamp(28px,7vw,56px)",opacity:textVis?1:0,transition:`opacity ${textVis?"1.3s":"1s"} ease`,pointerEvents:"none",zIndex:3}}>
+      <div style={{position:"absolute",bottom:"calc(env(safe-area-inset-bottom,0px) + 88px)",left:0,right:0,textAlign:"center",padding:"0 clamp(28px,7vw,56px)",opacity:textVis?1:0,transition:`opacity ${textVis?"1.3s":"1s"} ease`,pointerEvents:"none",zIndex:3}}>
         {med.texts[textIdx].split("\n").map((line,i)=><div key={i} style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(24px,6.2vw,34px)",fontWeight:500,fontStyle:"italic",color:"rgba(237,232,245,0.84)",lineHeight:1.5,textAlign:"center"}}>{line}</div>)}
+      </div>
+      {/* timer progress bar */}
+      <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"0 28px calc(env(safe-area-inset-bottom,0px) + 18px)",zIndex:3,display:"flex",flexDirection:"column",alignItems:"center",gap:7}}>
+        <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",letterSpacing:".14em",color:"rgba(237,232,245,0.36)",textTransform:"uppercase"}}>
+          {Math.floor((MEDITATION_DURATION-elapsed)/60)}:{String((MEDITATION_DURATION-elapsed)%60).padStart(2,'0')}
+        </div>
+        <div style={{width:"100%",height:2,borderRadius:2,background:"rgba(237,232,245,0.10)"}}>
+          <div style={{height:"100%",width:`${(elapsed/MEDITATION_DURATION)*100}%`,borderRadius:2,background:"linear-gradient(to right,rgba(237,232,245,0.28),rgba(237,232,245,0.60))",transition:"width 1s linear"}}/>
+        </div>
       </div>
     </div>
   );
