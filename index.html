@@ -2462,17 +2462,6 @@ function BioChart({birthday,dateStr,t}){
 
 // ── DAILY HOROSCOPE ──
 function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
-  // Apple Premium override
-  const localT={
-    bg:"#f2f2f7",
-    text:"#000000",
-    card:"#ffffff",
-    border:"rgba(60,60,67,0.12)",
-    muted:"rgba(60,60,67,0.55)",
-    surface:"#f2f2f7",
-    accent:t.accent,
-    cardRgb:"255,255,255"
-  };
   const sunKey=getSunSignKey(profile.birthday);
   const moonKey=getMoonSignKey(profile.birthday);
   const ascKey=getAscendantKey(profile.birthday,profile.birthtime,profile.birthplace);
@@ -2491,164 +2480,190 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
   const CATS=[
     {key:"amore",label:"Amore",icon:"♥",col:"#c07878"},
     {key:"lavoro",label:"Lavoro",icon:"✦",col:t.accent},
-    {key:"salute",label:"Salute",icon:"◎",col:"#78c090"},
+    {key:"salute",label:"Salute",icon:"◎",col:"#78c890"},
     {key:"soldi",label:"Soldi",icon:"◈",col:"#c8a84a"},
   ];
   const trinity=[{sg:sunSg,label:"Solare",icon:"☀"},{sg:moonSg,label:"Lunare",icon:"☽"},...(ascSg?[{sg:ascSg,label:"Ascendente",icon:"↑"}]:[])];
+
+  // glass card style helper
+  const glassCard={
+    background:"rgba(255,255,255,0.042)",
+    border:"1px solid rgba(255,255,255,0.10)",
+    boxShadow:"inset 0 1px 0 rgba(255,255,255,0.12),0 8px 32px rgba(0,0,0,0.48)",
+    borderRadius:18,
+    position:"relative",
+    overflow:"hidden",
+  };
+  const sectionLabel={
+    fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,
+    letterSpacing:".42em",color:"rgba(237,232,245,0.30)",
+    textTransform:"uppercase",marginBottom:18,display:"block",
+  };
+
   return(
-    <div style={{minHeight:"100vh",background:"#f2f2f7",color:"#000000",overflowY:"auto"}}>
-      {/* ── HERO (full screen, tutto dentro) ── */}
+    <div style={{minHeight:"100vh",background:"#07040f",color:"rgba(237,232,245,0.92)",overflowY:"auto"}}>
+      {/* ambient glow */}
+      <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0,background:`radial-gradient(ellipse 80% 60% at 50% 0%,rgba(${sunSg.rgb},0.11) 0%,transparent 68%)`}}/>
+
+      {/* HERO */}
       <div style={{position:"relative",minHeight:"100dvh",display:"flex",flexDirection:"column",justifyContent:"flex-end",overflow:"hidden"}}>
-        {sunSg.img&&<img src={sunSg.img} loading="eager" decoding="async" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",filter:"brightness(0.48) saturate(1.1)"}}/>}
-        <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(0,0,0,0.62) 0%,rgba(0,0,0,0.05) 28%,rgba(0,0,0,0.70) 58%,rgba(0,0,0,0.98) 100%)"}}/>
-        <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 70% 50% at 50% 60%,rgba(${sunSg.rgb},0.16) 0%,transparent 70%)`,pointerEvents:"none"}}/>
-        <StarField color={sunSg.starColor} count={36} opacity={0.5}/>
+        {sunSg.img&&<img src={sunSg.img} loading="eager" decoding="async" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",filter:"brightness(0.32) saturate(1.2)"}}/>}
+        <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(7,4,15,0.55) 0%,rgba(7,4,15,0.1) 30%,rgba(7,4,15,0.72) 60%,rgba(7,4,15,1) 100%)"}}/>
+        <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 70% 55% at 50% 65%,rgba(${sunSg.rgb},0.18) 0%,transparent 72%)`,pointerEvents:"none"}}/>
+        <StarField color={sunSg.starColor} count={44} opacity={0.55}/>
 
         {/* nav */}
-        <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 14px)",left:14,zIndex:10,color:"rgba(255,255,255,0.45)",fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:400,letterSpacing:".14em",padding:"12px 14px"}}>← indietro</button>
-        <button onClick={onEdit} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 14px)",right:14,zIndex:10,fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,letterSpacing:".22em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}50`,padding:"9px 16px",background:"rgba(0,0,0,0.4)",backdropFilter:"blur(10px)"}}>modifica</button>
+        <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 14px)",left:14,zIndex:10,color:"rgba(237,232,245,0.38)",fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:400,letterSpacing:".14em",padding:"12px 14px",background:"none",border:"none",cursor:"pointer"}}>← indietro</button>
+        <button onClick={onEdit} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 14px)",right:14,zIndex:10,fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,letterSpacing:".22em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}44`,padding:"9px 16px",background:"rgba(7,4,15,0.45)",backdropFilter:"blur(12px)",borderRadius:3,cursor:"pointer"}}>modifica</button>
 
-        {/* contenuto hero */}
-        <div className="fade-in-up" style={{position:"relative",zIndex:2,padding:"0 clamp(22px,6vw,44px) clamp(32px,6vw,48px)"}}>
+        {/* hero content */}
+        <div className="fade-in-up" style={{position:"relative",zIndex:2,padding:"0 clamp(22px,6vw,44px) clamp(36px,7vw,54px)"}}>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"10px",fontWeight:400,letterSpacing:".36em",color:"rgba(237,232,245,0.35)",textTransform:"uppercase",marginBottom:12}}>{dateIt}</div>
 
-          {/* data + titolo principale */}
-          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(10px,2.4vw,12px)",fontWeight:400,letterSpacing:".28em",color:"rgba(255,255,255,0.42)",textTransform:"uppercase",marginBottom:10}}>{dateIt}</div>
-          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(26px,6.5vw,38px)",fontWeight:700,color:"rgba(255,255,255,0.97)",letterSpacing:"-.01em",lineHeight:1.05,marginBottom:6}}>Oroscopo del Giorno</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(38px,10vw,58px)",fontWeight:400,color:"rgba(237,232,245,0.96)",lineHeight:1.0,letterSpacing:"-.01em",marginBottom:8}}>Oroscopo<br/>del Giorno</div>
 
-          {/* saluto */}
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,5vw,26px)",fontWeight:300,fontStyle:"italic",color:"rgba(255,255,255,0.62)",lineHeight:1.2,marginBottom:22}}>{greeting}, {profile.name}</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4.5vw,24px)",fontWeight:300,fontStyle:"italic",color:"rgba(237,232,245,0.48)",lineHeight:1.3,marginBottom:28}}>{greeting}, {profile.name}</div>
 
-          {/* badge segno */}
-          <div style={{display:"inline-flex",alignItems:"center",gap:12,padding:"10px 18px",border:`1px solid rgba(${sunSg.rgb},0.5)`,background:`rgba(${sunSg.rgb},0.15)`,backdropFilter:"blur(16px)",borderRadius:3,marginBottom:26}}>
-            <span style={{fontFamily:"'Inter',sans-serif",fontSize:"12px",fontWeight:600,letterSpacing:".2em",color:"rgba(255,255,255,0.88)",textTransform:"uppercase"}}>{sunSg.name}</span>
+          {/* sign badge */}
+          <div style={{display:"inline-flex",alignItems:"center",gap:10,padding:"10px 20px",border:`1px solid rgba(${sunSg.rgb},0.42)`,background:`rgba(${sunSg.rgb},0.10)`,backdropFilter:"blur(16px)",borderRadius:2,marginBottom:28}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4vw,20px)",color:`rgba(${sunSg.rgb},0.95)`,lineHeight:1}}>{sunSg.symbol}</span>
+            <span style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:600,letterSpacing:".24em",color:"rgba(237,232,245,0.82)",textTransform:"uppercase"}}>{sunSg.name}</span>
           </div>
 
-          {/* ── TRINITÀ ── */}
-          <div style={{marginBottom:22}}>
-            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,letterSpacing:".38em",color:"rgba(255,255,255,0.32)",textTransform:"uppercase",marginBottom:10}}>Trinità celeste</div>
+          {/* trinità */}
+          <div style={{marginBottom:26}}>
+            <span style={sectionLabel}>Trinità celeste</span>
             <div style={{display:"flex",gap:8}}>
               {trinity.map(({sg:s,label,icon})=>(
-                <div key={s.key} style={{flex:1,padding:"13px 8px 12px",background:"rgba(0,0,0,0.32)",border:"1px solid rgba(255,255,255,0.18)",backdropFilter:"blur(20px) saturate(1.5)",WebkitBackdropFilter:"blur(20px) saturate(1.5)",boxShadow:`inset 0 1.5px 0 rgba(255,255,255,0.42),inset 0 -1px 0 rgba(255,255,255,0.06),0 4px 16px rgba(0,0,0,0.35),0 0 0 0.5px rgba(${s.rgb},0.20)`,textAlign:"center",borderRadius:6,minWidth:0,overflow:"hidden",position:"relative"}}>
+                <div key={s.key} style={{flex:1,padding:"14px 8px 12px",...glassCard,textAlign:"center"}}>
                   <GlassOverlay/>
-                  <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(11px,3vw,13px)",fontWeight:600,color:"rgba(255,255,255,0.86)",marginBottom:4,letterSpacing:".01em"}}>{s.name}</div>
-                  <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:400,letterSpacing:".18em",color:"rgba(255,255,255,0.38)",textTransform:"uppercase"}}>{icon} {label}</div>
+                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(22px,6vw,28px)",color:`rgba(${s.rgb},0.85)`,lineHeight:1,marginBottom:6}}>{s.symbol}</div>
+                  <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(10px,2.8vw,12px)",fontWeight:600,color:"rgba(237,232,245,0.80)",marginBottom:3,letterSpacing:".01em"}}>{s.name}</div>
+                  <div style={{fontFamily:"'Inter',sans-serif",fontSize:"7px",fontWeight:400,letterSpacing:".18em",color:"rgba(237,232,245,0.32)",textTransform:"uppercase"}}>{icon} {label}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* ── CTA ── */}
-          <button onClick={onProfile} style={{width:"100%",padding:"16px",border:`1px solid ${t.accent}60`,background:`rgba(${sunSg.rgb},0.08)`,backdropFilter:"blur(10px)",color:t.accent,fontFamily:"'Inter',sans-serif",fontSize:"12px",fontWeight:500,letterSpacing:".28em",textTransform:"uppercase",borderRadius:2}}>Maggiori dettagli</button>
-          <div style={{marginTop:9,fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:400,letterSpacing:".24em",color:"rgba(255,255,255,0.22)",textTransform:"uppercase",textAlign:"center"}}>carta natale archetipica</div>
+          <button onClick={onProfile} style={{width:"100%",padding:"15px",border:`1px solid rgba(${sunSg.rgb},0.38)`,background:`rgba(${sunSg.rgb},0.07)`,backdropFilter:"blur(10px)",color:`rgba(${sunSg.rgb},0.90)`,fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".28em",textTransform:"uppercase",borderRadius:2,cursor:"pointer"}}>Carta Natale Archetipica</button>
         </div>
       </div>
 
-      {/* bridge + scroll hint */}
-      <div style={{height:40,background:`linear-gradient(to bottom,rgba(0,0,0,0.98),#f2f2f7)`}}/>
-      <div style={{textAlign:"center",padding:"6px 0 28px"}}>
-        <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".04em",color:"rgba(60,60,67,0.45)",textTransform:"uppercase",marginBottom:6}}>Il tuo oroscopo di oggi</div>
-        <div style={{color:"rgba(60,60,67,0.3)",fontSize:"13px"}}>↓</div>
-      </div>
+      {/* scroll fade bridge */}
+      <div style={{height:56,background:"linear-gradient(to bottom,rgba(7,4,15,1),transparent)",marginTop:-56,position:"relative",zIndex:1,pointerEvents:"none"}}/>
 
-      {/* ── 4 CATEGORIE ── */}
-      <div style={{maxWidth:640,margin:"0 auto",padding:"0 16px"}}>
-        {CATS.map(cat=>{
+      {/* CONTENT */}
+      <div style={{position:"relative",zIndex:1,maxWidth:640,margin:"0 auto",padding:"8px 16px"}}>
+
+        {/* section: oroscopo */}
+        <div style={{padding:"10px 4px 16px"}}>
+          <span style={sectionLabel}>Il tuo oroscopo di oggi</span>
+        </div>
+
+        {/* 4 categorie */}
+        {CATS.map((cat,ci)=>{
           const d=horo[cat.key];
           return(
-            <div key={cat.key} style={{marginBottom:10,background:"#ffffff",borderRadius:16,boxShadow:"0 2px 8px rgba(0,0,0,0.07),0 0 0 0.5px rgba(0,0,0,0.04)",overflow:"hidden",transition:"transform .25s cubic-bezier(.16,1,.3,1)"}} onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"} onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}>
-              <div style={{padding:"18px 20px 20px"}}>
-                <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:14}}>
-                  <div style={{width:38,height:38,borderRadius:10,background:`${cat.col}18`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                    <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:cat.col,lineHeight:1}}>{cat.icon}</span>
+            <div key={cat.key} className="fade-in-up" style={{animationDelay:`${ci*0.08}s`,opacity:0,marginBottom:10,...glassCard}}>
+              <GlassOverlay/>
+              <div style={{padding:"20px 22px 22px"}}>
+                <div style={{display:"flex",alignItems:"center",gap:13,marginBottom:14}}>
+                  <div style={{width:40,height:40,borderRadius:12,background:`rgba(${cat.col.slice(1).match(/../g).map(x=>parseInt(x,16)).join(",")},0.12)`,border:`1px solid rgba(${cat.col.slice(1).match(/../g).map(x=>parseInt(x,16)).join(",")},0.22)`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                    <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:cat.col,lineHeight:1}}>{cat.icon}</span>
                   </div>
                   <div style={{flex:1}}>
-                    <div style={{fontFamily:"'Inter',sans-serif",fontSize:"13px",fontWeight:600,color:"#000",letterSpacing:"-.01em",marginBottom:5}}>{cat.label}</div>
-                    <div style={{display:"flex",gap:4}}>
+                    <div style={{fontFamily:"'Inter',sans-serif",fontSize:"12px",fontWeight:600,color:"rgba(237,232,245,0.88)",letterSpacing:".06em",textTransform:"uppercase",marginBottom:7}}>{cat.label}</div>
+                    <div style={{display:"flex",gap:5}}>
                       {[1,2,3,4,5].map(n=>(
-                        <div key={n} style={{width:6,height:6,borderRadius:"50%",background:n<=d.stars?cat.col:"rgba(60,60,67,0.1)"}}/>
+                        <div key={n} style={{width:6,height:6,borderRadius:"50%",background:n<=d.stars?cat.col:"rgba(237,232,245,0.10)"}}/>
                       ))}
                     </div>
                   </div>
                 </div>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4.4vw,20px)",fontWeight:400,color:"#000",lineHeight:1.85,letterSpacing:"-.005em"}}>{d.text}</div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4.5vw,21px)",fontWeight:400,color:"rgba(237,232,245,0.78)",lineHeight:1.9,letterSpacing:".005em"}}>{d.text}</div>
               </div>
             </div>
           );
         })}
-        {/* ── SECTION HEADER ── */}
-        <div style={{padding:"28px 4px 12px"}}>
-          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".06em",color:"rgba(60,60,67,0.45)",textTransform:"uppercase"}}>Cielo di oggi</div>
+
+        {/* section: cielo */}
+        <div style={{padding:"22px 4px 16px"}}>
+          <span style={sectionLabel}>Cielo di oggi</span>
         </div>
 
-        {/* ── PROSSIMO EVENTO ── */}
-        <div style={{marginBottom:10,background:"#ffffff",borderRadius:16,boxShadow:"0 2px 8px rgba(0,0,0,0.07),0 0 0 0.5px rgba(0,0,0,0.04)",overflow:"hidden"}}>
-          <div style={{padding:"18px 20px"}}>
+        {/* prossimo evento */}
+        <div style={{marginBottom:10,...glassCard}}>
+          <GlassOverlay/>
+          <div style={{padding:"20px 22px"}}>
             <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:14}}>
-              <div style={{width:48,height:48,borderRadius:12,background:`${nextEv.col}15`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",color:nextEv.col,lineHeight:1}}>{nextEv.icon}</span>
+              <div style={{width:50,height:50,borderRadius:14,background:`rgba(${nextEv.col.slice(1).match(/../g).map(x=>parseInt(x,16)).join(",")},0.10)`,border:`1px solid rgba(${nextEv.col.slice(1).match(/../g).map(x=>parseInt(x,16)).join(",")},0.20)`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"26px",color:nextEv.col,lineHeight:1}}>{nextEv.icon}</span>
               </div>
               <div style={{flex:1,minWidth:0}}>
-                <div style={{fontFamily:"'Inter',sans-serif",fontSize:"13px",fontWeight:600,color:"#000",letterSpacing:"-.01em",marginBottom:2}}>{nextEv.n}</div>
-                <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(60,60,67,0.5)",letterSpacing:"-.005em"}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4.5vw,20px)",fontWeight:500,color:"rgba(237,232,245,0.90)",marginBottom:3}}>{nextEv.n}</div>
+                <div style={{fontFamily:"'Inter',sans-serif",fontSize:"10px",color:"rgba(237,232,245,0.32)",letterSpacing:".04em"}}>
                   {new Date(nextEv.d+"T12:00:00").toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long"})}
                 </div>
               </div>
-              <div style={{padding:"6px 14px",background:`${nextEv.col}14`,borderRadius:20,flexShrink:0}}>
-                <div style={{fontFamily:"'Inter',sans-serif",fontSize:"12px",fontWeight:600,color:nextEv.col}}>
+              <div style={{padding:"7px 14px",background:`rgba(${nextEv.col.slice(1).match(/../g).map(x=>parseInt(x,16)).join(",")},0.12)`,border:`1px solid rgba(${nextEv.col.slice(1).match(/../g).map(x=>parseInt(x,16)).join(",")},0.22)`,borderRadius:20,flexShrink:0}}>
+                <span style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:600,color:nextEv.col}}>
                   {nextEv.daysAway===0?"oggi":nextEv.daysAway===1?"domani":`${nextEv.daysAway}g`}
-                </div>
+                </span>
               </div>
             </div>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,18px)",fontStyle:"italic",color:"rgba(60,60,67,0.65)",lineHeight:1.72}}>{nextEv.desc}</div>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,18px)",fontStyle:"italic",color:"rgba(237,232,245,0.50)",lineHeight:1.75}}>{nextEv.desc}</div>
           </div>
         </div>
 
-        {/* ── FASE LUNARE ── */}
-        <div style={{marginBottom:10,background:"#ffffff",borderRadius:16,boxShadow:"0 2px 8px rgba(0,0,0,0.07),0 0 0 0.5px rgba(0,0,0,0.04)",overflow:"hidden"}}>
-          <div style={{padding:"18px 20px"}}>
-            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".06em",color:"rgba(60,60,67,0.45)",textTransform:"uppercase",marginBottom:14}}>Fase Lunare</div>
-            <div style={{display:"flex",gap:16,alignItems:"center"}}>
+        {/* fase lunare */}
+        <div style={{marginBottom:10,...glassCard}}>
+          <GlassOverlay/>
+          <div style={{padding:"20px 22px"}}>
+            <span style={sectionLabel}>Fase Lunare</span>
+            <div style={{display:"flex",gap:18,alignItems:"center"}}>
               <div style={{flexShrink:0}}><MoonSVG pd={lunar.pd}/></div>
               <div style={{flex:1,minWidth:0}}>
-                <div style={{fontFamily:"'Inter',sans-serif",fontSize:"16px",fontWeight:600,color:"#000",marginBottom:6,letterSpacing:"-.01em"}}>{lunar.name}</div>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(14px,3.8vw,17px)",fontStyle:"italic",color:"rgba(60,60,67,0.6)",lineHeight:1.68,marginBottom:12}}>{lunar.desc}</div>
-                <div style={{display:"inline-flex",alignItems:"center",gap:6,padding:"6px 14px",background:`${t.accent}12`,borderRadius:20}}>
-                  <span style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,color:t.accent}}>{lunar.nextEvent.type} tra {lunar.nextEvent.days}g</span>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4.5vw,21px)",fontWeight:500,color:"rgba(237,232,245,0.90)",marginBottom:6}}>{lunar.name}</div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(14px,3.8vw,17px)",fontStyle:"italic",color:"rgba(237,232,245,0.45)",lineHeight:1.70,marginBottom:12}}>{lunar.desc}</div>
+                <div style={{display:"inline-flex",alignItems:"center",gap:6,padding:"6px 14px",background:`${t.accent}14`,border:`1px solid ${t.accent}28`,borderRadius:20}}>
+                  <span style={{fontFamily:"'Inter',sans-serif",fontSize:"10px",fontWeight:500,color:t.accent}}>{lunar.nextEvent.type} tra {lunar.nextEvent.days}g</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* ── BIORITMOGRAMMA ── */}
-        <div style={{marginBottom:10,background:"#ffffff",borderRadius:16,boxShadow:"0 2px 8px rgba(0,0,0,0.07),0 0 0 0.5px rgba(0,0,0,0.04)",overflow:"hidden"}}>
-          <div style={{padding:"18px 20px"}}>
-            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".06em",color:"rgba(60,60,67,0.45)",textTransform:"uppercase",marginBottom:14}}>Bioritmi Settimanali</div>
-            <div style={{marginBottom:14}}><BioChart birthday={profile.birthday} dateStr={dateStr} t={localT}/></div>
+        {/* bioritmi */}
+        <div style={{marginBottom:10,...glassCard}}>
+          <GlassOverlay/>
+          <div style={{padding:"20px 22px"}}>
+            <span style={sectionLabel}>Bioritmi Settimanali</span>
+            <div style={{marginBottom:14}}><BioChart birthday={profile.birthday} dateStr={dateStr} t={t}/></div>
             <div style={{display:"flex",flexWrap:"wrap",gap:"8px 18px"}}>
               {[["Fisico","#e07060","23g"],["Emotivo","#b060a8","28g"],["Intellettuale","#5890d8","33g"],["Sociale","#48b870","26g"]].map(([l,c,p])=>(
                 <div key={l} style={{display:"flex",alignItems:"center",gap:7}}>
-                  <div style={{width:12,height:3,background:c,borderRadius:2}}/>
-                  <span style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(60,60,67,0.65)"}}>{l}</span>
-                  <span style={{fontFamily:"'Inter',sans-serif",fontSize:"10px",color:"rgba(60,60,67,0.35)"}}>({p})</span>
+                  <div style={{width:14,height:3,background:c,borderRadius:2,opacity:0.85}}/>
+                  <span style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(237,232,245,0.52)"}}>{l}</span>
+                  <span style={{fontFamily:"'Inter',sans-serif",fontSize:"10px",color:"rgba(237,232,245,0.24)"}}>({p})</span>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* ── NUMERI FORTUNATI ── */}
-        <div style={{marginBottom:24,background:"#ffffff",borderRadius:16,boxShadow:"0 2px 8px rgba(0,0,0,0.07),0 0 0 0.5px rgba(0,0,0,0.04)",overflow:"hidden"}}>
-          <div style={{padding:"18px 20px 22px"}}>
-            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".06em",color:"rgba(60,60,67,0.45)",textTransform:"uppercase",marginBottom:18}}>Numeri della Settimana</div>
-            <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
+        {/* numeri fortunati */}
+        <div style={{marginBottom:24,...glassCard}}>
+          <GlassOverlay/>
+          <div style={{padding:"20px 22px 24px"}}>
+            <span style={sectionLabel}>Numeri della Settimana</span>
+            <div style={{display:"flex",gap:10,flexWrap:"wrap",justifyContent:"center"}}>
               {lucky.map((n,i)=>(
-                <div key={n} style={{width:56,height:56,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:"50%",background:i===0?t.accent:`rgba(60,60,67,${i===1?0.08:0.05})`,border:`1.5px solid ${i===0?t.accent:i===1?"rgba(60,60,67,0.15)":"rgba(60,60,67,0.08)"}`,boxShadow:i===0?`0 4px 16px ${t.accent}40`:"",transition:"all .2s cubic-bezier(.16,1,.3,1)"}} onMouseEnter={e=>{e.currentTarget.style.transform="scale(1.12)";e.currentTarget.style.boxShadow=i===0?`0 8px 24px ${t.accent}55,0 2px 8px ${t.accent}30`:"0 2px 8px rgba(0,0,0,0.1)"}} onMouseLeave={e=>{e.currentTarget.style.transform="scale(1)";e.currentTarget.style.boxShadow=i===0?`0 4px 16px ${t.accent}40`:""}}>
-                  <span style={{fontFamily:"'Inter',sans-serif",fontSize:i===0?"20px":i===1?"16px":"14px",fontWeight:i===0?700:i===1?600:500,color:i===0?"#ffffff":`rgba(60,60,67,${i===1?0.7:0.4})`,lineHeight:1}}>{n}</span>
+                <div key={n} style={{width:58,height:58,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:"50%",background:i===0?`rgba(${sunSg.rgb},0.22)`:"rgba(237,232,245,0.05)",border:`1px solid ${i===0?`rgba(${sunSg.rgb},0.55)`:"rgba(237,232,245,0.10)"}`,boxShadow:i===0?`0 0 20px rgba(${sunSg.rgb},0.25)`:""}} >
+                  <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:i===0?"22px":"18px",fontWeight:i===0?600:400,color:i===0?`rgba(${sunSg.rgb},0.98)`:"rgba(237,232,245,0.45)",lineHeight:1}}>{n}</span>
                 </div>
               ))}
             </div>
-            <div style={{marginTop:16,fontFamily:"'Cormorant Garamond',serif",fontSize:"13px",fontStyle:"italic",color:"rgba(60,60,67,0.4)",textAlign:"center"}}>Calcolati in base al tuo segno e al ciclo settimanale</div>
+            <div style={{marginTop:16,fontFamily:"'Cormorant Garamond',serif",fontSize:"13px",fontStyle:"italic",color:"rgba(237,232,245,0.25)",textAlign:"center"}}>Calcolati in base al tuo segno e al ciclo settimanale</div>
           </div>
         </div>
 
@@ -2657,7 +2672,6 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
     </div>
   );
 }
-
 function App(){
   const[view,setView]=useState("home");
   const[selected,setSelected]=useState(null);
