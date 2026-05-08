@@ -499,23 +499,21 @@ const SIGN_DATES={ariete:"21 mar – 19 apr",toro:"20 apr – 20 mag",gemelli:"2
 
 // ── SIGN FLIP CARD ──
 function SignFlipCard({sg,t,i,onSelect}){
-  const innerRef=useRef(null);
+  const floatRef=useRef(null);  // wrapper: only translateY — no layout reflow
+  const innerRef=useRef(null);  // preserve-3d: only rotateY
   const frontRef=useRef(null);
   const backRef=useRef(null);
   const rafRef=useRef(null);
-  // Single unified physics state — one rAF loop drives everything
   const phys=useRef({
-    angle:0, vel:0,         // current angle + angular velocity
-    targetAngle:0,          // where spring wants to go
-    mode:'idle',            // 'idle' | 'drag' | 'coast'
-    idleOscT:0,             // time origin for idle oscillation
-    idleSnapTarget:0,       // face to snap to (0 or 180)
-    idleStartAngle:0,       // angle at moment of snap start
+    angle:0, vel:0,
+    snapTarget:0,
+    mode:'idle',
     drag:{active:false,locked:false,sx:0,sy:0,sa:0,lx:0,rawVel:0,moved:0,lt:0},
   });
   const[cursor,setCursor]=useState("grab");
 
-  const commit=useCallback(a=>{
+  // Write angle to DOM — compositor only (transform), never causes layout
+  const applyAngle=useCallback(a=>{
     phys.current.angle=a;
     if(!innerRef.current)return;
     innerRef.current.style.transform=`rotateY(${a}deg)`;
@@ -525,56 +523,59 @@ function SignFlipCard({sg,t,i,onSelect}){
     if(backRef.current){backRef.current.style.opacity=onBack?1:0;}
   },[]);
 
-  // Snap to nearest face and begin idle oscillation
   const snapToFace=useCallback(()=>{
     const p=phys.current;
-    const a=p.angle;
-    const rounds=Math.floor(a/360);
-    const norm=a-rounds*360;
+    const norm=((p.angle%360)+360)%360;
     const snapBack=norm>90&&norm<=270;
-    p.idleSnapTarget=rounds*360+(snapBack?180:0);
-    p.idleStartAngle=a;
-    p.idleOscT=performance.now();
+    const rounds=Math.floor(p.angle/360);
+    p.snapTarget=rounds*360+(snapBack?180:0);
     p.mode='idle';
   },[]);
 
-  // Master rAF loop — runs forever
   useEffect(()=>{
-    const phase=i*1.17; // unique phase per card so they don't sync
-    const tick=()=>{
+    const ph=i*1.17; // unique phase — no two cards in sync
+    // Tuned spring constants
+    const KI=0.038, DI=0.90;  // idle: loose dreamy sway
+    const KD=0.20,  DD=0.74;  // drag: snappy follow
+    const KC=0.10,  DC=0.84;  // coast: spring to face
+
+    const tick=(now)=>{
       const p=phys.current;
+      const t=now*0.001;
+
       if(p.mode==='idle'){
-        const s=(performance.now()-p.idleOscT)*0.001+phase;
-        const settle=Math.exp(-((performance.now()-p.idleOscT)*0.001)*3.5);
-        // layered oscillation: primary Y-flip ±18° + secondary harmonic ±6°
-        const osc=Math.sin(s*0.65)*18*(1-Math.exp(-((performance.now()-p.idleOscT)*0.001)*0.9))
-                 +Math.sin(s*1.4+1.1)*6*(1-Math.exp(-((performance.now()-p.idleOscT)*0.001)*1.5));
-        const a=p.idleSnapTarget+(p.idleStartAngle-p.idleSnapTarget)*settle+osc;
-        commit(a);
-        // also float up/down on Y axis
-        const floatY=Math.sin(s*0.55)*8+Math.sin(s*0.93+0.7)*4;
-        if(innerRef.current) innerRef.current.style.marginTop=`${floatY}px`;
+        // target oscillates ±14° around snap face — never reaches 90° so no flicker
+        const osc=Math.sin(t*0.58+ph)*14+Math.sin(t*1.05+ph*0.8)*4;
+        const target=p.snapTarget+osc;
+        p.vel=(p.vel+(target-p.angle)*KI)*DI;
+        applyAngle(p.angle+p.vel);
+        // float: translateY on wrapper — compositor only, zero layout
+        if(floatRef.current){
+          const fy=Math.sin(t*0.48+ph)*8+Math.sin(t*0.83+ph*1.2)*3;
+          floatRef.current.style.transform=`translateY(${fy}px)`;
+        }
       } else if(p.mode==='drag'){
         const d=p.drag;
         if(d.active&&d.locked){
           const want=d.sa+(d.lx-d.sx)*2.4;
-          // spring follow: K=0.22 D=0.72 → snappy but organic
-          p.vel=(p.vel+(want-p.angle)*0.22)*0.72;
-          commit(p.angle+p.vel);
+          p.vel=(p.vel+(want-p.angle)*KD)*DD;
+          applyAngle(p.angle+p.vel);
         }
       } else if(p.mode==='coast'){
-        p.vel*=0.962;
-        if(Math.abs(p.vel)<0.12){snapToFace();} else {commit(p.angle+p.vel);}
+        // spring toward nearest face; re-evaluates every frame so flip works
+        const norm=((p.angle%360)+360)%360;
+        const snapBack=norm>90&&norm<=270;
+        const rounds=Math.floor(p.angle/360);
+        p.snapTarget=rounds*360+(snapBack?180:0);
+        p.vel=(p.vel+(p.snapTarget-p.angle)*KC)*DC;
+        applyAngle(p.angle+p.vel);
+        if(Math.abs(p.vel)<0.12&&Math.abs(p.angle-p.snapTarget)<0.8) snapToFace();
       }
       rafRef.current=requestAnimationFrame(tick);
     };
-    // stagger entry per card
-    const t0=setTimeout(()=>{
-      snapToFace();
-      rafRef.current=requestAnimationFrame(tick);
-    },i*70+600);
+    const t0=setTimeout(()=>{ rafRef.current=requestAnimationFrame(tick); }, i*80+350);
     return()=>{clearTimeout(t0);cancelAnimationFrame(rafRef.current);};
-  },[commit,snapToFace,i]);
+  },[applyAngle,snapToFace,i]);
 
   const onDown=useCallback(e=>{
     if(e.pointerType==="mouse"&&e.button!==0)return;
@@ -582,7 +583,7 @@ function SignFlipCard({sg,t,i,onSelect}){
     d.active=true;d.locked=false;
     d.sx=e.clientX;d.sy=e.clientY;d.sa=p.angle;
     d.lx=e.clientX;d.rawVel=0;d.moved=0;d.lt=performance.now();
-    p.mode='drag';
+    p.vel=0; p.mode='drag';
     setCursor("grabbing");
   },[]);
 
@@ -593,27 +594,23 @@ function SignFlipCard({sg,t,i,onSelect}){
     if(!d.locked){
       const adx=Math.abs(totalDx),ady=Math.abs(totalDy);
       if(adx<2&&ady<2)return;
-      if(ady>adx*1.4){d.active=false;setCursor("grab");snapToFace();return;}
+      if(ady>adx*1.5){d.active=false;setCursor("grab");snapToFace();return;}
       d.locked=true;
       try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}
     }
     const now=performance.now();
     const dt=Math.max(now-d.lt,4);
-    const dx=e.clientX-d.lx;
-    // track raw finger velocity for coast
-    d.rawVel=d.rawVel*0.6+(dx/dt)*0.4;
-    d.moved+=Math.abs(dx);
+    d.rawVel=d.rawVel*0.55+(e.clientX-d.lx)/dt*0.45;
+    d.moved+=Math.abs(e.clientX-d.lx);
     d.lx=e.clientX;d.lt=now;
   },[snapToFace]);
 
   const onUp=useCallback(()=>{
     const p=phys.current;const d=p.drag;
     if(!d.active)return;
-    d.active=false;
-    setCursor("grab");
+    d.active=false; setCursor("grab");
     if(d.moved<8){snapToFace();onSelect(sg);return;}
-    // pass raw finger velocity into physics for coast
-    p.vel=d.rawVel*14;
+    p.vel=d.rawVel*12;
     p.mode='coast';
   },[onSelect,sg,snapToFace]);
 
@@ -623,6 +620,7 @@ function SignFlipCard({sg,t,i,onSelect}){
 
   return(
     <div className="fade-in-up" style={{animationDelay:`${i*.06}s`,opacity:0}}>
+      <div ref={floatRef} style={{willChange:"transform"}}>
       <div
         style={{perspective:"1100px",perspectiveOrigin:"50% 40%",touchAction:"pan-y",userSelect:"none",WebkitUserSelect:"none",cursor}}
         onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onCancel}>
@@ -683,6 +681,7 @@ function SignFlipCard({sg,t,i,onSelect}){
           </div>
 
         </div>
+      </div>
       </div>
     </div>
   );
