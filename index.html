@@ -2632,44 +2632,175 @@ const NATAL_SECTIONS=[
    ]},
 ];
 
+function interpretDream(text){
+  const t=text.toLowerCase();
+  // Seed deterministico dal testo
+  let seed=0;for(let i=0;i<text.length;i++)seed=(seed*31+text.charCodeAt(i))>>>0;
+  const rnd=(arr)=>arr[seed%arr.length];
+  const rnd2=(arr)=>arr[(seed*7+13)%arr.length];
+  const rnd3=(arr)=>arr[(seed*17+29)%arr.length];
+
+  const SYM={
+    acqua:     /acqua|mare|oceano|fiume|lago|pioggia|alluvione|annegare|nuotare|onda|corrente|stagno/,
+    fuoco:     /fuoco|fiamma|bruciare|incendio|caldo|ardere|vampa|brace|cenere/,
+    volare:    /volare|volo|cielo|nuvola|planare|librarsi|alzarsi in volo|galleggiare in aria/,
+    cadere:    /cadere|precipitare|caduta|abisso|vuoto|sprofondare|precipizio/,
+    fuga:      /inseguire|scappare|fuggire|correre|minaccia|inseguito|braccato|nascondersi/,
+    casa:      /casa|stanza|porta|corridoio|appartamento|edificio|palazzo|soffitto|pavimento|cantina|soffitta/,
+    foresta:   /foresta|bosco|albero|natura|radice|ramo|foglie|wilderness|selva/,
+    animale:   /animale|serpente|lupo|orso|uccello|leone|tigre|cane|gatto|cavallo|aquila|cervo|volpe|corvo/,
+    morte:     /morte|morire|morto|cadavere|cimitero|funerale|sepoltura|fine|scomparsa/,
+    bambino:   /bambino|bambina|neonato|infanzia|piccolo|cucciolo|figlio|figlia/,
+    figure:    /persona|uomo|donna|vecchio|re|regina|guerriero|sacerdote|saggio|straniero|ombra umana/,
+    luce:      /luce|sole|splendere|brillare|chiarore|alba|illuminare|bagliore|riflesso/,
+    buio:      /buio|oscurità|tenebre|notte|nero|ombra|buco nero|vuoto scuro/,
+    labirinto: /labirinto|perdersi|perduto|strada|sentiero|vicolo|direzione|confusione/,
+    specchio:  /specchio|riflesso|immagine|doppio|copia|somiglianza|riconoscere/,
+    viaggio:   /viaggio|treno|aereo|partenza|arrivo|strada|cammino|meta|destinazione/,
+    trasform:  /trasformare|diventare|mutare|metamorfosi|cambiare forma|altro corpo/,
+  };
+
+  const FRAGS={
+    acqua:[
+      "L'acqua che attraversa questo sogno è l'immagine dell'Inconscio stesso — fluida, senza confini, piena di ciò che non riesci ancora a nominare. Qualcosa in te ha bisogno di scorrere, non di essere trattenuto. Jung diceva che l'acqua è l'elemento più onesto dell'anima: non mente, si adatta, e alla fine trova sempre la via.",
+      "Il sogno ti immerge nell'acqua — nel luogo dove i confini tra sé e il mondo si dissolvono. Questo è il territorio della Grande Madre, dell'origine, del ritorno. Non combattere la corrente. C'è qualcosa che vuole trascinarti verso una verità che la mente diurna evita.",
+      "L'acqua simboleggia ciò che è vivo e cambiante in te. Dove scorre nel sogno, scorre anche una trasformazione emotiva reale. Il tuo inconscio ti mostra che sei nel mezzo di qualcosa — non ancora sulla riva.",
+    ],
+    fuoco:[
+      "Il fuoco che arde nel sogno è il simbolo della purgazione alchemica. Qualcosa di vecchio — un'identità, un attaccamento, una storia che ti racconti — deve consumarsi. Non è distruzione: è il fuoco che precede la trasmutazione.",
+      "Il fuoco parla di passione repressa o energia vitale che non ha ancora trovato forma. L'inconscio brucia ciò che blocca il tuo cammino. Ciò che sopravvive alle fiamme è il tuo oro.",
+      "Dove c'è fuoco nel sogno, c'è urgenza nell'anima. Una decisione rimanda, un'emozione non espressa, un potere non rivendicato — l'inconscio accende il falò per richiamare la tua attenzione.",
+    ],
+    volare:[
+      "Volare è il gesto archetipico dell'anima che vuole trascendere i limiti dell'Io. Non è fuga — è il desiderio di vedere la tua vita dall'alto, di percepire il disegno più grande. Ma attenzione: ciò da cui ti alzi in volo ha ancora bisogno di essere guardato.",
+      "Il volo nel sogno rivela un'aspirazione profonda — la voglia di essere libero da qualcosa che ti appesantisce. L'aria che attraversi è fatta di possibilità. Chiedi a te stesso: cosa ti tiene ancora a terra nella vita sveglia?",
+      "Librarsi nell'aria è l'immagine dell'individuazione — il processo junghiano di diventare pienamente se stessi. L'inconscio ti mostra che sei capace di elevarti. La domanda è: sei pronto ad atterrare in un posto diverso da dove sei partito?",
+    ],
+    cadere:[
+      "La caduta è uno dei grandi sogni iniziatici. Non simboleggia sconfitta — simboleggia una discesa necessaria verso gli strati più profondi della psiche. Prima di salire, devi toccare il fondo. Quello che trovi lì è il tuo vero suolo.",
+      "Precipitare nel sogno rivela la paura di perdere il controllo — ma anche la necessità di lasciarlo andare. L'ego resiste; l'inconscio sa che certe cose si capiscono solo cadendo. Fidati della discesa.",
+      "Il vuoto sotto di te non è il nulla — è lo spazio in cui il vecchio sé si dissolve. Jung chiamava queste cadute oniriche 'nekyia': discese agli inferi da cui si torna trasformati. Stai scendendo in qualcosa di essenziale.",
+    ],
+    fuga:[
+      "Ciò che ti insegue non è un nemico esterno. È una parte di te — la tua Ombra, tutto ciò che hai rifiutato, represso, condannato in te stesso. L'Ombra insegue finché non la si volta ad affrontare. Cosa si nasconde nel volto di chi ti segue?",
+      "La fuga nel sogno parla di qualcosa che nella vita sveglia continui a rimandare. L'inconscio non dimentica. Non puoi correre per sempre — a un certo punto dovrai fermarti e chiedere a ciò che ti insegue: cosa vuoi da me?",
+      "Essere braccato nel sogno è il segnale che l'energia repressa ha raggiunto una soglia critica. Non si scappa dall'Ombra — si dialoga con essa. Chiedi a te stesso: cosa temo di trovare se mi fermo?",
+    ],
+    casa:[
+      "La casa nel sogno sei tu. Ogni stanza è un aspetto della tua psiche: alcune illuminate e abitate, altre chiuse a chiave da tempo. Le fondamenta sono la tua infanzia; le stanze in alto, le tue aspirazioni. Cosa hai trovato — o evitato — nei corridoi?",
+      "L'edificio che appare è la mappa della tua struttura interiore. Stanze sconosciute rivelano potenziali inesplorati; stanze in rovina, ferite che aspettano di essere guardate. La casa dell'anima ha sempre qualcosa da mostrarti.",
+      "Ogni porta nel sogno è una soglia della coscienza. Cosa c'è dietro quelle che non hai aperto? L'inconscio ti invita a esplorare le aree della tua psiche che di giorno lasci nell'ombra.",
+    ],
+    foresta:[
+      "La foresta è il regno dell'istinto primordiale — il territorio dell'inconscio prima che la cultura lo civilizzi. Ti sei addentrato in qualcosa di selvaggio e antico. Non è pericoloso: è tuo. Ascolta cosa si muove tra gli alberi.",
+      "Perdersi nel bosco è un rito di passaggio archetipico. Nelle fiabe, chi entra nella foresta deve affrontare se stesso. Non sei perduto — sei nel mezzo del processo di ritrovarti, al di là dei sentieri familiari.",
+      "La foresta nel sogno parla di radici — letteralmente e simbolicamente. C'è qualcosa di selvatico in te che vuole essere riconosciuto. Non devi addomesticarlo. Devi imparare a conviverci.",
+    ],
+    animale:[
+      "L'animale che appare nel sogno è un messaggero dell'istinto puro. Non razionalizzarlo — sentilo. Porta con sé un'energia che la mente cosciente ha addomesticato o dimenticato. Quale parte di te è quell'animale?",
+      "Gli animali onici incarnano le forze vitali che la civilizzazione reprime. La sua presenza rivela un'energia che vuole essere integrata, non negata. Cosa rappresenta nella tua vita quell'animale — forza, paura, libertà, istinto?",
+      "L'incontro con un animale nel sogno è sempre significativo. È un emissario del Sé profondo. Osserva il suo comportamento: ti attacca, ti guida, ti guarda? Il suo atteggiamento rivela come stai trattando quella parte di te.",
+    ],
+    morte:[
+      "La morte che appare nel sogno non è mai letterale — è il simbolo della metamorfosi. Qualcosa di vecchio si conclude perché qualcosa di nuovo vuole nascere. Il tuo inconscio ti prepara a un passaggio. Lascia andare senza resistere.",
+      "Incontrare la morte nell'onirico è un'iniziazione. Jung la chiamava il Grande Rinnovamento. Ciò che muore nel sogno non è la tua vita — è una parte di te che non serve più il tuo cammino. È una benedizione travestita da paura.",
+      "La morte nel sogno parla di fine cicli. Qualcosa ha fatto il suo tempo — un'identità, un ruolo, una relazione con la tua stessa storia. Il sogno ti dice che sei pronto a compiere il passaggio, anche se l'ego ancora resiste.",
+    ],
+    bambino:[
+      "Il bambino che appare è l'archetipo del Puer — l'anima giovane, il potenziale non ancora espresso, l'origine. Rappresenta ciò in te che è ancora vivo, curioso, non ancora irrigidito. Prenditi cura di lui.",
+      "L'immagine del bambino nel sogno parla di qualcosa di vulnerabile che ha bisogno di protezione — forse una parte di te che è stata ferita o trascurata. L'inconscio ti chiede di tornare a quella radice.",
+      "Il bambino onico è sempre un messaggio sull'inizio: di un progetto, di una trasformazione, di un modo di essere più autentico. Non ignorarlo. È la parte più vera di te che bussa.",
+    ],
+    figure:[
+      "Le figure che appaiono nel sogno non sono persone reali — sono proiezioni di aspetti della tua psiche. Chi ammiri in loro porta qualcosa che non riconosci ancora in te stesso. Chi temi rispecchia la tua Ombra.",
+      "Ogni personaggio onico parla a tuo nome. Sono tutti frammenti di te — alcuni che conosci, altri che hai esiliato. Il dialogo tra loro è il dialogo che la tua coscienza non riesce ancora a tenere da sveglio.",
+      "Le figure del sogno sono emissari dell'inconscio collettivo — archetipi che attraversano i secoli e parlano attraverso la tua notte. Ascolta cosa ti dicono, anche in silenzio. Soprattutto in silenzio.",
+    ],
+    luce:[
+      "La luce nel sogno è la coscienza che si espande — un frammento del Sé che bussa alla porta dell'Io. Dove la luce illumina, qualcosa si sta chiarendo in te. Accoglila senza paura di ciò che rivela.",
+      "La luce che appare è sempre un simbolo di comprensione imminente. Qualcosa che era nell'ombra sta per diventare visibile. Il tuo inconscio ti dice che sei pronto a vedere ciò che hai evitato.",
+      "Ogni fonte di luce nel sogno indica un centro di energia psichica attiva. Vai verso di essa. Anche se abbaglia. Soprattutto se abbaglia.",
+    ],
+    buio:[
+      "L'oscurità del sogno non è il vuoto — è piena. È il contenitore di tutto ciò che non hai ancora il coraggio di essere. L'Ombra junghiana non è il tuo nemico: è la tua incompletezza che chiede di essere integrata.",
+      "Il buio che avvolge questo sogno è l'inconscio nella sua forma più primordiale. Non è minaccioso — è potente. C'è qualcosa nell'oscurità che aspetta di essere nominato da te.",
+      "Le tenebre oniriche parlano di ciò che non è ancora venuto alla luce. Non fuggire dal buio — siediti in esso. Gli occhi dell'anima vedono meglio nell'oscurità di quanto si creda.",
+    ],
+    labirinto:[
+      "Il labirinto è la psiche stessa — complessa, circolare, piena di vicoli ciechi. Non esiste uscita che non passi per il centro. E al centro c'è sempre qualcosa di essenziale che l'ego evita. Cosa c'è al cuore del tuo labirinto?",
+      "Perdersi nel labirinto rivela che il problema che stai affrontando non ha soluzione lineare. Devi smettere di cercare l'uscita e iniziare ad abitare il percorso. Il labirinto non si conquista — si comprende.",
+      "Il labirinto onico è un'iniziazione alla complessità dell'esistere. Non sei perduto — sei nel mezzo. E il mezzo è esattamente dove deve trovarsi chi sta davvero crescendo.",
+    ],
+    specchio:[
+      "Lo specchio nel sogno è l'immagine dell'incontro con l'Ombra — la parte di te che non vuoi guardare. Ciò che vedi riflesso non è come sei, ma come temi di essere, o come sei davvero al di là della maschera.",
+      "Il riflesso che appare parla del tuo Doppio — l'alter ego della psiche, il lato nascosto che coesiste con quello visibile. Jung sapeva che incontrare il proprio riflesso nel sogno è uno degli atti più profondi di autoconoscenza.",
+      "Lo specchio onico rivela ciò che non riesci a vedere direttamente. L'immagine riflessa contiene una verità che il tuo ego diurno preferisce non affrontare. Guarda senza filtri.",
+    ],
+    viaggio:[
+      "Il viaggio nel sogno è il simbolo del processo di individuazione — il cammino verso se stessi. Non è la destinazione che conta, ma ciò che incontri lungo la strada. Ogni compagno, ogni ostacolo, ogni deviazione è parte del tuo percorso interiore.",
+      "Partire nel sogno significa che qualcosa in te è pronto per una trasformazione. L'inconscio ti mette in moto. Non sapere la meta non è un difetto del sogno — è il punto. Il viaggio interiore si rivela mentre si cammina.",
+      "Il mezzo di trasporto onico rivela come ti muovi nella vita: veloce o lento, controllato o abbandonato al flusso. Il viaggio che sogni è il viaggio che stai compiendo dentro di te.",
+    ],
+    trasform:[
+      "La metamorfosi al centro di questo sogno rivela che sei in un momento di transizione profonda. L'Io che conoscevi non sarà più lo stesso — e l'inconscio lo sa prima che tu lo ammetta. Lascia che accada.",
+      "Trasformarsi nel sogno è il segnale che il processo di individuazione è in moto. Stai diventando chi sei sempre stato, sotto gli strati di ruoli e maschere. La trasformazione fa paura solo finché resisti.",
+      "La metamorfosi onirica parla di un cambiamento già in corso — nella tua psiche, prima ancora che nella tua vita. L'inconscio anticipa sempre la realtà. Ascoltalo.",
+    ],
+  };
+
+  const CLOSINGS=[
+    "Porta questo sogno con te oggi. Non come un enigma da risolvere, ma come un seme. Il suo significato si aprirà vivendo.",
+    "Jung scrisse: «Chi guarda fuori sogna; chi guarda dentro si sveglia.» Questo sogno ti ha già detto qualcosa di essenziale. Ascoltalo.",
+    "L'inconscio non sbaglia mai la scelta delle immagini. Ciò che hai sognato stanotte è esattamente ciò di cui la tua anima aveva bisogno.",
+    "Tieni questo sogno come si tiene una candela: con cura, senza stringere troppo. La sua luce si rivelerà nel tempo.",
+    "Non cercare di spiegare questo sogno — lascia che ti abiti. Le immagini dell'inconscio parlano alla pelle prima ancora che alla mente.",
+    "Il sogno non mente mai. Parla soltanto una lingua che dobbiamo imparare a decifrare, un frammento alla volta.",
+  ];
+
+  const DEFAULT=[
+    "Questo sogno porta la firma dell'inconscio profondo. Non tutto può essere tradotto in parole, ma qualcosa in te sa già cosa significa. Siediti con queste immagini. Non cercare di dominarle — lascia che ti parlino.",
+    "L'inconscio ha scelto queste immagini per te stanotte con precisione assoluta. Anche ciò che sembra casuale o confuso ha una logica — la logica del simbolo, più antica del linguaggio. Chiedi a te stesso: quale sensazione corporea porta questo sogno?",
+    "Il sogno che hai vissuto appartiene a quel territorio in cui l'anima parla senza censura. Non c'è interpretazione unica — c'è solo la tua, quella che risuona nel petto prima che la mente intervenga a spiegarla.",
+  ];
+
+  const found=Object.entries(SYM).filter(([k,r])=>r.test(t)).map(([k])=>k);
+  const parts=[];
+  if(found.length===0){
+    parts.push(rnd(DEFAULT));
+  }else{
+    const sym1=rnd(found);
+    parts.push(rnd(FRAGS[sym1]));
+    if(found.length>1){
+      const others=found.filter(k=>k!==sym1);
+      const sym2=rnd2(others);
+      // Aggiunge solo frase-ponte per il secondo simbolo, non l'intero testo
+      const f2=FRAGS[sym2];
+      const bridge=rnd3(f2).split('. ')[0]+'.';
+      parts.push(bridge);
+    }
+  }
+  parts.push(rnd2(CLOSINGS));
+  return parts.join('\n\n');
+}
+
 function SogniView({t,profile,onBack}){
   const [step,setStep]=useState('write');
   const [dreamText,setDreamText]=useState('');
   const [interpretation,setInterpretation]=useState('');
-  const [apiKey,setApiKey]=useState(()=>{try{return localStorage.getItem('arcana_openai_key')||'';}catch(e){return '';}});
-  const [showKeySetup,setShowKeySetup]=useState(false);
-  const [keyInput,setKeyInput]=useState('');
   const [history,setHistory]=useState(()=>{try{const s=localStorage.getItem('arcana_sogni');return s?JSON.parse(s):[];}catch(e){return [];}});
   const [expandedId,setExpandedId]=useState(null);
 
-  const SYSTEM_PROMPT="Sei uno psicoanalista junghiano esperto dell'inconscio collettivo e degli archetipi. L'utente ti descriverà un sogno. Non fare previsioni del futuro e non dare consigli medici. Decodifica i simboli archetipici, individua quale aspetto dell'Ombra o quale archetipo sta cercando di emergere, e scrivi un'interpretazione poetica, diretta e profonda di massimo 150 parole. Parla in seconda persona all'utente, come se leggessi la sua anima. Scrivi in italiano.";
-
-  const saveKey=useCallback(()=>{
-    if(!keyInput.trim())return;
-    const k=keyInput.trim();
-    try{localStorage.setItem('arcana_openai_key',k);}catch(e){}
-    setApiKey(k);setShowKeySetup(false);setKeyInput('');
-  },[keyInput]);
-
-  const interrogate=useCallback(async()=>{
+  const interrogate=useCallback(()=>{
     if(!dreamText.trim())return;
-    if(!apiKey){setShowKeySetup(true);return;}
     setStep('loading');
-    try{
-      const resp=await fetch('https://api.openai.com/v1/chat/completions',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
-        body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'system',content:SYSTEM_PROMPT},{role:'user',content:dreamText.trim()}],max_tokens:320,temperature:0.82})
-      });
-      if(!resp.ok){const err=await resp.json();throw new Error(err.error?.message||'Errore API');}
-      const data=await resp.json();
-      const interp=data.choices[0].message.content.trim();
+    setTimeout(()=>{
+      const interp=interpretDream(dreamText.trim());
       setInterpretation(interp);
       const entry={id:Date.now().toString(),date:new Date().toISOString().slice(0,10),dateIt:new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}),dream:dreamText.trim(),interpretation:interp};
       setHistory(prev=>{const updated=[entry,...prev];try{localStorage.setItem('arcana_sogni',JSON.stringify(updated));}catch(e){}return updated;});
       setStep('result');
-    }catch(e){setInterpretation(`Errore: ${e.message}`);setStep('result');}
-  },[dreamText,apiKey]);
+    },2200);
+  },[dreamText]);
 
   const reset=useCallback(()=>{setDreamText('');setInterpretation('');setStep('write');},[]);
 
@@ -2685,9 +2816,8 @@ function SogniView({t,profile,onBack}){
       <div style={{position:'relative',zIndex:1,maxWidth:640,margin:'0 auto',padding:'0 16px'}}>
 
         {/* NAV */}
-        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'calc(env(safe-area-inset-top,0px) + 14px) 4px 0'}}>
+        <div style={{display:'flex',alignItems:'center',padding:'calc(env(safe-area-inset-top,0px) + 14px) 4px 0'}}>
           <button onClick={onBack} style={{color:'rgba(31,31,36,0.45)',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:400,letterSpacing:'.14em',padding:'12px 4px',background:'none',border:'none',cursor:'pointer'}}>← indietro</button>
-          <button onClick={()=>setShowKeySetup(true)} style={{color:'rgba(31,31,36,0.28)',fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.18em',padding:'12px 4px',background:'none',border:'none',cursor:'pointer',textTransform:'uppercase'}}>⚙ api</button>
         </div>
 
         {/* HEADER */}
@@ -2697,19 +2827,6 @@ function SogniView({t,profile,onBack}){
           <div style={{width:36,height:1,background:'linear-gradient(to right,transparent,rgba(200,165,80,0.55),transparent)',margin:'0 auto 14px'}}/>
           <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontWeight:300,fontStyle:'italic',color:'rgba(31,31,36,0.48)',lineHeight:1.5}}>Il diario dell'inconscio</div>
         </div>
-
-        {/* API KEY OVERLAY */}
-        {showKeySetup&&(
-          <div style={{position:'fixed',inset:0,background:'rgba(7,4,15,0.72)',backdropFilter:'blur(12px)',zIndex:100,display:'flex',alignItems:'center',justifyContent:'center',padding:'0 24px'}}>
-            <div style={{...card,width:'100%',maxWidth:380,padding:'32px 28px 28px'}}>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'24px',fontWeight:600,color:'#1f1f24',marginBottom:8,textAlign:'center'}}>Chiave OpenAI</div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'15px',fontStyle:'italic',color:'rgba(31,31,36,0.55)',lineHeight:1.7,textAlign:'center',marginBottom:24}}>Inserisci la tua chiave API.<br/>Verrà salvata solo sul tuo dispositivo.</div>
-              <input type="password" value={keyInput} onChange={e=>setKeyInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&saveKey()} placeholder="sk-..." style={{width:'100%',padding:'14px 16px',background:'#f2f2f7',border:'1px solid rgba(31,31,36,0.15)',borderRadius:8,fontFamily:"'Inter',sans-serif",fontSize:'14px',color:'#1f1f24',marginBottom:16,outline:'none',boxSizing:'border-box'}}/>
-              <button onClick={saveKey} style={{width:'100%',padding:'14px',background:'#9468d8',color:'#fff',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:600,letterSpacing:'.22em',textTransform:'uppercase',borderRadius:100,cursor:'pointer',border:'none',marginBottom:10}}>Salva</button>
-              {apiKey&&<button onClick={()=>setShowKeySetup(false)} style={{width:'100%',padding:'12px',color:'rgba(31,31,36,0.45)',fontFamily:"'Inter',sans-serif",fontSize:'11px',letterSpacing:'.12em',cursor:'pointer',background:'none',border:'none'}}>Annulla</button>}
-            </div>
-          </div>
-        )}
 
         {/* STEP: WRITE */}
         {step==='write'&&(
