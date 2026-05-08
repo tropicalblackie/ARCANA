@@ -1532,7 +1532,7 @@ function ShaderBall(){
   return <div ref={mountRef} style={{position:"absolute",inset:0,zIndex:0}}/>;
 }
 
-
+function startMeditationAudio(key){
   try{
     const ctx=new(window.AudioContext||window.webkitAudioContext)();ctx.resume();
     const master=ctx.createGain();master.gain.setValueAtTime(0,ctx.currentTime);master.gain.linearRampToValueAtTime(0.22,ctx.currentTime+3.5);master.connect(ctx.destination);
