@@ -626,146 +626,93 @@ const SIGN_DATES={ariete:"21 mar – 19 apr",toro:"20 apr – 20 mag",gemelli:"2
 
 // ── SIGN FLIP CARD ──
 function SignFlipCard({sg,t,i,onSelect}){
-  const floatRef=useRef(null);  // wrapper: only translateY — no layout reflow
-  const innerRef=useRef(null);  // preserve-3d: only rotateY
+  const floatRef=useRef(null);
+  const innerRef=useRef(null);
   const frontRef=useRef(null);
   const backRef=useRef(null);
-  const rafRef=useRef(null);
-  const phys=useRef({
-    angle:0, vel:0,
-    snapTarget:0,
-    mode:'idle',
-    drag:{active:false,locked:false,sx:0,sy:0,sa:0,lx:0,rawVel:0,moved:0,lt:0},
-  });
-  const[cursor,setCursor]=useState("grab");
+  const flippedRef=useRef(false);
+  const drg=useRef({active:false,locked:false,sx:0,sy:0,sa:0,lx:0,moved:0});
+  const [cursor,setCursor]=useState("grab");
 
-  // Write angle to DOM — compositor only (transform), never causes layout
-  const applyAngle=useCallback(a=>{
-    phys.current.angle=a;
+  // Direct DOM: set transform without triggering layout
+  const setAngle=useCallback(a=>{
     if(!innerRef.current)return;
     innerRef.current.style.transform=`rotateY(${a}deg)`;
-    const norm=((a%360)+360)%360;
-    const onBack=norm>90&&norm<=270;
+    const onBack=((a%360+360)%360)>90&&((a%360+360)%360)<=270;
     if(frontRef.current){frontRef.current.style.opacity=onBack?0:1;frontRef.current.style.pointerEvents=onBack?"none":"auto";}
-    if(backRef.current){backRef.current.style.opacity=onBack?1:0;}
+    if(backRef.current){backRef.current.style.opacity=onBack?1:0;backRef.current.style.pointerEvents=onBack?"auto":"none";}
   },[]);
 
-  const snapToFace=useCallback(()=>{
-    const p=phys.current;
-    const norm=((p.angle%360)+360)%360;
-    const snapBack=norm>90&&norm<=270;
-    // Normalize angle to [0,360] to prevent accumulation
-    p.angle=snapBack?180:0;
-    p.snapTarget=p.angle;
-    p.vel=0;
-    p.mode='idle';
-    applyAngle(p.angle);
-  },[applyAngle]);
+  // CSS-animated flip to target (0=front, 180=back)
+  const flipTo=useCallback((target)=>{
+    if(!innerRef.current)return;
+    innerRef.current.style.transition='transform 0.48s cubic-bezier(0.4,0,0.2,1)';
+    flippedRef.current=target===180;
+    // defer transform so browser sees transition change first
+    requestAnimationFrame(()=>{ setAngle(target); });
+  },[setAngle]);
 
   useEffect(()=>{
-    const ph=i*1.17; // unique phase — no two cards in sync
-    // Tuned spring constants
-    const KI=0.038, DI=0.90;  // idle: loose dreamy sway
-    const KD=0.20,  DD=0.74;  // drag: snappy follow
-    const KC=0.10,  DC=0.84;  // coast: spring to face
-
-    const tick=(now)=>{
-      const p=phys.current;
-      const t=now*0.001;
-
-      if(p.mode==='idle'){
-        // target oscillates ±14° around snap face — never reaches 90° so no flicker
-        const osc=Math.sin(t*0.58+ph)*14+Math.sin(t*1.05+ph*0.8)*4;
-        const target=p.snapTarget+osc;
-        p.vel=(p.vel+(target-p.angle)*KI)*DI;
-        applyAngle(p.angle+p.vel);
-        // float: translateY on wrapper — compositor only, zero layout
-        if(floatRef.current){
-          const fy=Math.sin(t*0.48+ph)*8+Math.sin(t*0.83+ph*1.2)*3;
-          floatRef.current.style.transform=`translateY(${fy}px)`;
-        }
-      } else if(p.mode==='drag'){
-        const d=p.drag;
-        if(d.active&&d.locked){
-          const want=d.sa+(d.lx-d.sx)*2.4;
-          p.vel=(p.vel+(want-p.angle)*KD)*DD;
-          applyAngle(p.angle+p.vel);
-        }
-      } else if(p.mode==='coast'){
-        // snapTarget fixed at mode entry — never recalculate mid-coast
-        p.vel=(p.vel+(p.snapTarget-p.angle)*KC)*DC;
-        applyAngle(p.angle+p.vel);
-        if(Math.abs(p.vel)<0.10&&Math.abs(p.angle-p.snapTarget)<0.5) snapToFace();
-      }
-      rafRef.current=requestAnimationFrame(tick);
-    };
-    const t0=setTimeout(()=>{ rafRef.current=requestAnimationFrame(tick); }, i*80+350);
-    return()=>{clearTimeout(t0);cancelAnimationFrame(rafRef.current);};
-  },[applyAngle,snapToFace,i]);
+    if(innerRef.current)innerRef.current.style.transition='none';
+    setAngle(0);
+  },[setAngle]);
 
   const onDown=useCallback(e=>{
     if(e.pointerType==="mouse"&&e.button!==0)return;
-    const p=phys.current;const d=p.drag;
+    const d=drg.current;
     d.active=true;d.locked=false;
-    d.sx=e.clientX;d.sy=e.clientY;d.sa=p.angle;
-    d.lx=e.clientX;d.rawVel=0;d.moved=0;d.lt=performance.now();
-    p.vel=0; p.mode='drag';
+    d.sx=e.clientX;d.sy=e.clientY;
+    d.sa=flippedRef.current?180:0;
+    d.lx=e.clientX;d.moved=0;
+    if(innerRef.current)innerRef.current.style.transition='none';
     setCursor("grabbing");
   },[]);
 
   const onMove=useCallback(e=>{
-    const p=phys.current;const d=p.drag;
+    const d=drg.current;
     if(!d.active)return;
-    const totalDx=e.clientX-d.sx,totalDy=e.clientY-d.sy;
+    const dx=e.clientX-d.sx,dy=e.clientY-d.sy;
     if(!d.locked){
-      const adx=Math.abs(totalDx),ady=Math.abs(totalDy);
-      if(adx<2&&ady<2)return;
-      if(ady>adx*1.5){d.active=false;setCursor("grab");snapToFace();return;}
+      if(Math.abs(dx)<3&&Math.abs(dy)<3)return;
+      if(Math.abs(dy)>Math.abs(dx)*1.5){
+        d.active=false;
+        flipTo(flippedRef.current?180:0);
+        setCursor("grab");return;
+      }
       d.locked=true;
       try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}
     }
-    const now=performance.now();
-    const dt=Math.max(now-d.lt,4);
-    d.rawVel=d.rawVel*0.55+(e.clientX-d.lx)/dt*0.45;
     d.moved+=Math.abs(e.clientX-d.lx);
-    d.lx=e.clientX;d.lt=now;
-  },[snapToFace]);
+    d.lx=e.clientX;
+    setAngle(d.sa+dx*0.55);
+  },[setAngle,flipTo]);
 
-  const onUp=useCallback(()=>{
-    const p=phys.current;const d=p.drag;
+  const onUp=useCallback(e=>{
+    const d=drg.current;
     if(!d.active)return;
-    d.active=false; setCursor("grab");
-    const norm=((p.angle%360)+360)%360;
-    const onBack=norm>90&&norm<=270;
+    d.active=false;setCursor("grab");
     if(d.moved<8){
-      // Click: front → flip to back; back → navigate
-      if(!onBack){
-        p.snapTarget=180; p.vel=7; p.mode='coast';
-      } else {
-        onSelect(sg);
-      }
+      // click: toggle front↔back, user navigates via button
+      flipTo(flippedRef.current?0:180);
       return;
     }
-    // Drag: snap to nearest face only, always [0,360]
-    const spd=Math.abs(d.rawVel);
-    if(spd>1.8){
-      p.snapTarget=onBack
-        ?(d.rawVel<0?180:0)
-        :(d.rawVel>0?180:0);
-    } else {
-      p.snapTarget=onBack?180:0;
-    }
-    p.vel=d.rawVel*8;
-    p.mode='coast';
-  },[onSelect,sg]);
+    // drag: snap to nearest face, no velocity kick
+    const ang=d.sa+(e.clientX-d.sx)*0.55;
+    const norm=(ang%360+360)%360;
+    flipTo(norm>90&&norm<=270?180:0);
+  },[flipTo]);
 
   const onCancel=useCallback(()=>{
-    phys.current.drag.active=false;setCursor("grab");snapToFace();
-  },[snapToFace]);
+    drg.current.active=false;setCursor("grab");
+    flipTo(flippedRef.current?180:0);
+  },[flipTo]);
+
+  const floatDur=`${2.4+(i%5)*0.32}s`;
+  const floatDel=`-${((i*0.55)%2.4).toFixed(2)}s`;
 
   return(
     <div className="fade-in-up" style={{animationDelay:`${i*.06}s`,opacity:0}}>
-      <div ref={floatRef} style={{willChange:"transform"}}>
+      <div ref={floatRef} style={{animation:`float ${floatDur} ease-in-out ${floatDel} infinite`,willChange:"transform"}}>
       <div
         style={{perspective:"1100px",perspectiveOrigin:"50% 40%",touchAction:"pan-y",userSelect:"none",WebkitUserSelect:"none",cursor}}
         onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onCancel}>
@@ -787,42 +734,29 @@ function SignFlipCard({sg,t,i,onSelect}){
             </div>
           </div>
 
-          {/* ── BACK ── no backdrop-filter: breaks transform-style:preserve-3d on iOS Safari */}
+          {/* ── BACK ── */}
           <div ref={backRef} style={{
             position:"absolute",inset:0,
             backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",
             transform:"rotateY(180deg) translateZ(1px)",
-            opacity:0,
+            opacity:0,pointerEvents:"none",
             borderRadius:16,
             background:"linear-gradient(165deg,rgba(255,255,255,0.16) 0%,rgba(255,255,255,0.05) 50%,rgba(255,255,255,0.10) 100%)",
             border:"1px solid rgba(255,255,255,0.26)",
             boxShadow:`inset 0 1.5px 0 rgba(255,255,255,0.62),inset 0.5px 0 0 rgba(255,255,255,0.16),inset -0.5px 0 0 rgba(255,255,255,0.06),inset 0 -1px 0 rgba(255,255,255,0.10),0 24px 60px rgba(0,0,0,0.58),0 6px 20px rgba(0,0,0,0.36),0 0 0 0.5px rgba(${sg.rgb},0.22)`,
-            display:"flex",
-            flexDirection:"column",
-            alignItems:"center",
-            justifyContent:"center",
-            padding:"32px 24px",
-            gap:0,
-            overflow:"hidden",
+            display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
+            padding:"32px 24px",gap:0,overflow:"hidden",
           }}>
             <CandleShine/>
             <GlassOverlay/>
-            {/* symbol */}
             <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(60px,17vw,82px)",color:`rgba(${sg.rgb},0.85)`,lineHeight:1,filter:`drop-shadow(0 0 12px rgba(${sg.rgb},0.35))`,marginBottom:20}}>{sg.symbol}</div>
-            {/* divider */}
             <div style={{width:44,height:"1px",background:`linear-gradient(to right,transparent,rgba(${sg.rgb},0.5),transparent)`,marginBottom:22}}/>
-            {/* label */}
             <div style={{fontSize:"6px",letterSpacing:".58em",color:"rgba(0,0,0,0.35)",textTransform:"uppercase",paddingLeft:".58em",marginBottom:12}}>Periodo</div>
-            {/* dates */}
             <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,5vw,25px)",color:"rgba(0,0,0,0.82)",fontStyle:"italic",textAlign:"center",letterSpacing:".03em",lineHeight:1.2}}>{SIGN_DATES[sg.key]}</div>
-            {/* divider */}
             <div style={{width:30,height:"1px",background:`rgba(${sg.rgb},0.3)`,margin:"20px auto 16px"}}/>
-            {/* element */}
             <div style={{fontSize:"7px",letterSpacing:".42em",color:`rgba(${sg.rgb},0.75)`,textTransform:"uppercase",marginBottom:7}}>{sg.element} · {sg.modality}</div>
-            {/* planet */}
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"11px",letterSpacing:".28em",color:"rgba(0,0,0,0.32)"}}>{sg.planet}</div>
-            {/* hint */}
-            <div style={{position:"absolute",bottom:16,left:0,right:0,textAlign:"center",fontSize:"6px",letterSpacing:".32em",color:"rgba(0,0,0,0.2)",textTransform:"uppercase"}}>tocca · scopri</div>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"11px",letterSpacing:".28em",color:"rgba(0,0,0,0.32)",marginBottom:24}}>{sg.planet}</div>
+            <button onClick={e=>{e.stopPropagation();onSelect(sg);}} style={{padding:"10px 32px",fontSize:"8px",letterSpacing:".34em",textTransform:"uppercase",color:`rgba(${sg.rgb},0.9)`,border:`1px solid rgba(${sg.rgb},0.4)`,borderRadius:2,background:`rgba(${sg.rgb},0.08)`,cursor:"pointer"}}>Scopri ✦</button>
           </div>
 
         </div>
@@ -831,6 +765,7 @@ function SignFlipCard({sg,t,i,onSelect}){
     </div>
   );
 }
+
 
 // ── HOME ──
 function Home({t,onSelect,profile,onSetup}){
