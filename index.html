@@ -779,7 +779,7 @@ function Home({t,onSelect,profile,onSetup}){
         <div style={{width:48,height:1,background:`linear-gradient(to right,transparent,${t.accent},transparent)`,margin:"22px auto",opacity:.8}}/>
         <div style={{fontSize:"8px",letterSpacing:".5em",color:t.muted,textTransform:"uppercase",marginBottom:profile?16:40}}>Psicologia Archetipica</div>
         {profile?(
-          <button onClick={onSetup} style={{fontSize:"8px",letterSpacing:".28em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}30`,padding:"8px 18px",marginBottom:32,background:`${t.accent}08`}}>{profile.name} — il mio profilo ✦</button>
+          <button onClick={onSetup} style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"11px",fontWeight:500,letterSpacing:".16em",textTransform:"uppercase",color:t.accent,border:`1px solid ${t.accent}30`,padding:"9px 20px",marginBottom:32,background:`${t.accent}08`}}>{profile.name} — il mio profilo ✦</button>
         ):(
           <button onClick={onSetup} style={{display:"block",margin:"0 auto 40px",padding:"18px 44px",fontSize:"13px",fontFamily:"'Inter',sans-serif",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:t.bg,background:`linear-gradient(135deg,${t.accent},${t.accent}cc)`,border:"none",borderRadius:3,boxShadow:`0 8px 32px ${t.accent}55,0 2px 8px rgba(0,0,0,0.28)`,cursor:"pointer"}}>✦ Crea il tuo profilo</button>
         )}
