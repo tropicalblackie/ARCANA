@@ -2639,15 +2639,7 @@ function SogniView({t,profile,onBack}){
   const [history,setHistory]=useState(()=>{try{const s=localStorage.getItem('arcana_sogni');return s?JSON.parse(s):[];}catch(e){return [];}});
   const [expandedId,setExpandedId]=useState(null);
 
-  const SYSTEM=`Sei un interprete dei sogni pratico, acuto e diretto. L'utente ti racconta un sogno. Il tuo compito:
-- Scrivi un'analisi concreta di circa 180-220 parole
-- Inizia con 2-3 righe di interpretazione emotiva/psicologica legata ESATTAMENTE alle immagini del sogno descritto
-- Poi elenca almeno 4-5 consigli pratici e azioni concrete da fare oggi o questa settimana, ispirati dal sogno. Esempio: "Parla con quella persona che stai evitando", "Scrivi su un foglio cosa ti spaventa davvero di questo periodo", "Dedica 10 minuti al giorno a [attività specifica]", "Fai una passeggiata in natura e osserva cosa noti", "Stabilisci un confine che rimandi da troppo tempo"
-- I consigli devono essere specifici, vari e davvero collegati agli elementi del sogno — non generici
-- Usa la seconda persona singolare, tono caldo ma diretto, come un amico saggio
-- Concludi con una domanda potente che l'utente può portarsi dietro come riflessione
-- Non dare consigli medici. Non prevedere il futuro.
-- Scrivi solo in italiano. Usa paragrafi brevi e chiari — va bene avere un mini-elenco per i consigli.`;
+  const SYSTEM=`Sei un interprete dei sogni profondo e concreto. L'utente ti racconta un sogno. Struttura la risposta ESATTAMENTE così, con questi titoli di sezione:\n\nSIGNIFICATO DEL SOGNO\n[3-4 righe: cosa sta cercando di dirti il tuo inconscio, quali emozioni o situazioni della vita reale rispecchia questo sogno specifico, quali simboli emergono. Cita gli elementi concreti del sogno. Tono caldo, seconda persona singolare.]\n\nCOSA FARE\n[Esattamente 5 azioni concrete numerate 1. 2. 3. 4. 5. — una per riga — da fare oggi o questa settimana, collegate agli elementi del sogno. Ogni consiglio inizia con un verbo. Specifici, non generici.]\n\nLA DOMANDA\n[Una sola domanda potente che l'utente porta con se' come riflessione.]\n\nRegole assolute: nessun asterisco, nessun simbolo markdown, nessun trattino come elenco, nessun grassetto. Solo testo pulito. Scrivi solo in italiano. Niente consigli medici.`;
 
   const interrogate=useCallback(async()=>{
     if(!dreamText.trim())return;
@@ -2667,7 +2659,7 @@ function SogniView({t,profile,onBack}){
         })
       });
       if(!resp.ok) throw new Error('network');
-      const interp=(await resp.text()).trim();
+      const interp=(await resp.text()).trim().replace(/\*\*/g,'').replace(/\*/g,'');
       setInterpretation(interp);
       const entry={id:Date.now().toString(),date:new Date().toISOString().slice(0,10),dateIt:new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}),dream:dreamText.trim(),interpretation:interp};
       setHistory(prev=>{const upd=[entry,...prev];try{localStorage.setItem('arcana_sogni',JSON.stringify(upd));}catch(e){}return upd;});
@@ -2735,21 +2727,72 @@ function SogniView({t,profile,onBack}){
         )}
 
         {/* STEP: RESULT */}
-        {step==='result'&&(
-          <div>
-            <div style={{...card,marginBottom:12,padding:'24px 22px 22px'}} className="fade-in-up">
-              <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',fontWeight:500,letterSpacing:'.32em',color:'rgba(148,104,216,0.7)',textTransform:'uppercase',marginBottom:16}}>◎ Lettura dell'Inconscio</div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(17px,4.5vw,21px)',fontWeight:400,color:'#1f1f24',lineHeight:1.9,fontStyle:'italic'}}>{interpretation}</div>
+        {step==='result'&&(()=>{
+          // Parsing sezioni strutturate dall'AI
+          const lines=interpretation.split('\n').map(l=>l.trim()).filter(Boolean);
+          const secMeaning=[];const secActions=[];const secQuestion=[];
+          let cur='meaning';
+          for(const l of lines){
+            if(/^significato/i.test(l)){cur='meaning';continue;}
+            if(/^cosa fare/i.test(l)){cur='actions';continue;}
+            if(/^la domanda/i.test(l)){cur='question';continue;}
+            if(cur==='meaning')secMeaning.push(l);
+            else if(cur==='actions')secActions.push(l);
+            else secQuestion.push(l);
+          }
+          const meaningText=secMeaning.join(' ');
+          const questionText=secQuestion.join(' ');
+          const hasStructure=secMeaning.length>0||secActions.length>0;
+          return(
+          <div className="fade-in-up">
+            {/* IL TUO SOGNO */}
+            <div style={{...card,marginBottom:12,padding:'18px 20px 16px'}}>
+              <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',fontWeight:500,letterSpacing:'.32em',color:'rgba(31,31,36,0.28)',textTransform:'uppercase',marginBottom:10}}>Il tuo sogno</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,17px)',color:'rgba(31,31,36,0.58)',lineHeight:1.8,fontStyle:'italic'}}>{dreamText}</div>
             </div>
-            <details style={{marginBottom:24}}>
-              <summary style={{fontFamily:"'Inter',sans-serif",fontSize:'10px',letterSpacing:'.18em',color:'rgba(31,31,36,0.38)',textTransform:'uppercase',cursor:'pointer',padding:'10px 4px',listStyle:'none'}}>↓ Il tuo racconto</summary>
-              <div style={{...card,padding:'18px 20px',marginTop:8}}>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',color:'rgba(31,31,36,0.65)',lineHeight:1.85}}>{dreamText}</div>
+
+            {/* SIGNIFICATO */}
+            <div style={{...card,marginBottom:12,padding:'24px 24px 22px'}}>
+              <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:16}}>
+                <div style={{width:6,height:6,borderRadius:'50%',background:'rgba(148,104,216,0.6)',flexShrink:0}}/>
+                <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',fontWeight:500,letterSpacing:'.32em',color:'rgba(148,104,216,0.75)',textTransform:'uppercase'}}>Significato del sogno</div>
               </div>
-            </details>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(18px,4.8vw,22px)',fontWeight:400,color:'#1f1f24',lineHeight:1.9,fontStyle:'italic'}}>{hasStructure?meaningText:interpretation}</div>
+            </div>
+
+            {/* COSA FARE */}
+            {secActions.length>0&&(
+              <div style={{...card,marginBottom:12,padding:'24px 24px 20px'}}>
+                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:18}}>
+                  <div style={{width:6,height:6,borderRadius:'50%',background:'rgba(148,104,216,0.6)',flexShrink:0}}/>
+                  <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',fontWeight:500,letterSpacing:'.32em',color:'rgba(148,104,216,0.75)',textTransform:'uppercase'}}>Cosa fare</div>
+                </div>
+                <div style={{display:'flex',flexDirection:'column',gap:14}}>
+                  {secActions.map((a,i)=>(
+                    <div key={i} style={{display:'flex',gap:16,alignItems:'flex-start'}}>
+                      <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(13px,3.5vw,15px)',color:'rgba(148,104,216,0.55)',fontWeight:600,lineHeight:1.7,flexShrink:0,minWidth:20,paddingTop:1}}>{i+1}</span>
+                      <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',color:'#1f1f24',lineHeight:1.7}}>{a.replace(/^\d+[\.\)\s]+/,'')}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* LA DOMANDA */}
+            {questionText&&(
+              <div style={{...card,marginBottom:24,padding:'22px 24px',background:'rgba(148,104,216,0.04)',borderColor:'rgba(148,104,216,0.18)'}}>
+                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:12}}>
+                  <div style={{width:6,height:6,borderRadius:'50%',background:'rgba(148,104,216,0.6)',flexShrink:0}}/>
+                  <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',fontWeight:500,letterSpacing:'.32em',color:'rgba(148,104,216,0.75)',textTransform:'uppercase'}}>Portati questa domanda</div>
+                </div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(17px,4.5vw,21px)',fontStyle:'italic',color:'rgba(31,31,36,0.72)',lineHeight:1.8}}>"{questionText.replace(/^["«]|["»]$/g,'')}"</div>
+              </div>
+            )}
+
             <button onClick={reset} style={{width:'100%',padding:'15px',border:'1px solid rgba(31,31,36,0.15)',background:'#ffffff',color:'#1f1f24',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:500,letterSpacing:'.22em',textTransform:'uppercase',borderRadius:100,cursor:'pointer',marginBottom:32}}>Scrivi un nuovo sogno</button>
           </div>
-        )}
+          );
+        })()}
 
         {/* HISTORY */}
         {history.length>0&&step!=='loading'&&(
@@ -2766,8 +2809,8 @@ function SogniView({t,profile,onBack}){
                 </button>
                 {expandedId===entry.id&&(
                   <div style={{padding:'0 20px 18px',borderTop:'1px solid rgba(31,31,36,0.07)'}} className="fade-in">
-                    <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',fontWeight:500,letterSpacing:'.28em',color:'rgba(148,104,216,0.6)',textTransform:'uppercase',padding:'14px 0 10px'}}>◎ Lettura</div>
-                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontStyle:'italic',color:'#1f1f24',lineHeight:1.85}}>{entry.interpretation}</div>
+                    <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',fontWeight:500,letterSpacing:'.28em',color:'rgba(148,104,216,0.6)',textTransform:'uppercase',padding:'14px 0 10px'}}>◎ Interpretazione</div>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontStyle:'italic',color:'#1f1f24',lineHeight:1.85,whiteSpace:'pre-line'}}>{entry.interpretation.replace(/\*\*/g,'').replace(/\*/g,'')}</div>
                   </div>
                 )}
               </div>
