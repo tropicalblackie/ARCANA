@@ -1883,7 +1883,6 @@ function Meditazione({onBack}){
 ══════════════════════════════════════════════════════ */
 const HUB_COMING=[
   {key:"compatibilita",label:"Compatibilità",        icon:"⋈",  col:"#d4688a", shape:"sq"},
-  {key:"cinese",       label:"Oroscopo Cinese",      icon:"◈",  col:"#d87840", shape:"sq"},
   {key:"ascendente",   label:"Ascendente",           icon:"△",  col:"#58c8e0", shape:"pill"},
   {key:"sfera",        label:"Sfera di Cristallo",   icon:"◎",  col:"#9888e8", shape:"sq"},
 ];
@@ -1958,6 +1957,19 @@ function HomeHub({t,setView,profile}){
             <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(31,31,36,0.45)",letterSpacing:".02em"}}>10 pianeti · 4 stanze · Mappa dell'anima</div>
           </div>
           <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"rgba(112,144,216,0.35)"}}>›</span>
+        </div>
+
+        {/* ── Oroscopo Cinese ── */}
+        <div onClick={()=>profile?setView("cinese"):setView("setup")} onMouseEnter={()=>setHov("cinese")} onMouseLeave={()=>setHov(null)}
+          style={{marginBottom:10,padding:"20px 24px",background:hov==="cinese"?"rgba(200,56,42,0.08)":"#ffffff",border:`1px solid ${hov==="cinese"?"rgba(200,56,42,0.45)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="cinese"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="cinese"?"0 14px 26px rgba(200,56,42,0.15)":"0 8px 24px rgba(20,20,30,0.07)"}}>
+          <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(200,56,42,0.10)",border:"1px solid rgba(200,56,42,0.20)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#c8382a",lineHeight:1}}>龍</span>
+          </div>
+          <div style={{flex:1}}>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4.5vw,21px)",fontWeight:600,color:"#1f1f24",marginBottom:2}}>Oroscopo Cinese</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(31,31,36,0.45)",letterSpacing:".02em"}}>12 animali · Elemento · Ombra</div>
+          </div>
+          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"rgba(200,56,42,0.30)"}}>›</span>
         </div>
 
         {/* ── Oroscopo Druido ── */}
@@ -2837,6 +2849,281 @@ function SogniView({t,profile,onBack}){
 }
 
 /* ══════════════════════════════════════════════════════
+   OROSCOPO CINESE
+══════════════════════════════════════════════════════ */
+function getChineseAnimal(bday){
+  if(!bday)return'drago';
+  const d=new Date(bday+'T12:00:00');
+  let y=d.getFullYear();
+  // approssimazione: se nati prima del 1 feb, anno precedente
+  if(d.getMonth()===0)y-=1;
+  const animals=['topo','bue','tigre','coniglio','drago','serpente','cavallo','capra','scimmia','gallo','cane','maiale'];
+  return animals[((y-1900)%12+12)%12];
+}
+function getChineseElement(bday){
+  if(!bday)return'Legno';
+  const y=new Date(bday+'T12:00:00').getFullYear();
+  const d=y%10;
+  if(d===0||d===1)return'Metallo';
+  if(d===2||d===3)return'Acqua';
+  if(d===4||d===5)return'Legno';
+  if(d===6||d===7)return'Fuoco';
+  return'Terra';
+}
+const CHINESE_SIGNS={
+  topo:{
+    nome:'Topo',hanzi:'鼠',pinyin:'Shǔ',col:'#6b8cc7',
+    opposto:'Cavallo',
+    svg:<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <ellipse cx="60" cy="72" rx="28" ry="22" stroke="#6b8cc7" strokeWidth="1.4" fill="#6b8cc714"/>
+      <ellipse cx="60" cy="50" rx="18" ry="16" stroke="#6b8cc7" strokeWidth="1.4" fill="#6b8cc714"/>
+      <ellipse cx="48" cy="38" rx="8" ry="11" stroke="#6b8cc7" strokeWidth="1.2" fill="none"/>
+      <ellipse cx="72" cy="38" rx="8" ry="11" stroke="#6b8cc7" strokeWidth="1.2" fill="none"/>
+      <circle cx="54" cy="52" r="2.2" fill="#6b8cc7" opacity=".7"/>
+      <circle cx="66" cy="52" r="2.2" fill="#6b8cc7" opacity=".7"/>
+      <path d="M60 58 Q57 62 60 64 Q63 62 60 58Z" stroke="#6b8cc7" strokeWidth="1" fill="#6b8cc722"/>
+      <path d="M44 55 Q36 53 32 50 M44 57 Q36 57 31 56 M44 59 Q36 61 33 63" stroke="#6b8cc7" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M76 55 Q84 53 88 50 M76 57 Q84 57 89 56 M76 59 Q84 61 87 63" stroke="#6b8cc7" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M88 78 Q100 72 105 58 Q107 50 103 45" stroke="#6b8cc7" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      <path d="M40 85 Q35 95 38 102" stroke="#6b8cc7" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M80 85 Q85 95 82 102" stroke="#6b8cc7" strokeWidth="1" strokeLinecap="round"/>
+    </svg>,
+    istinto:'Non attacchi mai di petto. La tua forza è la mente agile che trova la crepa nel muro dove nessuno guarda. Nei momenti di crisi accumuli, valuti, agisci con tempismo millimetrico. Questa capacità di sopravvivere nell\'ombra non è debolezza — è intelligenza evolutiva perfezionata.',
+    elemento_base:'La tua natura è stratificata. In superficie sei sociabile e acuto, ma dentro elabori scenari in silenzio. L\'elemento affina questo impulso: Metallo ti rende incisivo e determinato; Acqua ti fa scivolate tra le situazioni senza segnali; Legno ti apre alla curiosità e all\'espansione; Fuoco ti rende audace e carismatico; Terra ti ancora alla praticità e alla costruzione.',
+    ombra:'La tua ombra è il Cavallo. Disprezzi l\'impulsività, la fiducia cieca nel movimento. Ma quello che chiami irresponsabilità negli altri è la libertà di agire senza calcolare ogni conseguenza — una leggerezza che la tua mente raramente concede a te stesso.'
+  },
+  bue:{
+    nome:'Bue',hanzi:'牛',pinyin:'Niú',col:'#8b7355',
+    opposto:'Capra',
+    svg:<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <ellipse cx="60" cy="68" rx="30" ry="24" stroke="#8b7355" strokeWidth="1.4" fill="#8b735514"/>
+      <ellipse cx="60" cy="46" rx="20" ry="18" stroke="#8b7355" strokeWidth="1.4" fill="#8b735514"/>
+      <path d="M40 36 Q28 24 22 18" stroke="#8b7355" strokeWidth="1.4" strokeLinecap="round" fill="none"/>
+      <path d="M80 36 Q92 24 98 18" stroke="#8b7355" strokeWidth="1.4" strokeLinecap="round" fill="none"/>
+      <circle cx="52" cy="48" r="2.5" fill="#8b7355" opacity=".7"/>
+      <circle cx="68" cy="48" r="2.5" fill="#8b7355" opacity=".7"/>
+      <ellipse cx="60" cy="56" rx="7" ry="5" stroke="#8b7355" strokeWidth="1" fill="#8b735518"/>
+      <path d="M56 56 Q60 60 64 56" stroke="#8b7355" strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M38 80 Q34 94 36 104" stroke="#8b7355" strokeWidth="1.1" strokeLinecap="round"/>
+      <path d="M82 80 Q86 94 84 104" stroke="#8b7355" strokeWidth="1.1" strokeLinecap="round"/>
+      <path d="M48 92 Q44 104 46 110" stroke="#8b7355" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M72 92 Q76 104 74 110" stroke="#8b7355" strokeWidth="1" strokeLinecap="round"/>
+    </svg>,
+    istinto:'Non hai fretta. Dove gli altri si spezzano sotto la pressione, tu ti fai più solido. La tua energia si muove come un fiume profondo — lenta in superficie, inarrestabile sotto. Nella crisi, mentre tutti reagiscono, tu valuti. Questo ti fa sembrare freddo. In realtà sei l\'unico davvero presente.',
+    elemento_base:'Sei costruito per la durata, non per i fuochi d\'artificio. L\'elemento modula come esprimi questa solidità: Metallo aggiunge rigore e principi irremovibili; Acqua porta intuizione e flessibilità inaspettata; Legno ti apre a visioni a lungo termine; Fuoco accende ambizione e leadership; Terra raddoppia la tua concretezza, rendendoti una roccia per chi ami.',
+    ombra:'La tua ombra è la Capra. Disprezzi l\'indecisione, il bisogno di rassicurazione continua, l\'eccesso emotivo. Ma quella sensibilità che giudichi come fragilità è la capacità di creare bellezza e connessione — qualcosa che la tua corazza spesso impedisce.'
+  },
+  tigre:{
+    nome:'Tigre',hanzi:'虎',pinyin:'Hǔ',col:'#c8782a',
+    opposto:'Scimmia',
+    svg:<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <ellipse cx="60" cy="64" rx="32" ry="28" stroke="#c8782a" strokeWidth="1.4" fill="#c8782a14"/>
+      <ellipse cx="60" cy="42" rx="22" ry="20" stroke="#c8782a" strokeWidth="1.4" fill="#c8782a14"/>
+      <ellipse cx="42" cy="28" rx="10" ry="13" stroke="#c8782a" strokeWidth="1.2" fill="none"/>
+      <ellipse cx="78" cy="28" rx="10" ry="13" stroke="#c8782a" strokeWidth="1.2" fill="none"/>
+      <circle cx="52" cy="44" r="2.8" fill="#c8782a" opacity=".75"/>
+      <circle cx="68" cy="44" r="2.8" fill="#c8782a" opacity=".75"/>
+      <path d="M55 52 L60 56 L65 52" stroke="#c8782a" strokeWidth="1.1" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M52 36 Q54 30 58 34" stroke="#c8782a" strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M68 36 Q66 30 62 34" stroke="#c8782a" strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M60 58 Q57 64 58 70 M60 58 Q63 64 62 70" stroke="#c8782a" strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M36 50 Q26 48 22 44 M36 53 Q25 54 22 55 M36 56 Q26 58 23 62" stroke="#c8782a" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M84 50 Q94 48 98 44 M84 53 Q95 54 98 55 M84 56 Q94 58 97 62" stroke="#c8782a" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M95 80 Q104 70 102 55" stroke="#c8782a" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+    </svg>,
+    istinto:'Sei progettata per agire. L\'esitazione ti corrode mentre l\'azione ti libera. Di fronte alla crisi, il tuo corpo risponde prima della mente — ti lanci, assumi il rischio, difendi con forza ciò che ami. Questo coraggio istintivo può sembrare imprudenza. In realtà è la forma più autentica della tua vitalità.',
+    elemento_base:'La tua intensità cambia forma con l\'elemento: Metallo ti rende determinata e implacabile nei principi; Acqua ammorbidisce la tua intensità in profonda intuizione; Legno espande il tuo naturale senso di giustizia; Fuoco amplifica il carisma fino all\'ipnotico; Terra ancora l\'energia impetuosa in qualcosa di costruttivo e duraturo.',
+    ombra:'La tua ombra è la Scimmia. Disprezzi la furbizia, il doppio gioco, l\'adattamento continuo. Ma quella agilità mentale che vedi come slealtà è la capacità di cambiare prospettiva senza perdersi — una flessibilità che la tua rettitudine non sempre si permette.'
+  },
+  coniglio:{
+    nome:'Coniglio',hanzi:'兔',pinyin:'Tù',col:'#9a7fc0',
+    opposto:'Gallo',
+    svg:<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <ellipse cx="60" cy="74" rx="26" ry="22" stroke="#9a7fc0" strokeWidth="1.4" fill="#9a7fc014"/>
+      <ellipse cx="60" cy="52" rx="18" ry="18" stroke="#9a7fc0" strokeWidth="1.4" fill="#9a7fc014"/>
+      <ellipse cx="46" cy="24" rx="7" ry="18" stroke="#9a7fc0" strokeWidth="1.2" fill="none"/>
+      <ellipse cx="74" cy="24" rx="7" ry="18" stroke="#9a7fc0" strokeWidth="1.2" fill="none"/>
+      <circle cx="53" cy="54" r="2.2" fill="#9a7fc0" opacity=".7"/>
+      <circle cx="67" cy="54" r="2.2" fill="#9a7fc0" opacity=".7"/>
+      <path d="M56 61 Q60 65 64 61" stroke="#9a7fc0" strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M40 62 Q30 60 26 55 M40 65 Q29 66 26 67" stroke="#9a7fc0" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M80 62 Q90 60 94 55 M80 65 Q91 66 94 67" stroke="#9a7fc0" strokeWidth="1" strokeLinecap="round"/>
+      <circle cx="85" cy="82" r="4" stroke="#9a7fc0" strokeWidth="1" fill="#9a7fc010"/>
+      <path d="M40 84 Q36 96 38 104" stroke="#9a7fc0" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M80 84 Q84 96 82 104" stroke="#9a7fc0" strokeWidth="1" strokeLinecap="round"/>
+    </svg>,
+    istinto:'Ti muovi con grazia attraverso i conflitti senza diventarne parte. Non è vigliaccheria — è intelligenza emotiva raffinata. Senti le tensioni prima che esplodano, crei armonia con un gesto, conosci il momento esatto in cui allontanarti. Questa delicatezza percettiva è il tuo potere più sottile e più raro.',
+    elemento_base:'Sei un essere di sfumature e il tuo elemento lo intensifica: Metallo aggiunge determinazione e senso estetico tagliente; Acqua amplia l\'empatia fino alla chiaroveggenza emotiva; Legno ti rende creativo e diplomatico insieme; Fuoco porta calore e intensità nelle tue relazioni; Terra radica la sensibilità in pazienza e affidabilità.',
+    ombra:'La tua ombra è il Gallo. Disprezzi la vanità, la critica diretta, il bisogno di essere visto. Ma quell\'audacia di dire la verità in faccia che giudichi arroganza è la capacità di stare nel conflitto con integrità — qualcosa che la tua diplomazia a volte evita.'
+  },
+  drago:{
+    nome:'Drago',hanzi:'龍',pinyin:'Lóng',col:'#c8382a',
+    opposto:'Cane',
+    svg:<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <path d="M20 90 Q30 70 50 60 Q70 50 80 35 Q88 22 84 14" stroke="#c8382a" strokeWidth="2" fill="none" strokeLinecap="round"/>
+      <path d="M20 90 Q24 80 30 76" stroke="#c8382a" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+      <ellipse cx="84" cy="18" rx="14" ry="11" stroke="#c8382a" strokeWidth="1.4" fill="#c8382a14"/>
+      <path d="M76 10 Q72 2 68 4" stroke="#c8382a" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      <path d="M92 10 Q96 2 100 5" stroke="#c8382a" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      <circle cx="80" cy="18" r="2" fill="#c8382a" opacity=".8"/>
+      <circle cx="90" cy="17" r="2" fill="#c8382a" opacity=".8"/>
+      <path d="M50 60 Q44 56 40 48 Q36 40 44 36" stroke="#c8382a" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      <path d="M58 52 Q54 48 56 40" stroke="#c8382a" strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M20 90 Q14 96 10 106 M20 90 Q22 100 20 108" stroke="#c8382a" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+    </svg>,
+    istinto:'Non sei fatto per passare inosservato. La tua sola presenza cambia la temperatura della stanza. Nei momenti di crisi non ti nascondi — assumi il controllo con una certezza che può sembrare arroganza ma è semplicemente la tua natura. Sei il fuoco che illumina e che brucia, spesso nello stesso gesto.',
+    elemento_base:'Sei già eccezionale. L\'elemento definisce come questa eccezionalità si manifesta: Metallo aggiunge rigore e potere di leadership incorruttibile; Acqua porta profondità visionaria oltre il carisma puro; Legno espande la generosità e il senso di possibilità; Fuoco raddoppia l\'intensità fino alla leggenda; Terra ancora la potenza in qualcosa di costruibile e trasmissibile.',
+    ombra:'La tua ombra è il Cane. Disprezzi la fedeltà incondizionata, il bisogno di appartenenza, l\'ansietà del dubbio. Ma quella lealtà profonda che vedi come dipendenza è la capacità di amare senza calcolo — qualcosa che la tua sovranità solitaria raramente si concede.'
+  },
+  serpente:{
+    nome:'Serpente',hanzi:'蛇',pinyin:'Shé',col:'#4a8f6a',
+    opposto:'Maiale',
+    svg:<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <path d="M60 100 Q40 95 30 80 Q18 62 30 48 Q42 34 60 38 Q78 42 84 30 Q90 18 82 12" stroke="#4a8f6a" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+      <ellipse cx="82" cy="14" rx="10" ry="8" stroke="#4a8f6a" strokeWidth="1.4" fill="#4a8f6a14"/>
+      <path d="M76 10 Q74 4 78 6 M88 10 Q90 4 86 6" stroke="#4a8f6a" strokeWidth="1" strokeLinecap="round" fill="none"/>
+      <circle cx="79" cy="14" r="1.8" fill="#4a8f6a" opacity=".8"/>
+      <circle cx="86" cy="13" r="1.8" fill="#4a8f6a" opacity=".8"/>
+      <path d="M58 100 Q56 108 52 112 M62 100 Q64 108 68 112" stroke="#4a8f6a" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      <path d="M35 64 Q28 66 24 70" stroke="#4a8f6a" strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M32 56 Q25 54 22 50" stroke="#4a8f6a" strokeWidth="1" fill="none" strokeLinecap="round"/>
+    </svg>,
+    istinto:'Non aggredisci mai per primo. La tua forza risiede nell\'osservazione silenziosa, nell\'attesa del momento perfetto in cui agire diventa inevitabile. Mentre gli altri parlano, tu studi. Hai la capacità rara di mutare pelle, lasciare morire le vecchie versioni di te stesso senza rimpianti. Questa trasformazione continua è il tuo vero potere.',
+    elemento_base:'Sei un essere di profondità e mistero. L\'elemento calibra questa intensità: Metallo ti rende inflessibile nelle convinzioni, magnetico e formidabile; Acqua amplifica l\'intuizione fino alla percezione extrasensoriale; Legno apre curiosità intellettuale e capacità di connessione; Fuoco porta un\'intensità passionale quasi ipnotica; Terra radica la saggezza in pazienza costruttiva.',
+    ombra:'La tua ombra è il Maiale. Disprezzi la fiducia ingenua, la generosità immediata, il piacere senza strategia. Ma quella capacità di godere pienamente della vita che chiami superficialità è la libertà di essere presente senza dover sempre analizzare — qualcosa che il tuo controllo fatica a concedersi.'
+  },
+  cavallo:{
+    nome:'Cavallo',hanzi:'馬',pinyin:'Mǎ',col:'#b06030',
+    opposto:'Topo',
+    svg:<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <ellipse cx="58" cy="56" rx="24" ry="28" stroke="#b06030" strokeWidth="1.4" fill="#b0603014" transform="rotate(-10 58 56)"/>
+      <ellipse cx="66" cy="32" rx="14" ry="18" stroke="#b06030" strokeWidth="1.4" fill="#b0603014"/>
+      <path d="M58 16 Q52 4 48 8 M66 16 Q64 4 68 8 M72 16 Q76 6 80 10" stroke="#b06030" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      <circle cx="61" cy="34" r="2.2" fill="#b06030" opacity=".75"/>
+      <circle cx="72" cy="33" r="2.2" fill="#b06030" opacity=".75"/>
+      <path d="M60 44 Q57 50 60 52 Q63 50 60 44" stroke="#b06030" strokeWidth="1" fill="#b0603022"/>
+      <path d="M40 72 Q34 86 36 100" stroke="#b06030" strokeWidth="1.3" strokeLinecap="round"/>
+      <path d="M56 80 Q54 94 55 108" stroke="#b06030" strokeWidth="1.3" strokeLinecap="round"/>
+      <path d="M72 76 Q74 90 72 104" stroke="#b06030" strokeWidth="1.3" strokeLinecap="round"/>
+      <path d="M84 68 Q90 82 88 96" stroke="#b06030" strokeWidth="1.3" strokeLinecap="round"/>
+    </svg>,
+    istinto:'Sei pura spinta in avanti. L\'immobilità ti corrode, la libertà ti nutre. Nei momenti di crisi non analizzi — corri. Questo istinto al movimento non è impazienza: è la tua forma di coraggio, il modo in cui il tuo corpo dice che sei vivo. Le tue migliori decisioni le hai prese mentre eri in moto, non seduto a riflettere.',
+    elemento_base:'La tua libertà prende forme diverse secondo l\'elemento: Metallo aggiunge disciplina e una determinazione che diventa quasi militare; Acqua porta flessibilità emotiva e un\'intuizione che guida la corsa; Legno espande la rete sociale e l\'ottimismo naturale; Fuoco accende un carisma trascinante e una leadership istintiva; Terra porta radicamento, rendendoti più affidabile senza spegnere la velocità.',
+    ombra:'La tua ombra è il Topo. Disprezzi il calcolo, la furbizia, l\'attesa strategica. Ma quella capacità di pianificare nel dettaglio che chiami meschinità è la differenza tra una corsa e una rotta — qualcosa che la tua pura spinta in avanti a volte ignora.'
+  },
+  capra:{
+    nome:'Capra',hanzi:'羊',pinyin:'Yáng',col:'#7aaa88',
+    opposto:'Bue',
+    svg:<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <ellipse cx="60" cy="70" rx="26" ry="24" stroke="#7aaa88" strokeWidth="1.4" fill="#7aaa8814"/>
+      <ellipse cx="60" cy="46" rx="18" ry="18" stroke="#7aaa88" strokeWidth="1.4" fill="#7aaa8814"/>
+      <path d="M46 32 Q36 18 30 14" stroke="#7aaa88" strokeWidth="1.4" fill="none" strokeLinecap="round"/>
+      <path d="M74 32 Q84 18 90 14" stroke="#7aaa88" strokeWidth="1.4" fill="none" strokeLinecap="round"/>
+      <path d="M46 32 Q42 22 44 16" stroke="#7aaa88" strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <circle cx="53" cy="48" r="2.2" fill="#7aaa88" opacity=".7"/>
+      <circle cx="67" cy="48" r="2.2" fill="#7aaa88" opacity=".7"/>
+      <path d="M56 56 Q60 60 64 56" stroke="#7aaa88" strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M40 80 Q34 92 36 104" stroke="#7aaa88" strokeWidth="1.1" strokeLinecap="round"/>
+      <path d="M80 80 Q86 92 84 104" stroke="#7aaa88" strokeWidth="1.1" strokeLinecap="round"/>
+      <path d="M52 88 Q48 100 50 108" stroke="#7aaa88" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M68 88 Q72 100 70 108" stroke="#7aaa88" strokeWidth="1" strokeLinecap="round"/>
+    </svg>,
+    istinto:'Senti il mondo attraverso la bellezza. Dove altri vedono ostacoli, tu vedi texture, sfumature, possibilità di armonia. La tua forza non è nella forza bruta ma nella capacità di trasformare la difficoltà in qualcosa di tollerabile, persino bello. Questo è un potere creativo che molti scambiano per fragilità.',
+    elemento_base:'Sei fatta di sensibilità e creatività, e l\'elemento modula come le esprimi: Metallo aggiunge eleganza e gusto estetico elevato; Acqua porta profondità emotiva e capacità di connessione quasi mistica; Legno amplifica creatività e idealismo; Fuoco porta calore e generosità espansiva; Terra radica la sensibilità in qualcosa di concreto, affidabile, costruttivo.',
+    ombra:'La tua ombra è il Bue. Disprezzi la rigidità, la routine, l\'apparente mancanza di fantasia. Ma quella costanza inflessibile che giudichi come ottusità è la capacità di portare a termine ciò che si inizia — qualcosa che la tua natura sensibile e mutevole a volte abbandona a metà strada.'
+  },
+  scimmia:{
+    nome:'Scimmia',hanzi:'猴',pinyin:'Hóu',col:'#c09030',
+    opposto:'Tigre',
+    svg:<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <ellipse cx="60" cy="68" rx="24" ry="22" stroke="#c09030" strokeWidth="1.4" fill="#c0903014"/>
+      <ellipse cx="60" cy="46" rx="20" ry="20" stroke="#c09030" strokeWidth="1.4" fill="#c0903014"/>
+      <ellipse cx="43" cy="44" rx="9" ry="9" stroke="#c09030" strokeWidth="1.1" fill="#c0903010"/>
+      <ellipse cx="77" cy="44" rx="9" ry="9" stroke="#c09030" strokeWidth="1.1" fill="#c0903010"/>
+      <circle cx="54" cy="46" r="2.5" fill="#c09030" opacity=".75"/>
+      <circle cx="66" cy="46" r="2.5" fill="#c09030" opacity=".75"/>
+      <ellipse cx="60" cy="56" rx="8" ry="6" stroke="#c09030" strokeWidth="1" fill="#c0903018"/>
+      <path d="M56 56 Q60 60 64 56" stroke="#c09030" strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M36 52 Q26 44 22 34" stroke="#c09030" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
+      <path d="M84 52 Q94 44 98 34" stroke="#c09030" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
+      <path d="M95 80 Q106 86 108 98" stroke="#c09030" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      <path d="M38 82 Q34 94 36 104" stroke="#c09030" strokeWidth="1.1" strokeLinecap="round"/>
+      <path d="M82 82 Q86 94 84 104" stroke="#c09030" strokeWidth="1.1" strokeLinecap="round"/>
+    </svg>,
+    istinto:'La tua mente non si ferma mai. Vedi connessioni dove gli altri vedono caos, trovi soluzioni brillanti mentre il problema si sta ancora formando. Di fronte alla crisi sei già al passo successivo. Questo non è cinismo — è il modo in cui la tua intelligenza si prende cura di te e di chi ti sta intorno.',
+    elemento_base:'Sei un\'intelligenza in continua espansione. L\'elemento definisce dove si concentra questa vivacità: Metallo aggiunge strategia e acutezza quasi spietata; Acqua porta creatività associativa e intuizione; Legno apre l\'entusiasmo e la voglia di esplorare; Fuoco porta un carisma brillante e comunicativo; Terra ancora l\'agilità mentale in qualcosa di costruttivo e affidabile.',
+    ombra:'La tua ombra è la Tigre. Disprezzi l\'impulsività, l\'attacco frontale, la semplicità un po\' rozza dell\'azione diretta. Ma quella capacità di agire con coraggio senza calcolare il rischio che chiami sconsideratezza è la libertà di essere completamente se stessi — qualcosa che la tua mente tattica raramente si concede.'
+  },
+  gallo:{
+    nome:'Gallo',hanzi:'雞',pinyin:'Jī',col:'#c87850',
+    opposto:'Coniglio',
+    svg:<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <ellipse cx="55" cy="72" rx="26" ry="26" stroke="#c87850" strokeWidth="1.4" fill="#c8785014"/>
+      <ellipse cx="62" cy="44" rx="17" ry="20" stroke="#c87850" strokeWidth="1.4" fill="#c8785014"/>
+      <path d="M62 24 Q58 14 52 12 Q56 20 54 26" stroke="#c87850" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      <path d="M68 28 Q74 16 80 16 Q74 22 72 30" stroke="#c87850" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      <path d="M58 44 Q52 48 50 54" stroke="#c87850" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      <circle cx="60" cy="40" r="2.4" fill="#c87850" opacity=".75"/>
+      <circle cx="70" cy="39" r="2.4" fill="#c87850" opacity=".75"/>
+      <path d="M55 50 Q52 55 50 58" stroke="#c87850" strokeWidth="1.2" fill="#c8785022" strokeLinecap="round"/>
+      <path d="M30 80 Q20 82 16 78" stroke="#c87850" strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M36 88 Q26 90 22 88" stroke="#c87850" strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M38 96 Q30 100 28 98" stroke="#c87850" strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M48 100 Q44 110 46 116" stroke="#c87850" strokeWidth="1.1" strokeLinecap="round"/>
+      <path d="M64 100 Q66 110 64 116" stroke="#c87850" strokeWidth="1.1" strokeLinecap="round"/>
+    </svg>,
+    istinto:'Vedi chiaramente ciò che gli altri preferiscono non guardare e lo dici. Questa franchezza ti costa in termini di popolarità ma ti guadagna qualcosa di più raro: la reputazione di essere qualcuno su cui contare. La tua cura per i dettagli, la tua puntualità, la tua precisione non sono rigidità — sono la forma di rispetto che offri al mondo.',
+    elemento_base:'Sei un essere di standard elevati e l\'elemento modula come li esprimi: Metallo aggiunge determinazione e un\'integrità quasi inflessibile; Acqua porta adattabilità e capacità di leggere le persone; Legno apre generosità e spirito collaborativo; Fuoco porta un\'espressività brillante e sicurezza carismatica; Terra radica l\'acutezza in affidabilità e senso pratico.',
+    ombra:'La tua ombra è il Coniglio. Disprezzi l\'ambiguità, la risposta elusiva, la pace comprata a prezzo del silenzio. Ma quella grazia diplomatica che chiami mancanza di spina dorsale è la capacità di preservare le relazioni senza distruggerle — qualcosa che la tua franchezza a volte trascura.'
+  },
+  cane:{
+    nome:'Cane',hanzi:'狗',pinyin:'Gǒu',col:'#7b6a50',
+    opposto:'Drago',
+    svg:<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <ellipse cx="60" cy="68" rx="28" ry="24" stroke="#7b6a50" strokeWidth="1.4" fill="#7b6a5014"/>
+      <ellipse cx="60" cy="44" rx="20" ry="20" stroke="#7b6a50" strokeWidth="1.4" fill="#7b6a5014"/>
+      <path d="M44 28 Q34 14 28 18" stroke="#7b6a50" strokeWidth="2" fill="none" strokeLinecap="round"/>
+      <path d="M76 28 Q86 14 92 18" stroke="#7b6a50" strokeWidth="2" fill="none" strokeLinecap="round"/>
+      <circle cx="52" cy="46" r="2.5" fill="#7b6a50" opacity=".75"/>
+      <circle cx="68" cy="46" r="2.5" fill="#7b6a50" opacity=".75"/>
+      <ellipse cx="60" cy="54" rx="6" ry="5" stroke="#7b6a50" strokeWidth="1" fill="#7b6a5018"/>
+      <path d="M56 54 Q60 58 64 54" stroke="#7b6a50" strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M36 60 Q28 58 24 52 M36 64 Q28 64 24 66" stroke="#7b6a50" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M84 60 Q92 58 96 52 M84 64 Q92 64 96 66" stroke="#7b6a50" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M100 72 Q108 64 107 56" stroke="#7b6a50" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
+      <path d="M38 84 Q34 96 36 106" stroke="#7b6a50" strokeWidth="1.1" strokeLinecap="round"/>
+      <path d="M82 84 Q86 96 84 106" stroke="#7b6a50" strokeWidth="1.1" strokeLinecap="round"/>
+    </svg>,
+    istinto:'La tua lealtà non è un\'abitudine — è un principio. Scegli le tue persone con cura e poi le difendi con una costanza che può sembrare ostinazione ma è in realtà la forma più nobile di amore. Di fronte all\'ingiustizia ti attivi con una intensità che sorprende chi ti conosceva solo nella quiete.',
+    elemento_base:'Sei costruito per la fedeltà e la giustizia, e l\'elemento definisce come le esprimi: Metallo aggiunge principi irremovibili e coraggio civile; Acqua porta intuizione emotiva e capacità di sostenere gli altri; Legno apre idealismo e un forte senso di comunità; Fuoco porta passione e una difesa vigorosa di chi ami; Terra radica la lealtà in affidabilità quotidiana e concreta.',
+    ombra:'La tua ombra è il Drago. Disprezzi l\'arroganza, il bisogno di grandiosità, il dominio fine a se stesso. Ma quella certezza sovrana che chiami presunzione è la capacità di occupare il proprio spazio senza scusarsi — qualcosa che la tua natura umile spesso non si concede.'
+  },
+  maiale:{
+    nome:'Maiale',hanzi:'豬',pinyin:'Zhū',col:'#c078a0',
+    opposto:'Serpente',
+    svg:<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <ellipse cx="60" cy="68" rx="30" ry="26" stroke="#c078a0" strokeWidth="1.4" fill="#c078a014"/>
+      <ellipse cx="60" cy="46" rx="22" ry="22" stroke="#c078a0" strokeWidth="1.4" fill="#c078a014"/>
+      <ellipse cx="43" cy="34" rx="9" ry="11" stroke="#c078a0" strokeWidth="1.1" fill="none"/>
+      <ellipse cx="77" cy="34" rx="9" ry="11" stroke="#c078a0" strokeWidth="1.1" fill="none"/>
+      <circle cx="52" cy="48" r="2.5" fill="#c078a0" opacity=".75"/>
+      <circle cx="68" cy="48" r="2.5" fill="#c078a0" opacity=".75"/>
+      <ellipse cx="60" cy="56" rx="9" ry="7" stroke="#c078a0" strokeWidth="1.1" fill="#c078a018"/>
+      <circle cx="56" cy="56" r="1.5" fill="#c078a0" opacity=".6"/>
+      <circle cx="64" cy="56" r="1.5" fill="#c078a0" opacity=".6"/>
+      <path d="M38 82 Q34 96 36 106" stroke="#c078a0" strokeWidth="1.2" strokeLinecap="round"/>
+      <path d="M52 88 Q48 102 50 110" stroke="#c078a0" strokeWidth="1.1" strokeLinecap="round"/>
+      <path d="M68 88 Q72 102 70 110" stroke="#c078a0" strokeWidth="1.1" strokeLinecap="round"/>
+      <path d="M82 82 Q86 96 84 106" stroke="#c078a0" strokeWidth="1.2" strokeLinecap="round"/>
+      <path d="M95 72 Q104 64 103 55" stroke="#c078a0" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+    </svg>,
+    istinto:'Arrivi alla vita con un\'apertura disarmante. Non è ingenuità — è una scelta filosofica profonda. Credi nelle persone prima che te lo dimostrino, dai con generosità prima di essere ricambiato, e questa fiducia, anche quando viene tradita, non ti amara. La tua capacità di godersi pienamente il momento presente è un dono sempre più raro.',
+    elemento_base:'Sei un essere di generosità e piacere, e l\'elemento calibra questa natura: Metallo aggiunge determinazione e senso pratico; Acqua amplifica l\'intuizione e la profondità emotiva; Legno porta entusiasmo e voglia di espandere i propri orizzonti; Fuoco porta passione e un calore comunicativo; Terra ancora la generosità in affidabilità e concretezza.',
+    ombra:'La tua ombra è il Serpente. Disprezzi la riservatezza, il calcolo silenzioso, la trasformazione lenta. Ma quella capacità di osservare in profondità senza rivelare se stessi che chiami macchinazione è la saggezza di custodire la propria energia — qualcosa che la tua apertura totale non sempre protegge.'
+  }
+};
+
+/* ══════════════════════════════════════════════════════
    OROSCOPO DRUIDO
 ══════════════════════════════════════════════════════ */
 function getDruidTree(bday){
@@ -3243,6 +3530,147 @@ function DruidView({t,profile,onBack}){
   );
 }
 
+/* ══════════════════════════════════════════════════════
+   CHINESE VIEW
+══════════════════════════════════════════════════════ */
+function ChineseView({t,profile,onBack}){
+  const [phase,setPhase]=useState('seal');
+  const animalKey=getChineseAnimal(profile.birthday);
+  const element=getChineseElement(profile.birthday);
+  const sign=CHINESE_SIGNS[animalKey];
+  const col=sign.col;
+  const RED='#c8382a';
+  const GOLD='#c8a040';
+
+  useEffect(()=>{
+    if(phase==='reveal'){
+      const t2=setTimeout(()=>setPhase('card'),1100);
+      return()=>clearTimeout(t2);
+    }
+  },[phase]);
+
+  const card={background:'#ffffff',border:'1px solid rgba(31,31,36,0.10)',borderRadius:16,boxShadow:'0 2px 8px rgba(0,0,0,0.06),0 0 0 0.5px rgba(0,0,0,0.03)'};
+  const ELEMENTS={Metallo:{col:'#8090a8',icon:'⊕'},Acqua:{col:'#4a88b8',icon:'≋'},Legno:{col:'#5a9060',icon:'✦'},Fuoco:{col:'#c84030',icon:'∆'},Terra:{col:'#a08040',icon:'□'}};
+  const elData=ELEMENTS[element]||ELEMENTS['Legno'];
+
+  /* ── FASE 1: IL SIGILLO (carta di riso) ── */
+  if(phase==='seal'){
+    return(
+      <div style={{minHeight:'100vh',background:'#f2f2f7',color:'#1f1f24',display:'flex',flexDirection:'column',overflowY:'auto',paddingBottom:'calc(env(safe-area-inset-bottom,0px) + 80px)'}}>
+        <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
+          {[...Array(20)].map((_,i)=>(
+            <div key={i} style={{position:'absolute',width:1.5,height:1.5,borderRadius:'50%',background:`rgba(31,31,36,${i%3===0?0.07:0.04})`,top:`${(i*43+17)%100}%`,left:`${(i*71+11)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
+          ))}
+        </div>
+        <div style={{position:'relative',zIndex:1,maxWidth:640,margin:'0 auto',padding:'0 16px',width:'100%',flex:1,display:'flex',flexDirection:'column'}}>
+          <div style={{padding:'calc(env(safe-area-inset-top,0px) + 14px) 4px 0'}}>
+            <button onClick={onBack} style={{color:'rgba(31,31,36,0.45)',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:400,letterSpacing:'.14em',padding:'12px 4px',background:'none',border:'none',cursor:'pointer'}}>← indietro</button>
+          </div>
+          <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'40px 0 60px',textAlign:'center'}}>
+            <div className="gold-text" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(9px,2.4vw,11px)',fontWeight:500,letterSpacing:'.52em',textTransform:'uppercase',marginBottom:36}}>ARCANA · ZODIACO CINESE</div>
+            {/* Sigillo rosso pulsante */}
+            <div onClick={()=>setPhase('reveal')} style={{width:80,height:80,borderRadius:'50%',background:`radial-gradient(circle at 40% 40%,${RED}cc,${RED}88)`,boxShadow:`0 8px 32px ${RED}44,0 2px 8px ${RED}22`,marginBottom:40,animation:'pulse 2.6s ease-in-out infinite',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>
+              <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:32,color:'rgba(255,240,200,0.9)',lineHeight:1,userSelect:'none'}}>印</span>
+            </div>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(24px,6.5vw,36px)',fontWeight:400,fontStyle:'italic',color:'#1f1f24',lineHeight:1.4,marginBottom:16,maxWidth:320}}>Il Calendario di Giada<br/>conosce il tuo respiro.</div>
+            <div style={{width:36,height:1,background:`linear-gradient(to right,transparent,${RED}55,transparent)`,margin:'0 auto 20px'}}/>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'10px',letterSpacing:'.28em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase',marginBottom:48}}>Il tuo anno rivela l'animale dell'anima</div>
+            <button onClick={()=>setPhase('reveal')} style={{padding:'14px 36px',background:'#1f1f24',color:'#f2f2f7',fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontStyle:'italic',fontWeight:500,letterSpacing:'.04em',borderRadius:100,border:'none',cursor:'pointer',boxShadow:'0 4px 20px rgba(0,0,0,0.15)'}}>Scopri il tuo Segno</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── FASE 2: REVEAL ── */
+  if(phase==='reveal'){
+    return(
+      <div style={{minHeight:'100vh',background:'#f2f2f7',display:'flex',alignItems:'center',justifyContent:'center'}}>
+        <div style={{textAlign:'center'}}>
+          <div style={{width:80,height:80,borderRadius:'50%',background:`radial-gradient(circle,${RED}cc,${RED}44,transparent 75%)`,margin:'0 auto 24px',animation:'pulse 0.5s ease-out',boxShadow:`0 0 40px ${RED}55`}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(20px,5vw,26px)',fontStyle:'italic',color:'rgba(31,31,36,0.55)'}}>Il sigillo si apre…</div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── FASE 3: CARTA COMPLETA ── */
+  return(
+    <div style={{minHeight:'100vh',background:'#f2f2f7',color:'#1f1f24',overflowY:'auto',paddingBottom:'calc(env(safe-area-inset-bottom,0px) + 80px)'}}>
+      <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
+        {[...Array(20)].map((_,i)=>(
+          <div key={i} style={{position:'absolute',width:1.5,height:1.5,borderRadius:'50%',background:`rgba(31,31,36,${i%3===0?0.07:0.04})`,top:`${(i*43+17)%100}%`,left:`${(i*71+11)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
+        ))}
+      </div>
+      <div style={{position:'relative',zIndex:1,maxWidth:640,margin:'0 auto',padding:'0 16px'}}>
+
+        {/* NAV */}
+        <div style={{padding:'calc(env(safe-area-inset-top,0px) + 14px) 4px 0'}}>
+          <button onClick={onBack} style={{color:'rgba(31,31,36,0.45)',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:400,letterSpacing:'.14em',padding:'12px 4px',background:'none',border:'none',cursor:'pointer'}}>← indietro</button>
+        </div>
+
+        {/* HEADER */}
+        <div style={{textAlign:'center',padding:'clamp(18px,5vw,32px) 0 24px'}}>
+          <div className="gold-text" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(9px,2.4vw,11px)',fontWeight:500,letterSpacing:'.52em',textTransform:'uppercase',marginBottom:14}}>ARCANA · ZODIACO CINESE</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(50px,13vw,72px)',fontWeight:400,color:col,letterSpacing:'-.02em',lineHeight:1,marginBottom:6}}>{sign.hanzi}</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(28px,7.5vw,44px)',fontWeight:500,color:'#1f1f24',letterSpacing:'-.01em',lineHeight:1.1,marginBottom:4}}>{sign.nome}</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(13px,3.5vw,16px)',fontStyle:'italic',color:'rgba(31,31,36,0.45)',marginBottom:10}}>{sign.pinyin} · {element}</div>
+          <div style={{width:36,height:1,background:`linear-gradient(to right,transparent,${RED}66,transparent)`,margin:'0 auto'}}/>
+        </div>
+
+        {/* SVG ILLUSTRAZIONE */}
+        <div style={{display:'flex',justifyContent:'center',marginBottom:24}} className="fade-in">
+          <div style={{width:'min(180px,48vw)',height:'min(180px,48vw)',background:'#ffffff',borderRadius:'50%',padding:20,boxSizing:'border-box',border:'1px solid rgba(31,31,36,0.10)',boxShadow:'0 4px 20px rgba(0,0,0,0.07)'}}>
+            {sign.svg}
+          </div>
+        </div>
+
+        {/* ISTINTO PRIMORDIALE */}
+        <div style={{...card,marginBottom:10,padding:'22px 22px 20px'}} className="fade-in-up">
+          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12}}>
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 3 Q14 7 14 12 Q14 16 10 17 Q6 16 6 12 Q6 7 10 3Z" stroke={col} strokeWidth="1.3" fill={`${col}22`}/><path d="M10 17 L10 20" stroke={col} strokeWidth="1" strokeLinecap="round"/></svg>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontWeight:600,color:'#1f1f24'}}>L'Istinto Primordiale</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.16em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase',marginLeft:'auto'}}>L'Archetipo</div>
+          </div>
+          <div style={{width:'100%',height:'1px',background:'rgba(31,31,36,0.07)',marginBottom:14}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'#1f1f24',lineHeight:1.9,fontStyle:'italic'}}>{sign.istinto}</div>
+        </div>
+
+        {/* SOSTANZA DELL'ANIMA (ELEMENTO) */}
+        <div style={{...card,marginBottom:10,padding:'22px 22px 20px'}} className="fade-in-up">
+          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12}}>
+            <div style={{width:18,height:18,borderRadius:4,background:`${elData.col}22`,border:`1px solid ${elData.col}66`,display:'flex',alignItems:'center',justifyContent:'center'}}>
+              <span style={{fontSize:10,color:elData.col,lineHeight:1}}>{elData.icon}</span>
+            </div>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontWeight:600,color:'#1f1f24'}}>La Sostanza dell'Anima</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.16em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase',marginLeft:'auto'}}>Elemento · {element}</div>
+          </div>
+          <div style={{width:'100%',height:'1px',background:'rgba(31,31,36,0.07)',marginBottom:14}}/>
+          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:14,padding:'10px 14px',background:`${elData.col}0d`,borderRadius:10,border:`1px solid ${elData.col}22`}}>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(18px,5vw,22px)',fontWeight:500,color:elData.col,flexShrink:0}}>{sign.nome} di {element}</div>
+          </div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'#1f1f24',lineHeight:1.9,fontStyle:'italic'}}>{sign.elemento_base}</div>
+        </div>
+
+        {/* OMBRA INVERTITA */}
+        <div style={{...card,marginBottom:28,padding:'22px 22px 20px'}} className="fade-in-up">
+          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12}}>
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="rgba(31,31,36,0.4)" strokeWidth="1.3" fill="rgba(31,31,36,0.06)"/><path d="M10 3 A7 7 0 0 1 10 17Z" fill="rgba(31,31,36,0.15)"/><circle cx="10" cy="10" r="2" fill="rgba(31,31,36,0.3)"/></svg>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontWeight:600,color:'#1f1f24'}}>L'Ombra Invertita</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.16em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase',marginLeft:'auto'}}>Opposto · {sign.opposto}</div>
+          </div>
+          <div style={{width:'100%',height:'1px',background:'rgba(31,31,36,0.07)',marginBottom:14}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'#1f1f24',lineHeight:1.9,fontStyle:'italic'}}>{sign.ombra}</div>
+        </div>
+
+        <div style={{textAlign:'center',paddingBottom:20}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(11px,3vw,13px)',fontStyle:'italic',color:'rgba(31,31,36,0.30)',letterSpacing:'.06em'}}>Zodiaco Cinese · {sign.nome} {sign.hanzi} · {element}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function TemanataleView({t,profile,onBack}){
   const [open,setOpen]=useState([true,true,true,true]);
   const toggle=useCallback((i)=>setOpen(o=>{const n=[...o];n[i]=!n[i];return n;}),[]);
@@ -3565,6 +3993,7 @@ function App(){
       {!splash&&view==="daily"&&profile&&<DailyHoroscope t={t} profile={profile} onBack={()=>setView("hub")} onProfile={()=>setView("profile")} onEdit={()=>setView("setup")}/>}
       {!splash&&view==="natale"&&profile&&<TemanataleView t={t} profile={profile} onBack={()=>setView("hub")}/>}
       {!splash&&view==="sogni"&&profile&&<SogniView t={t} profile={profile} onBack={()=>setView("hub")}/>}
+      {!splash&&view==="cinese"&&profile&&<ChineseView t={t} profile={profile} onBack={()=>setView("hub")}/> }
       {!splash&&view==="druido"&&profile&&<DruidView t={t} profile={profile} onBack={()=>setView("hub")}/>}
       {!splash&&view==="tarocchi"&&<Tarocchi t={t}/>}
       {!splash&&view==="meditazione"&&<Meditazione onBack={()=>setView("hub")}/>}
