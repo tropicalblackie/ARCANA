@@ -1881,11 +1881,7 @@ function Meditazione({onBack}){
 /* ══════════════════════════════════════════════════════
    HOME HUB
 ══════════════════════════════════════════════════════ */
-const HUB_COMING=[
-  {key:"compatibilita",label:"Compatibilità",        icon:"⋈",  col:"#d4688a", shape:"sq"},
-  {key:"ascendente",   label:"Ascendente",           icon:"△",  col:"#58c8e0", shape:"pill"},
-  {key:"sfera",        label:"Sfera di Cristallo",   icon:"◎",  col:"#9888e8", shape:"sq"},
-];
+
 
 function HomeHub({t,setView,profile}){
   const[hov,setHov]=useState(null);
@@ -1985,6 +1981,19 @@ function HomeHub({t,setView,profile}){
           <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"rgba(96,184,112,0.35)"}}>›</span>
         </div>
 
+        {/* ── Compatibilità ── */}
+        <div onClick={()=>profile?setView("compatibilita"):setView("setup")} onMouseEnter={()=>setHov("compatibilita")} onMouseLeave={()=>setHov(null)}
+          style={{marginBottom:10,padding:"20px 24px",background:hov==="compatibilita"?"rgba(212,104,138,0.08)":"#ffffff",border:`1px solid ${hov==="compatibilita"?"rgba(212,104,138,0.45)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="compatibilita"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="compatibilita"?"0 14px 26px rgba(212,104,138,0.15)":"0 8px 24px rgba(20,20,30,0.07)"}}>
+          <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(212,104,138,0.10)",border:"1px solid rgba(212,104,138,0.20)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#d4688a",lineHeight:1}}>♥</span>
+          </div>
+          <div style={{flex:1}}>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4.5vw,21px)",fontWeight:600,color:"#1f1f24",marginBottom:2}}>Compatibilità</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(31,31,36,0.45)",letterSpacing:".02em"}}>Sinastria · Le 4 stanze dell'unione</div>
+          </div>
+          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"rgba(212,104,138,0.30)"}}>›</span>
+        </div>
+
         {/* ── Tarocchi + Profilo — 2 col ── */}
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:36}}>
           <div onClick={()=>setView("tarocchi")} onMouseEnter={()=>setHov("tarocchi")} onMouseLeave={()=>setHov(null)}
@@ -2003,24 +2012,7 @@ function HomeHub({t,setView,profile}){
           </div>
         </div>
 
-        {/* ── In Arrivo ── */}
-        <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:600,letterSpacing:".36em",color:"rgba(31,31,36,0.35)",textTransform:"uppercase",marginBottom:16,paddingLeft:2}}>In Arrivo</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-          {HUB_COMING.map((f)=>{
-            const isPill=f.shape==="pill";
-            const isH=hov===f.key;
-            return(
-              <div key={f.key} onMouseEnter={()=>setHov(f.key)} onMouseLeave={()=>setHov(null)}
-                style={{padding:isPill?"22px 14px 18px":"26px 16px 22px",background:isH?`${f.col}10`:"#ffffff",border:`1px solid ${isH?f.col+"48":"rgba(31,31,36,0.08)"}`,borderRadius:isPill?50:16,textAlign:"center",cursor:"default",transition:"all .3s",position:"relative",overflow:"hidden",boxShadow:"0 6px 18px rgba(20,20,30,0.05)"}}>
-                <div style={{position:"absolute",top:7,right:10,fontFamily:"'Inter',sans-serif",fontSize:"7px",letterSpacing:".07em",color:`${f.col}55`,textTransform:"uppercase"}}>presto</div>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(26px,7vw,32px)",color:`${f.col}70`,lineHeight:1,marginBottom:8,transition:"transform .25s",transform:isH?"scale(1.1)":"scale(1)"}}>{f.icon}</div>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(13px,3.4vw,15px)",color:"rgba(31,31,36,0.56)",lineHeight:1.3}}>{f.label}</div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div style={{textAlign:"center",marginTop:40,paddingBottom:8}}>
+        <div style={{textAlign:"center",marginTop:32,paddingBottom:8}}>
           <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"11px",fontStyle:"italic",color:"rgba(184,138,43,0.45)",letterSpacing:".06em"}}>L'universo si espande ✦</div>
         </div>
       </div>
@@ -3531,6 +3523,273 @@ function DruidView({t,profile,onBack}){
 }
 
 /* ══════════════════════════════════════════════════════
+   SINASTRIA / COMPATIBILITA
+══════════════════════════════════════════════════════ */
+function getSunSign(bday){
+  if(!bday)return'';
+  const d=new Date(bday+'T12:00:00'),m=d.getMonth()+1,day=d.getDate();
+  if((m===3&&day>=21)||(m===4&&day<=19))return'Ariete';
+  if((m===4&&day>=20)||(m===5&&day<=20))return'Toro';
+  if((m===5&&day>=21)||(m===6&&day<=20))return'Gemelli';
+  if((m===6&&day>=21)||(m===7&&day<=22))return'Cancro';
+  if((m===7&&day>=23)||(m===8&&day<=22))return'Leone';
+  if((m===8&&day>=23)||(m===9&&day<=22))return'Vergine';
+  if((m===9&&day>=23)||(m===10&&day<=22))return'Bilancia';
+  if((m===10&&day>=23)||(m===11&&day<=21))return'Scorpione';
+  if((m===11&&day>=22)||(m===12&&day<=21))return'Sagittario';
+  if((m===12&&day>=22)||(m===1&&day<=19))return'Capricorno';
+  if((m===1&&day>=20)||(m===2&&day<=18))return'Acquario';
+  return'Pesci';
+}
+
+function AlembicSVG({size,col}){
+  const s=size||80,c=col||'#d4688a';
+  return(
+    <svg width={s} height={s} viewBox="0 0 100 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="50" cy="83" rx="34" ry="26" stroke={c} strokeWidth="1.4" fill={c+'18'}/>
+      <line x1="42" y1="57" x2="40" y2="36" stroke={c} strokeWidth="1.2" strokeLinecap="round"/>
+      <line x1="58" y1="57" x2="60" y2="36" stroke={c} strokeWidth="1.2" strokeLinecap="round"/>
+      <ellipse cx="50" cy="34" rx="12" ry="5" stroke={c} strokeWidth="1.2" fill={c+'22'}/>
+      <path d="M16 79 Q8 70 10 57 Q12 50 18 47" stroke={c} strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M84 79 Q92 70 90 57 Q88 50 82 47" stroke={c} strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M16 79 Q12 86 14 92" stroke={c} strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M84 79 Q88 86 86 92" stroke={c} strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <circle cx="42" cy="80" r="7" stroke={c} strokeWidth="1" fill={c+'14'}/>
+      <circle cx="58" cy="89" r="5" stroke={c} strokeWidth="1" fill={c+'10'}/>
+      <circle cx="52" cy="70" r="4" stroke={c} strokeWidth="1" fill={c+'10'}/>
+      <path d="M50 29 Q48 21 50 13 Q52 21 50 29Z" stroke={c} strokeWidth="1" fill={c+'2a'}/>
+      <circle cx="30" cy="50" r="1.5" fill={c} opacity=".35"/>
+      <circle cx="70" cy="48" r="1.5" fill={c} opacity=".35"/>
+      <circle cx="22" cy="66" r="1" fill={c} opacity=".25"/>
+      <circle cx="78" cy="64" r="1" fill={c} opacity=".25"/>
+    </svg>
+  );
+}
+
+function CompatibilitaView({t,profile,onBack}){
+  const [phase,setPhase]=useState('form');
+  const [other,setOther]=useState({nome:'',birthday:'',ora:'',luogo:''});
+  const [reading,setReading]=useState(null);
+  const [err,setErr]=useState('');
+  const [open,setOpen]=useState([true,false,false,false]);
+
+  const ROSE='#d4688a';
+  const card={background:'#ffffff',border:'1px solid rgba(31,31,36,0.10)',borderRadius:16,boxShadow:'0 2px 8px rgba(0,0,0,0.06),0 0 0 0.5px rgba(0,0,0,0.03)'};
+  const inp={width:'100%',boxSizing:'border-box',padding:'13px 16px',fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,18px)',color:'#1f1f24',background:'#ffffff',border:'1px solid rgba(31,31,36,0.14)',borderRadius:12,outline:'none',WebkitAppearance:'none'};
+
+  const p1Sun=getSunSign(profile.birthday);
+  const p2Sun=other.birthday?getSunSign(other.birthday):'';
+
+  function extract(txt,start,end){
+    const si=txt.indexOf(start);
+    if(si===-1)return'';
+    const from=si+start.length;
+    const ei=end?txt.indexOf(end,from):txt.length;
+    return txt.slice(from,ei===-1?txt.length:ei).trim();
+  }
+
+  async function callReading(){
+    setPhase('loading');
+    setErr('');
+    try{
+      const n1=profile.name||'Persona 1';
+      const n2=other.nome||'Persona 2';
+      const t1=DRUID_TREES[getDruidTree(profile.birthday)]?.nome||'';
+      const t2=other.birthday?(DRUID_TREES[getDruidTree(other.birthday)]?.nome||''):'';
+      const a1=getChineseAnimal(profile.birthday);
+      const a2=other.birthday?getChineseAnimal(other.birthday):'';
+      const sys=`Sei un astrologo junghiano specializzato in sinastria e psicologia archetipica. Analizza la connessione tra le due persone. Scrivi in italiano, tono adulto e poetico, intimo e psicologicamente profondo. Niente asterischi o markdown. Ogni sezione inizia ESATTAMENTE con il suo marcatore tra parentesi quadre.`;
+      const usr=`Persona 1: ${n1}, nata il ${profile.birthday}${profile.birthtime?` alle ${profile.birthtime}`:''}${profile.birthplace?` a ${profile.birthplace}`:''}. Segno solare: ${p1Sun}. Animale cinese: ${a1}. Albero celtico: ${t1}.\n\nPersona 2: ${n2}, nata il ${other.birthday}${other.ora?` alle ${other.ora}`:''}${other.luogo?` a ${other.luogo}`:''}. Segno solare: ${p2Sun}. Animale cinese: ${a2}. Albero celtico: ${t2}.\n\nScrivi la sinastria archetipica in esattamente 4 sezioni (5-6 frasi ciascuna, psicologicamente profonde e senza banalità):\n\n[ANCORAGGIO]\n(Le due Lune: il bisogno emotivo profondo, il modo di creare sicurezza e intimità, come costruiscono il nido.)\n\n[EROS]\n(Venere e Marte: il linguaggio dell'amore, l'attrazione, il conflitto, la gestione del desiderio.)\n\n[SPECCHIO]\n(Lo Specchio Oscuro: le proiezioni junghiane, i pattern karmici, dove si feriscono a vicenda e perché.)\n\n[ENTITA]\n(La Terza Entità: la relazione come organismo indipendente con un proprio scopo e destino condiviso.)`;
+      const res=await fetch('https://text.pollinations.ai/',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({messages:[{role:'system',content:sys},{role:'user',content:usr}],model:'openai',seed:Math.floor(Math.random()*999999),temperature:0.9})
+      });
+      const raw=(await res.text()).replace(/\*\*/g,'').replace(/\*/g,'');
+      const parsed={
+        ancoraggio:extract(raw,'[ANCORAGGIO]','[EROS]'),
+        eros:extract(raw,'[EROS]','[SPECCHIO]'),
+        specchio:extract(raw,'[SPECCHIO]','[ENTITA]'),
+        entita:extract(raw,'[ENTITA]',null)
+      };
+      if(!parsed.ancoraggio&&!parsed.eros){throw new Error('parse');}
+      setReading(parsed);
+      setOpen([true,false,false,false]);
+      setPhase('reading');
+    }catch(e){
+      setErr('La lettura non è riuscita. Riprova.');
+      setPhase('form');
+    }
+  }
+
+  const dots=(
+    <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
+      {[...Array(20)].map((_,i)=>(
+        <div key={i} style={{position:'absolute',width:1.5,height:1.5,borderRadius:'50%',background:`rgba(31,31,36,${i%3===0?0.07:0.04})`,top:`${(i*43+17)%100}%`,left:`${(i*71+11)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
+      ))}
+    </div>
+  );
+  const nav=(
+    <div style={{padding:'calc(env(safe-area-inset-top,0px) + 14px) 4px 0'}}>
+      <button onClick={onBack} style={{color:'rgba(31,31,36,0.45)',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:400,letterSpacing:'.14em',padding:'12px 4px',background:'none',border:'none',cursor:'pointer'}}>← indietro</button>
+    </div>
+  );
+
+  /* ── FORM ── */
+  if(phase==='form'){
+    const canSubmit=!!other.birthday;
+    return(
+      <div style={{minHeight:'100vh',background:'#f2f2f7',color:'#1f1f24',overflowY:'auto',paddingBottom:'calc(env(safe-area-inset-bottom,0px) + 80px)'}}>
+        {dots}
+        <div style={{position:'relative',zIndex:1,maxWidth:640,margin:'0 auto',padding:'0 16px'}}>
+          {nav}
+          <div style={{textAlign:'center',padding:'clamp(18px,5vw,28px) 0 24px'}}>
+            <div className="gold-text" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(9px,2.4vw,11px)',fontWeight:500,letterSpacing:'.52em',textTransform:'uppercase',marginBottom:18}}>ARCANA · SINASTRIA</div>
+            <AlembicSVG size={80}/>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(26px,7vw,36px)',fontWeight:500,color:'#1f1f24',marginBottom:6,marginTop:14}}>Il Sigillo dell'Unione</div>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(13px,3.5vw,16px)',fontStyle:'italic',color:'rgba(31,31,36,0.45)'}}>Inserisci i dati dell'Altro</div>
+          </div>
+
+          {/* Chi sei tu */}
+          <div style={{...card,padding:'16px 20px',marginBottom:12}}>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.28em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase',marginBottom:10}}>Tu</div>
+            <div style={{display:'flex',alignItems:'center',gap:12}}>
+              <div style={{width:40,height:40,borderRadius:'50%',background:`${ROSE}18`,border:`1px solid ${ROSE}33`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'18px',color:ROSE}}>☽</span>
+              </div>
+              <div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontWeight:600,color:'#1f1f24'}}>{profile.name||'Anonimo'}</div>
+                <div style={{fontFamily:"'Inter',sans-serif",fontSize:'10px',color:'rgba(31,31,36,0.45)'}}>{p1Sun}{profile.birthday?` · ${new Date(profile.birthday+'T12:00:00').getFullYear()}`:''}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div style={{display:'flex',alignItems:'center',gap:12,margin:'16px 0'}}>
+            <div style={{flex:1,height:1,background:'rgba(31,31,36,0.08)'}}/>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(18px,5vw,22px)',color:`${ROSE}80`}}>◈</span>
+            <div style={{flex:1,height:1,background:'rgba(31,31,36,0.08)'}}/>
+          </div>
+
+          {/* Form L'Altro */}
+          <div style={{...card,padding:'22px 20px',marginBottom:20}}>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.28em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase',marginBottom:18}}>L'Altro / L'Altra</div>
+            <div style={{marginBottom:14}}>
+              <div style={{fontFamily:"'Inter',sans-serif",fontSize:'10px',color:'rgba(31,31,36,0.45)',marginBottom:6,letterSpacing:'.06em'}}>Nome</div>
+              <input style={inp} placeholder="Come si chiama?" value={other.nome} onChange={e=>setOther(o=>({...o,nome:e.target.value}))}/>
+            </div>
+            <div style={{marginBottom:14}}>
+              <div style={{fontFamily:"'Inter',sans-serif",fontSize:'10px',color:ROSE,marginBottom:6,letterSpacing:'.06em'}}>Data di nascita <span style={{opacity:.55,fontFamily:"'Inter',sans-serif",fontSize:'9px'}}>(richiesta)</span></div>
+              <input type="date" style={inp} value={other.birthday} onChange={e=>setOther(o=>({...o,birthday:e.target.value}))}/>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:other.birthday?14:0}}>
+              <div>
+                <div style={{fontFamily:"'Inter',sans-serif",fontSize:'10px',color:'rgba(31,31,36,0.45)',marginBottom:6,letterSpacing:'.06em'}}>Ora (opz.)</div>
+                <input type="time" style={inp} value={other.ora} onChange={e=>setOther(o=>({...o,ora:e.target.value}))}/>
+              </div>
+              <div>
+                <div style={{fontFamily:"'Inter',sans-serif",fontSize:'10px',color:'rgba(31,31,36,0.45)',marginBottom:6,letterSpacing:'.06em'}}>Città (opz.)</div>
+                <input style={inp} placeholder="es. Roma" value={other.luogo} onChange={e=>setOther(o=>({...o,luogo:e.target.value}))}/>
+              </div>
+            </div>
+            {other.birthday&&(
+              <div style={{display:'flex',alignItems:'center',gap:8,padding:'10px 14px',background:`${ROSE}0d`,borderRadius:10,border:`1px solid ${ROSE}22`}}>
+                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:16,color:ROSE}}>◈</span>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(13px,3.5vw,15px)',fontStyle:'italic',color:'rgba(31,31,36,0.6)'}}>{other.nome||"L'Altro"} · {p2Sun} · {getChineseAnimal(other.birthday)}</div>
+              </div>
+            )}
+          </div>
+
+          {err&&<div style={{textAlign:'center',fontFamily:"'Inter',sans-serif",fontSize:'12px',color:'#c84030',marginBottom:12}}>{err}</div>}
+
+          <button onClick={callReading} disabled={!canSubmit}
+            style={{width:'100%',padding:'16px',background:canSubmit?'#1f1f24':'rgba(31,31,36,0.10)',color:canSubmit?'#f2f2f7':'rgba(31,31,36,0.28)',fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(17px,4.5vw,20px)',fontStyle:'italic',fontWeight:500,letterSpacing:'.04em',borderRadius:100,border:'none',cursor:canSubmit?'pointer':'default',boxShadow:canSubmit?'0 4px 20px rgba(0,0,0,0.15)':'none',transition:'all .3s'}}>
+            Rivela la Sinastria
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── LOADING ── */
+  if(phase==='loading'){
+    return(
+      <div style={{minHeight:'100vh',background:'#f2f2f7',display:'flex',alignItems:'center',justifyContent:'center'}}>
+        <div style={{textAlign:'center'}}>
+          <div style={{animation:'pulse 1.4s ease-in-out infinite',display:'inline-block',marginBottom:20}}>
+            <AlembicSVG size={90}/>
+          </div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.5vw,20px)',fontStyle:'italic',color:'rgba(31,31,36,0.5)'}}>Leggendo le sfere di entrambe le anime…</div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── LETTURA ── */
+  const SECTIONS=[
+    {key:'ancoraggio',label:"L'Ancoraggio",sub:'Le due Lune',text:reading?.ancoraggio||'',
+      icon:<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M14 10 A6 6 0 1 1 8 4 A5 5 0 1 0 14 10Z" stroke="#d4688a" strokeWidth="1.3" fill="#d4688a18"/></svg>},
+    {key:'eros',label:"L'Eros e la Spada",sub:'Venere e Marte',text:reading?.eros||'',
+      icon:<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="8" cy="10" r="5" stroke="#d4688a" strokeWidth="1.3" fill="#d4688a12"/><circle cx="13" cy="10" r="5" stroke="#d4688a" strokeWidth="1.3" fill="#d4688a12"/></svg>},
+    {key:'specchio',label:"Lo Specchio Oscuro",sub:"Saturno · Proiezioni",text:reading?.specchio||'',
+      icon:<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="rgba(31,31,36,0.38)" strokeWidth="1.3" fill="none"/><path d="M10 3 A7 7 0 0 1 10 17Z" fill="rgba(31,31,36,0.11)"/><circle cx="10" cy="10" r="2" fill="rgba(31,31,36,0.28)"/></svg>},
+    {key:'entita',label:"La Terza Entità",sub:'Carta Composita',text:reading?.entita||'',
+      icon:<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#d4688a" strokeWidth="1.3" fill="none"/><ellipse cx="10" cy="10" rx="4" ry="7" stroke="#d4688a" strokeWidth="1" fill="#d4688a12"/></svg>}
+  ];
+  return(
+    <div style={{minHeight:'100vh',background:'#f2f2f7',color:'#1f1f24',overflowY:'auto',paddingBottom:'calc(env(safe-area-inset-bottom,0px) + 80px)'}}>
+      {dots}
+      <div style={{position:'relative',zIndex:1,maxWidth:640,margin:'0 auto',padding:'0 16px'}}>
+        {nav}
+        {/* Header */}
+        <div style={{textAlign:'center',padding:'clamp(18px,5vw,28px) 0 20px'}}>
+          <div className="gold-text" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(9px,2.4vw,11px)',fontWeight:500,letterSpacing:'.52em',textTransform:'uppercase',marginBottom:14}}>ARCANA · SINASTRIA</div>
+          <div style={{display:'flex',justifyContent:'center',alignItems:'center',gap:16,marginBottom:16}}>
+            <div style={{textAlign:'right',minWidth:80}}>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(14px,3.8vw,17px)',fontWeight:600,color:'#1f1f24'}}>{profile.name||'Tu'}</div>
+              <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',color:'rgba(31,31,36,0.4)',letterSpacing:'.1em'}}>{p1Sun}</div>
+            </div>
+            <AlembicSVG size={64}/>
+            <div style={{textAlign:'left',minWidth:80}}>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(14px,3.8vw,17px)',fontWeight:600,color:'#1f1f24'}}>{other.nome||"L'Altro"}</div>
+              <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',color:'rgba(31,31,36,0.4)',letterSpacing:'.1em'}}>{p2Sun}</div>
+            </div>
+          </div>
+          <div style={{width:36,height:1,background:'linear-gradient(to right,transparent,#d4688a66,transparent)',margin:'0 auto'}}/>
+        </div>
+        {/* Sezioni accordion */}
+        {SECTIONS.map((sec,i)=>(
+          <div key={sec.key} style={{...card,marginBottom:10,overflow:'hidden'}} className="fade-in-up">
+            <button onClick={()=>setOpen(o=>{const n=[...o];n[i]=!n[i];return n;})}
+              style={{width:'100%',padding:'20px 22px',display:'flex',alignItems:'center',gap:12,background:'none',border:'none',cursor:'pointer',textAlign:'left'}}>
+              {sec.icon}
+              <div style={{flex:1}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontWeight:600,color:'#1f1f24'}}>{sec.label}</div>
+                <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.16em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase'}}>{sec.sub}</div>
+              </div>
+              <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'18px',color:'#d4688a80',display:'inline-block',transition:'transform .25s',transform:open[i]?'rotate(90deg)':'rotate(0deg)'}}>›</span>
+            </button>
+            {open[i]&&(
+              <div style={{padding:'0 22px 20px'}}>
+                <div style={{width:'100%',height:1,background:'rgba(31,31,36,0.07)',marginBottom:14}}/>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'#1f1f24',lineHeight:1.9,fontStyle:'italic'}}>{sec.text}</div>
+              </div>
+            )}
+          </div>
+        ))}
+        <button onClick={()=>{setPhase('form');setReading(null);}}
+          style={{width:'100%',marginTop:8,padding:'14px',background:'none',color:'rgba(31,31,36,0.4)',fontFamily:"'Inter',sans-serif",fontSize:'11px',letterSpacing:'.18em',textTransform:'uppercase',border:'1px solid rgba(31,31,36,0.12)',borderRadius:100,cursor:'pointer'}}>
+          Nuova lettura
+        </button>
+        <div style={{textAlign:'center',padding:'20px 0'}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(11px,3vw,13px)',fontStyle:'italic',color:'rgba(31,31,36,0.28)',letterSpacing:'.06em'}}>ARCANA · Sinastria · {profile.name||''}{other.nome?` & ${other.nome}`:''}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════
    CHINESE VIEW
 ══════════════════════════════════════════════════════ */
 function ChineseView({t,profile,onBack}){
@@ -3993,6 +4252,7 @@ function App(){
       {!splash&&view==="daily"&&profile&&<DailyHoroscope t={t} profile={profile} onBack={()=>setView("hub")} onProfile={()=>setView("profile")} onEdit={()=>setView("setup")}/>}
       {!splash&&view==="natale"&&profile&&<TemanataleView t={t} profile={profile} onBack={()=>setView("hub")}/>}
       {!splash&&view==="sogni"&&profile&&<SogniView t={t} profile={profile} onBack={()=>setView("hub")}/>}
+      {!splash&&view==="compatibilita"&&profile&&<CompatibilitaView t={t} profile={profile} onBack={()=>setView("hub")}/> }
       {!splash&&view==="cinese"&&profile&&<ChineseView t={t} profile={profile} onBack={()=>setView("hub")}/> }
       {!splash&&view==="druido"&&profile&&<DruidView t={t} profile={profile} onBack={()=>setView("hub")}/>}
       {!splash&&view==="tarocchi"&&<Tarocchi t={t}/>}
