@@ -1044,7 +1044,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
 }
 
 // ── NAV ICON (canvas white-bg removal) ──
-function NavIcon({src,zoom,active}){
+function NavIcon({src,zoom,active,removeDark}){
   const canvasRef=useRef(null);
   useEffect(()=>{
     if(!src)return;
@@ -1064,11 +1064,15 @@ function NavIcon({src,zoom,active}){
         const br=(px[i]+px[i+1]+px[i+2])/3;
         if(br>230){px[i+3]=0;}
         else if(br>195){px[i+3]=Math.round((230-br)/35*255);}
+        if(removeDark){
+          if(br<25){px[i+3]=0;}
+          else if(br<60){px[i+3]=Math.round((br-25)/35*255);}
+        }
       }
       ctx.putImageData(id,0,0);
     };
     img.src=src;
-  },[src,zoom]);
+  },[src,zoom,removeDark]);
   return <canvas ref={canvasRef} style={{width:38,height:38,borderRadius:'50%',opacity:active?1:0.38,transition:'opacity .2s'}}/>;
 }
 
@@ -1077,7 +1081,7 @@ function BottomNav({view,setView,t,profile}){
   const tabs=profile?[
     {key:"home",img:"dcd5f9f79cc75a4f12387cea11c2054f.jpg",zoom:1.0,label:"Zodiac"},
     {key:"daily",img:"fa95a9245514b3a80a2a7f9032e4ee6f.jpg",zoom:2.8,label:"Oroscopo"},
-    {key:"tarocchi",img:"ce7830acdd5d213ae54b37ce4f89d8d3.jpg",zoom:1.0,label:"Tarocchi"},
+    {key:"tarocchi",img:"ce7830acdd5d213ae54b37ce4f89d8d3.jpg",zoom:1.0,removeDark:true,label:"Tarocchi"},
     {key:"hub",icon:"⊕",label:"Hub"},
   ]:[
     {key:"home",img:"dcd5f9f79cc75a4f12387cea11c2054f.jpg",zoom:1.0,label:"Zodiac"},
@@ -1093,7 +1097,7 @@ function BottomNav({view,setView,t,profile}){
             <button key={tab.key} onClick={()=>setView(tab.key)} style={{flex:1,padding:"12px 8px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:"transparent",border:"none",cursor:"pointer",position:"relative"}}>
               {active&&<div style={{position:"absolute",top:0,left:"25%",right:"25%",height:"2px",background:`linear-gradient(to right,transparent,${t.accent},transparent)`,borderRadius:"0 0 2px 2px"}}/>}
               {tab.img
-                ?<NavIcon src={tab.img} zoom={tab.zoom} active={active}/>
+                ?<NavIcon src={tab.img} zoom={tab.zoom} active={active} removeDark={tab.removeDark}/>
                 :<span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:active?t.accent:t.muted,lineHeight:1,filter:active?`drop-shadow(0 0 6px ${t.accent}90)`:"none",transition:"all .2s"}}>{tab.icon}</span>}
               <span style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:active?600:400,letterSpacing:".22em",textTransform:"uppercase",color:active?t.accent:t.muted,transition:"all .2s"}}>{tab.label}</span>
             </button>
