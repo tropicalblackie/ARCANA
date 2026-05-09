@@ -3119,39 +3119,40 @@ const DRUID_TREES={
 
 function DruidView({t,profile,onBack}){
   const [phase,setPhase]=useState('forest');
-  const [revealed,setRevealed]=useState(false);
-
   const treeKey=getDruidTree(profile.birthday);
   const tree=DRUID_TREES[treeKey];
   const col=tree.col;
-  const bg=tree.bg;
 
   useEffect(()=>{
     if(phase==='reveal'){
-      const timer=setTimeout(()=>setPhase('card'),1400);
+      const timer=setTimeout(()=>setPhase('card'),900);
       return()=>clearTimeout(timer);
     }
   },[phase]);
 
-  /* ── FASE 1: FORESTA NEBBIOSA ── */
+  const card={background:'#ffffff',border:'1px solid rgba(31,31,36,0.10)',borderRadius:16,boxShadow:'0 2px 8px rgba(0,0,0,0.06),0 0 0 0.5px rgba(0,0,0,0.03)'};
+
+  /* ── FASE 1: INVITO ── */
   if(phase==='forest'){
     return(
-      <div onClick={()=>setPhase('reveal')} style={{minHeight:'100vh',background:'#080d06',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'40px 24px',cursor:'pointer',position:'relative',overflow:'hidden'}}>
-        {/* Silhouette bosco */}
-        <svg viewBox="0 0 375 320" style={{position:'absolute',bottom:0,left:0,width:'100%',opacity:.55,pointerEvents:'none'}} fill="none">
-          <path d="M0 320 L0 200 L18 180 L36 200 L36 160 L60 130 L84 160 L84 140 L108 100 L132 140 L132 120 L156 85 L180 120 L180 100 L204 70 L228 100 L228 80 L252 50 L276 80 L276 60 L300 90 L324 60 L324 90 L348 110 L375 80 L375 320Z" fill="#1a2a10"/>
-          <path d="M0 320 L0 240 L24 220 L48 240 L48 210 L72 185 L96 210 L120 190 L144 210 L168 175 L192 210 L216 185 L240 210 L264 180 L288 210 L312 185 L336 210 L375 190 L375 320Z" fill="#0f1a08"/>
-        </svg>
-        {/* Nebbia */}
-        <div style={{position:'absolute',bottom:0,left:0,right:0,height:200,background:'linear-gradient(to top,rgba(12,20,8,0.9),transparent)',pointerEvents:'none'}}/>
-        {/* Goccia d'ambra pulsante */}
-        <div style={{width:56,height:56,borderRadius:'50% 50% 50% 50% / 60% 60% 40% 40%',background:'radial-gradient(circle at 40% 35%,rgba(210,160,40,0.9),rgba(160,100,20,0.7))',boxShadow:'0 0 40px rgba(200,150,30,0.5),0 0 80px rgba(200,150,30,0.2)',marginBottom:48,animation:'pulse 2.5s ease-in-out infinite',position:'relative',zIndex:1}}/>
-        <div style={{position:'relative',zIndex:1,textAlign:'center'}}>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(9px,2.5vw,11px)',fontWeight:500,letterSpacing:'.52em',textTransform:'uppercase',color:'rgba(180,150,60,0.65)',marginBottom:20}}>ARCANA · DRUIDO</div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(24px,6.5vw,34px)',fontWeight:400,fontStyle:'italic',color:'rgba(240,230,200,0.88)',lineHeight:1.4,marginBottom:48,maxWidth:320}}>C'è una radice<br/>che porta il tuo nome.</div>
-          <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:8,opacity:.55}}>
-            <svg width="16" height="24" viewBox="0 0 16 24" fill="none"><path d="M8 2 C8 2 8 14 8 22" stroke="rgba(200,160,60,0.7)" strokeWidth="1.5" strokeLinecap="round"/><path d="M4 18 L8 22 L12 18" stroke="rgba(200,160,60,0.7)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.32em',color:'rgba(200,160,60,0.65)',textTransform:'uppercase'}}>tocca per scoprire</div>
+      <div style={{minHeight:'100vh',background:'#f2f2f7',color:'#1f1f24',display:'flex',flexDirection:'column',overflowY:'auto',paddingBottom:'calc(env(safe-area-inset-bottom,0px) + 80px)'}}>
+        <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
+          {[...Array(20)].map((_,i)=>(
+            <div key={i} style={{position:'absolute',width:1.5,height:1.5,borderRadius:'50%',background:`rgba(31,31,36,${i%3===0?0.07:0.04})`,top:`${(i*43+17)%100}%`,left:`${(i*71+11)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
+          ))}
+        </div>
+        <div style={{position:'relative',zIndex:1,maxWidth:640,margin:'0 auto',padding:'0 16px',width:'100%',flex:1,display:'flex',flexDirection:'column'}}>
+          <div style={{padding:'calc(env(safe-area-inset-top,0px) + 14px) 4px 0'}}>
+            <button onClick={onBack} style={{color:'rgba(31,31,36,0.45)',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:400,letterSpacing:'.14em',padding:'12px 4px',background:'none',border:'none',cursor:'pointer'}}>← indietro</button>
+          </div>
+          <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'40px 0 60px',textAlign:'center'}}>
+            <div className="gold-text" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(9px,2.4vw,11px)',fontWeight:500,letterSpacing:'.52em',textTransform:'uppercase',marginBottom:32}}>ARCANA · CALENDARIO CELTICO</div>
+            {/* Goccia d'ambra */}
+            <div onClick={()=>setPhase('reveal')} style={{width:72,height:72,borderRadius:'50% 50% 50% 50% / 60% 60% 40% 40%',background:`radial-gradient(circle at 40% 35%,rgba(210,160,40,0.85),rgba(160,100,20,0.65))`,boxShadow:'0 8px 32px rgba(180,130,20,0.25),0 2px 8px rgba(180,130,20,0.15)',marginBottom:40,animation:'pulse 2.8s ease-in-out infinite',cursor:'pointer',flexShrink:0}}/>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(26px,7vw,38px)',fontWeight:400,fontStyle:'italic',color:'#1f1f24',lineHeight:1.4,marginBottom:16,maxWidth:300}}>C'è una radice<br/>che porta il tuo nome.</div>
+            <div style={{width:36,height:1,background:'linear-gradient(to right,transparent,rgba(200,165,80,0.55),transparent)',margin:'0 auto 20px'}}/>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'10px',letterSpacing:'.28em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase',marginBottom:48}}>Il bosco conosce la tua data di nascita</div>
+            <button onClick={()=>setPhase('reveal')} style={{padding:'14px 36px',background:'#1f1f24',color:'#f2f2f7',fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontStyle:'italic',fontWeight:500,letterSpacing:'.04em',borderRadius:100,border:'none',cursor:'pointer',boxShadow:'0 4px 20px rgba(0,0,0,0.15)'}}>Scopri il tuo Albero Sacro</button>
           </div>
         </div>
       </div>
@@ -3161,81 +3162,81 @@ function DruidView({t,profile,onBack}){
   /* ── FASE 2: REVEAL ── */
   if(phase==='reveal'){
     return(
-      <div style={{minHeight:'100vh',background:'#080d06',display:'flex',alignItems:'center',justifyContent:'center'}}>
-        <div style={{width:120,height:120,borderRadius:'50%',background:`radial-gradient(circle,${col}dd,${col}44,transparent 70%)`,animation:'pulse 0.7s ease-out forwards',boxShadow:`0 0 80px ${col}88,0 0 160px ${col}44`}}/>
+      <div style={{minHeight:'100vh',background:'#f2f2f7',display:'flex',alignItems:'center',justifyContent:'center'}}>
+        <div style={{textAlign:'center'}}>
+          <div style={{width:80,height:80,borderRadius:'50%',background:`radial-gradient(circle,${col}cc,${col}44,transparent 75%)`,margin:'0 auto 24px',animation:'pulse 0.6s ease-out',boxShadow:`0 0 40px ${col}60`}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(20px,5vw,26px)',fontStyle:'italic',color:'rgba(31,31,36,0.55)'}}>Il bosco rivela…</div>
+        </div>
       </div>
     );
   }
 
   /* ── FASE 3: CARTA COMPLETA ── */
-  const card={background:'#ffffff',border:`1px solid ${col}30`,borderRadius:20,boxShadow:`0 4px 20px rgba(0,0,0,0.07),0 0 0 0.5px ${col}20`};
   return(
-    <div style={{minHeight:'100vh',background:bg,color:'#1f1f24',overflowY:'auto',paddingBottom:'calc(env(safe-area-inset-bottom,0px) + 80px)'}}>
-      {/* Sfondo foglie leggere */}
-      <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0,overflow:'hidden'}}>
-        {[...Array(14)].map((_,i)=>(
-          <div key={i} style={{position:'absolute',width:2,height:2,borderRadius:'50%',background:`${col}`,opacity:0.12+i%3*0.04,top:`${(i*41+9)%100}%`,left:`${(i*73+13)%100}%`,animation:`pulse ${2.5+(i*0.3)%2}s ${(i*0.22)%2}s ease-in-out infinite`}}/>
+    <div style={{minHeight:'100vh',background:'#f2f2f7',color:'#1f1f24',overflowY:'auto',paddingBottom:'calc(env(safe-area-inset-bottom,0px) + 80px)'}}>
+      <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
+        {[...Array(20)].map((_,i)=>(
+          <div key={i} style={{position:'absolute',width:1.5,height:1.5,borderRadius:'50%',background:`rgba(31,31,36,${i%3===0?0.07:0.04})`,top:`${(i*43+17)%100}%`,left:`${(i*71+11)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
         ))}
       </div>
       <div style={{position:'relative',zIndex:1,maxWidth:640,margin:'0 auto',padding:'0 16px'}}>
 
         {/* NAV */}
-        <div style={{display:'flex',alignItems:'center',padding:'calc(env(safe-area-inset-top,0px) + 14px) 4px 0'}}>
-          <button onClick={onBack} style={{color:'rgba(31,31,36,0.4)',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:400,letterSpacing:'.14em',padding:'12px 4px',background:'none',border:'none',cursor:'pointer'}}>← indietro</button>
+        <div style={{padding:'calc(env(safe-area-inset-top,0px) + 14px) 4px 0'}}>
+          <button onClick={onBack} style={{color:'rgba(31,31,36,0.45)',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:400,letterSpacing:'.14em',padding:'12px 4px',background:'none',border:'none',cursor:'pointer'}}>← indietro</button>
         </div>
 
         {/* HEADER */}
-        <div style={{textAlign:'center',padding:'clamp(20px,5vw,36px) 0 28px'}}>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(9px,2.4vw,11px)',fontWeight:500,letterSpacing:'.52em',textTransform:'uppercase',color:`${col}bb`,marginBottom:14}}>ARCANA · CALENDARIO OGHAMICO</div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(34px,9vw,54px)',fontWeight:500,color:'#1f1f24',letterSpacing:'-.02em',lineHeight:1,marginBottom:6}}>{tree.nome}</div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(13px,3.5vw,16px)',fontStyle:'italic',color:`${col}99`,marginBottom:10}}>{tree.epiteto}</div>
-          <div style={{width:36,height:1,background:`linear-gradient(to right,transparent,${col}88,transparent)`,margin:'0 auto 10px'}}/>
-          <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.28em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase'}}>{tree.range}</div>
+        <div style={{textAlign:'center',padding:'clamp(18px,5vw,32px) 0 24px'}}>
+          <div className="gold-text" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(9px,2.4vw,11px)',fontWeight:500,letterSpacing:'.52em',textTransform:'uppercase',marginBottom:14}}>ARCANA · CALENDARIO OGHAMICO</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(34px,9vw,52px)',fontWeight:500,color:'#1f1f24',letterSpacing:'-.02em',lineHeight:1,marginBottom:6}}>{tree.nome}</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(13px,3.5vw,16px)',fontStyle:'italic',color:'rgba(31,31,36,0.45)',marginBottom:12}}>{tree.epiteto}</div>
+          <div style={{width:36,height:1,background:'linear-gradient(to right,transparent,rgba(200,165,80,0.55),transparent)',margin:'0 auto 10px'}}/>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.28em',color:'rgba(31,31,36,0.32)',textTransform:'uppercase'}}>{tree.range} · {tree.ogham}</div>
         </div>
 
         {/* SVG ILLUSTRAZIONE */}
-        <div style={{display:'flex',justifyContent:'center',marginBottom:28}}>
-          <div style={{width:'min(200px,52vw)',height:'min(200px,52vw)',background:`radial-gradient(circle,${col}18,transparent 70%)`,borderRadius:'50%',padding:24,boxSizing:'border-box',border:`1px solid ${col}30`}} className="fade-in">
+        <div style={{display:'flex',justifyContent:'center',marginBottom:24}} className="fade-in">
+          <div style={{width:'min(180px,48vw)',height:'min(180px,48vw)',background:'#ffffff',borderRadius:'50%',padding:20,boxSizing:'border-box',border:'1px solid rgba(31,31,36,0.10)',boxShadow:'0 4px 20px rgba(0,0,0,0.07)'}}>
             {tree.svg}
           </div>
         </div>
 
         {/* RADICI */}
-        <div style={{...card,marginBottom:12,padding:'22px 22px 20px'}} className="fade-in-up">
-          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:14}}>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2 C10 2 6 8 4 13 C2 18 6 19 10 19 C14 19 18 18 16 13 C14 8 10 2 10 2Z" stroke={col} strokeWidth="1.3" fill={`${col}22`}/><path d="M10 19 C8 15 5 12 3 10 M10 19 C12 15 15 12 17 10" stroke={col} strokeWidth="1" strokeLinecap="round"/></svg>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:600,color:'#1f1f24'}}>Le Radici</div>
-            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.18em',color:`${col}88`,textTransform:'uppercase',marginLeft:'auto'}}>Passato · Inconscio</div>
+        <div style={{...card,marginBottom:10,padding:'22px 22px 20px'}} className="fade-in-up">
+          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12}}>
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2 C10 2 6 8 4 13 C2 18 6 19 10 19 C14 19 18 18 16 13 C14 8 10 2 10 2Z" stroke={col} strokeWidth="1.3" fill={`${col}22`}/><path d="M10 19 C8 15 5 12 3 10 M10 19 C12 15 15 12 17 10" stroke={col} strokeWidth="1" strokeLinecap="round"/></svg>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontWeight:600,color:'#1f1f24'}}>Le Radici</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.16em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase',marginLeft:'auto'}}>Passato · Inconscio</div>
           </div>
-          <div style={{width:'100%',height:1,background:`linear-gradient(to right,${col}40,transparent)`,marginBottom:14}}/>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'#2a2a2f',lineHeight:1.85,fontStyle:'italic'}}>{tree.radici}</div>
+          <div style={{width:'100%',height:'1px',background:'rgba(31,31,36,0.07)',marginBottom:14}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'#1f1f24',lineHeight:1.9,fontStyle:'italic'}}>{tree.radici}</div>
         </div>
 
         {/* TRONCO */}
-        <div style={{...card,marginBottom:12,padding:'22px 22px 20px'}} className="fade-in-up">
-          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:14}}>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="7" y="2" width="6" height="16" rx="2" stroke={col} strokeWidth="1.3" fill={`${col}22`}/><line x1="10" y1="6" x2="10" y2="14" stroke={col} strokeWidth="1" strokeDasharray="2,2"/></svg>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:600,color:'#1f1f24'}}>Il Tronco</div>
-            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.18em',color:`${col}88`,textTransform:'uppercase',marginLeft:'auto'}}>Presente · Volontà</div>
+        <div style={{...card,marginBottom:10,padding:'22px 22px 20px'}} className="fade-in-up">
+          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12}}>
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="7" y="2" width="6" height="16" rx="2" stroke={col} strokeWidth="1.3" fill={`${col}22`}/><line x1="10" y1="6" x2="10" y2="14" stroke={col} strokeWidth="1" strokeDasharray="2,2"/></svg>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontWeight:600,color:'#1f1f24'}}>Il Tronco</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.16em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase',marginLeft:'auto'}}>Presente · Volontà</div>
           </div>
-          <div style={{width:'100%',height:1,background:`linear-gradient(to right,${col}40,transparent)`,marginBottom:14}}/>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'#2a2a2f',lineHeight:1.85,fontStyle:'italic'}}>{tree.tronco}</div>
+          <div style={{width:'100%',height:'1px',background:'rgba(31,31,36,0.07)',marginBottom:14}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'#1f1f24',lineHeight:1.9,fontStyle:'italic'}}>{tree.tronco}</div>
         </div>
 
         {/* RAMI */}
         <div style={{...card,marginBottom:28,padding:'22px 22px 20px'}} className="fade-in-up">
-          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:14}}>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 18 L10 8 M10 8 L5 4 M10 8 L15 4 M10 12 L7 9 M10 12 L13 9" stroke={col} strokeWidth="1.3" strokeLinecap="round" fill="none"/><circle cx="10" cy="18" r="1.5" fill={col} opacity=".5"/></svg>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:600,color:'#1f1f24'}}>I Rami</div>
-            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.18em',color:`${col}88`,textTransform:'uppercase',marginLeft:'auto'}}>Futuro · Spirito</div>
+          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12}}>
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 18 L10 8 M10 8 L5 4 M10 8 L15 4 M10 12 L7 9 M10 12 L13 9" stroke={col} strokeWidth="1.3" strokeLinecap="round" fill="none"/><circle cx="10" cy="18" r="1.5" fill={col} opacity=".5"/></svg>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontWeight:600,color:'#1f1f24'}}>I Rami</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.16em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase',marginLeft:'auto'}}>Futuro · Spirito</div>
           </div>
-          <div style={{width:'100%',height:1,background:`linear-gradient(to right,${col}40,transparent)`,marginBottom:14}}/>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'#2a2a2f',lineHeight:1.85,fontStyle:'italic'}}>{tree.rami}</div>
+          <div style={{width:'100%',height:'1px',background:'rgba(31,31,36,0.07)',marginBottom:14}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'#1f1f24',lineHeight:1.9,fontStyle:'italic'}}>{tree.rami}</div>
         </div>
 
-        {/* FOOTER */}
         <div style={{textAlign:'center',paddingBottom:20}}>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(11px,3vw,13px)',fontStyle:'italic',color:`${col}66`,letterSpacing:'.06em'}}>Calendario Oghamico Celtico · {tree.ogham}</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(11px,3vw,13px)',fontStyle:'italic',color:'rgba(31,31,36,0.30)',letterSpacing:'.06em'}}>Calendario Oghamico Celtico · {tree.nome} · {tree.ogham}</div>
         </div>
       </div>
     </div>
