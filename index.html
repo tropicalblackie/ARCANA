@@ -1065,8 +1065,8 @@ function NavIcon({src,zoom,active,removeDark}){
         if(br>230){px[i+3]=0;}
         else if(br>195){px[i+3]=Math.round((230-br)/35*255);}
         if(removeDark){
-          if(br<25){px[i+3]=0;}
-          else if(br<60){px[i+3]=Math.round((br-25)/35*255);}
+          if(br<10){px[i+3]=0;}
+          else if(br<25){px[i+3]=Math.round((br-10)/15*255);}
         }
       }
       ctx.putImageData(id,0,0);
