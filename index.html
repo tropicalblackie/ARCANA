@@ -1044,7 +1044,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
 }
 
 // ── NAV ICON (canvas white-bg removal) ──
-function NavIcon({src,zoom,active,removeDark,offsetY}){
+function NavIcon({src,zoom,active,removeDark,offsetX,offsetY,size=41}){
   const canvasRef=useRef(null);
   useEffect(()=>{
     if(!src)return;
@@ -1056,7 +1056,7 @@ function NavIcon({src,zoom,active,removeDark,offsetY}){
       c.width=S;c.height=S;
       const ctx=c.getContext('2d');
       const z=zoom||1;
-      const d=S*z, offX=(S-d)/2, offY=(S-d)/2+(offsetY||0);
+      const d=S*z, offX=(S-d)/2+(offsetX||0), offY=(S-d)/2+(offsetY||0);
       ctx.drawImage(img,offX,offY,d,d);
       const id=ctx.getImageData(0,0,S,S);
       const px=id.data;
@@ -1072,19 +1072,19 @@ function NavIcon({src,zoom,active,removeDark,offsetY}){
       ctx.putImageData(id,0,0);
     };
     img.src=src;
-  },[src,zoom,removeDark,offsetY]);
-  return <canvas ref={canvasRef} style={{width:38,height:38,borderRadius:'50%',opacity:active?1:0.38,transition:'opacity .2s'}}/>;
+  },[src,zoom,removeDark,offsetX,offsetY]);
+  return <canvas ref={canvasRef} style={{width:size,height:size,borderRadius:'50%',opacity:active?1:0.38,transition:'opacity .2s'}}/>;
 }
 
 // ── BOTTOM NAV ──
 function BottomNav({view,setView,t,profile}){
   const tabs=profile?[
-    {key:"home",img:"dcd5f9f79cc75a4f12387cea11c2054f.jpg",zoom:1.0,label:"Zodiac"},
-    {key:"daily",img:"fa95a9245514b3a80a2a7f9032e4ee6f.jpg",zoom:2.8,label:"Oroscopo"},
-    {key:"tarocchi",img:"83c6f3cd0157feda89e199e4ae0ef2ad.jpg",zoom:1.8,removeDark:true,offsetY:18,label:"Tarocchi"},
-    {key:"hub",img:"1446192e05eaa1628874082827443bfb.jpg",zoom:1.15,label:"Hub"},
+    {key:"home",img:"dcd5f9f79cc75a4f12387cea11c2054f.jpg",zoom:1.08,offsetY:1,label:"Zodiac"},
+    {key:"daily",img:"fa95a9245514b3a80a2a7f9032e4ee6f.jpg",zoom:2.95,offsetY:1,label:"Oroscopo"},
+    {key:"tarocchi",img:"83c6f3cd0157feda89e199e4ae0ef2ad.jpg",zoom:1.9,removeDark:true,offsetY:16,label:"Tarocchi"},
+    {key:"hub",img:"1446192e05eaa1628874082827443bfb.jpg",zoom:1.22,offsetY:1,label:"Hub"},
   ]:[
-    {key:"home",img:"dcd5f9f79cc75a4f12387cea11c2054f.jpg",zoom:1.0,label:"Zodiac"},
+    {key:"home",img:"dcd5f9f79cc75a4f12387cea11c2054f.jpg",zoom:1.08,offsetY:1,label:"Zodiac"},
   ];
   const show=profile&&["hub","daily","tarocchi","home"].includes(view);
   if(!show)return null;
@@ -1097,7 +1097,7 @@ function BottomNav({view,setView,t,profile}){
             <button key={tab.key} onClick={()=>setView(tab.key)} style={{flex:1,padding:"12px 8px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:"transparent",border:"none",cursor:"pointer",position:"relative"}}>
               {active&&<div style={{position:"absolute",top:0,left:"25%",right:"25%",height:"2px",background:`linear-gradient(to right,transparent,${t.accent},transparent)`,borderRadius:"0 0 2px 2px"}}/>}
               {tab.img
-                ?<NavIcon src={tab.img} zoom={tab.zoom} active={active} removeDark={tab.removeDark} offsetY={tab.offsetY}/>
+                ?<NavIcon src={tab.img} zoom={tab.zoom} active={active} removeDark={tab.removeDark} offsetX={tab.offsetX} offsetY={tab.offsetY}/>
                 :<span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:active?t.accent:t.muted,lineHeight:1,filter:active?`drop-shadow(0 0 6px ${t.accent}90)`:"none",transition:"all .2s"}}>{tab.icon}</span>}
               <span style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:active?600:400,letterSpacing:".22em",textTransform:"uppercase",color:active?t.accent:t.muted,transition:"all .2s"}}>{tab.label}</span>
             </button>
