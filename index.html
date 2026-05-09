@@ -50,6 +50,11 @@ textarea{font-family:inherit;resize:none;outline:none;border:none;-webkit-appear
 </style>
 </head>
 <body>
+<div id="arcana-loader" style="position:fixed;inset:0;background:#f2f2f7;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s ease">
+  <div style="font-family:'Georgia',serif;font-size:11px;letter-spacing:.52em;text-transform:uppercase;color:rgba(31,31,36,0.35);margin-bottom:20">ARCANA</div>
+  <div style="width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(31,31,36,0.12);border-top-color:rgba(200,160,60,0.7);animation:arcana-spin 1s linear infinite"></div>
+  <style>@keyframes arcana-spin{to{transform:rotate(360deg)}}</style>
+</div>
 <div id="root"></div>
 <script type="text/babel">
 const{useState,useEffect,useRef,useCallback,useMemo,memo}=React;
@@ -321,8 +326,8 @@ function getSunSignKey(bday){
   if((m===7&&day>=23)||(m===8&&day<=22))return"leone";
   if((m===8&&day>=23)||(m===9&&day<=22))return"vergine";
   if((m===9&&day>=23)||(m===10&&day<=22))return"bilancia";
-  if((m===10&&day>=23)||(m===11&&day<=21))return"scorpione";
-  if((m===11&&day>=22)||(m===12&&day<=21))return"sagittario";
+  if((m===10&&day>=23)||(m===11&&day<=22))return"scorpione";
+  if((m===11&&day>=23)||(m===12&&day<=21))return"sagittario";
   if((m===12&&day>=22)||(m===1&&day<=19))return"capricorno";
   if((m===1&&day>=20)||(m===2&&day<=18))return"acquario";
   return"pesci";
@@ -617,7 +622,7 @@ const Splash=memo(function Splash({onDone,bg,text}){  // text = t.text
 });
 
 // ── SIGN DATES ──
-const SIGN_DATES={ariete:"21 mar – 19 apr",toro:"20 apr – 20 mag",gemelli:"21 mag – 20 giu",cancro:"21 giu – 22 lug",leone:"23 lug – 22 ago",vergine:"23 ago – 22 set",bilancia:"23 set – 22 ott",scorpione:"23 ott – 21 nov",sagittario:"22 nov – 21 dic",capricorno:"22 dic – 19 gen",acquario:"20 gen – 18 feb",pesci:"19 feb – 20 mar"};
+const SIGN_DATES={ariete:"21 mar – 19 apr",toro:"20 apr – 20 mag",gemelli:"21 mag – 20 giu",cancro:"21 giu – 22 lug",leone:"23 lug – 22 ago",vergine:"23 ago – 22 set",bilancia:"23 set – 22 ott",scorpione:"23 ott – 22 nov",sagittario:"23 nov – 21 dic",capricorno:"22 dic – 19 gen",acquario:"20 gen – 18 feb",pesci:"19 feb – 20 mar"};
 
 // ── SIGN FLIP CARD ──
 function SignFlipCard({sg,t,i,onSelect}){
@@ -649,10 +654,13 @@ function SignFlipCard({sg,t,i,onSelect}){
     const p=phys.current;
     const norm=((p.angle%360)+360)%360;
     const snapBack=norm>90&&norm<=270;
-    const rounds=Math.floor(p.angle/360);
-    p.snapTarget=rounds*360+(snapBack?180:0);
+    // Normalize angle to [0,360] to prevent accumulation
+    p.angle=snapBack?180:0;
+    p.snapTarget=p.angle;
+    p.vel=0;
     p.mode='idle';
-  },[]);
+    applyAngle(p.angle);
+  },[applyAngle]);
 
   useEffect(()=>{
     const ph=i*1.17; // unique phase — no two cards in sync
@@ -727,23 +735,29 @@ function SignFlipCard({sg,t,i,onSelect}){
     const p=phys.current;const d=p.drag;
     if(!d.active)return;
     d.active=false; setCursor("grab");
-    if(d.moved<8){snapToFace();onSelect(sg);return;}
-    // Decide target face ONCE here — coast loop never changes it
     const norm=((p.angle%360)+360)%360;
-    const rounds=Math.floor(p.angle/360);
     const onBack=norm>90&&norm<=270;
+    if(d.moved<8){
+      // Click: front → flip to back; back → navigate
+      if(!onBack){
+        p.snapTarget=180; p.vel=7; p.mode='coast';
+      } else {
+        onSelect(sg);
+      }
+      return;
+    }
+    // Drag: snap to nearest face only, always [0,360]
     const spd=Math.abs(d.rawVel);
-    // Fast flick → flip to opposite face; slow release → nearest face
     if(spd>1.8){
       p.snapTarget=onBack
-        ?(d.rawVel<0 ? rounds*360+180 : rounds*360+360)
-        :(d.rawVel>0 ? rounds*360+180 : rounds*360);
+        ?(d.rawVel<0?180:0)
+        :(d.rawVel>0?180:0);
     } else {
-      p.snapTarget=rounds*360+(onBack?180:0);
+      p.snapTarget=onBack?180:0;
     }
-    p.vel=d.rawVel*10;
+    p.vel=d.rawVel*8;
     p.mode='coast';
-  },[onSelect,sg,snapToFace]);
+  },[onSelect,sg]);
 
   const onCancel=useCallback(()=>{
     phys.current.drag.active=false;setCursor("grab");snapToFace();
@@ -3535,8 +3549,8 @@ function getSunSign(bday){
   if((m===7&&day>=23)||(m===8&&day<=22))return'Leone';
   if((m===8&&day>=23)||(m===9&&day<=22))return'Vergine';
   if((m===9&&day>=23)||(m===10&&day<=22))return'Bilancia';
-  if((m===10&&day>=23)||(m===11&&day<=21))return'Scorpione';
-  if((m===11&&day>=22)||(m===12&&day<=21))return'Sagittario';
+  if((m===10&&day>=23)||(m===11&&day<=22))return'Scorpione';
+  if((m===11&&day>=23)||(m===12&&day<=21))return'Sagittario';
   if((m===12&&day>=22)||(m===1&&day<=19))return'Capricorno';
   if((m===1&&day>=20)||(m===2&&day<=18))return'Acquario';
   return'Pesci';
@@ -4265,7 +4279,13 @@ function App(){
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+const _root=ReactDOM.createRoot(document.getElementById("root"));
+_root.render(<App/>);
+// Dismiss static loader once React is up
+requestAnimationFrame(()=>{
+  const el=document.getElementById("arcana-loader");
+  if(el){el.style.opacity="0";setTimeout(()=>{el.style.display="none";},520);}
+});
 </script>
 </body>
 </html>
