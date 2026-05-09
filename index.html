@@ -1044,7 +1044,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
 }
 
 // ── NAV ICON (canvas white-bg removal) ──
-function NavIcon({src,zoom,active,removeDark,offsetX,offsetY,size=41}){
+function NavIcon({src,zoom,active,removeDark,offsetX,offsetY,size=43}){
   const canvasRef=useRef(null);
   useEffect(()=>{
     if(!src)return;
@@ -1056,8 +1056,12 @@ function NavIcon({src,zoom,active,removeDark,offsetX,offsetY,size=41}){
       c.width=S;c.height=S;
       const ctx=c.getContext('2d');
       const z=zoom||1;
-      const d=S*z, offX=(S-d)/2+(offsetX||0), offY=(S-d)/2+(offsetY||0);
-      ctx.drawImage(img,offX,offY,d,d);
+      const baseScale=Math.max(S/img.width,S/img.height);
+      const drawW=img.width*baseScale*z;
+      const drawH=img.height*baseScale*z;
+      const offX=(S-drawW)/2+(offsetX||0);
+      const offY=(S-drawH)/2+(offsetY||0);
+      ctx.drawImage(img,offX,offY,drawW,drawH);
       const id=ctx.getImageData(0,0,S,S);
       const px=id.data;
       for(let i=0;i<px.length;i+=4){
@@ -1082,7 +1086,7 @@ function BottomNav({view,setView,t,profile}){
     {key:"home",img:"dcd5f9f79cc75a4f12387cea11c2054f.jpg",zoom:1.08,offsetY:1,label:"Zodiac"},
     {key:"daily",img:"fa95a9245514b3a80a2a7f9032e4ee6f.jpg",zoom:2.95,offsetY:1,label:"Oroscopo"},
     {key:"tarocchi",img:"83c6f3cd0157feda89e199e4ae0ef2ad.jpg",zoom:1.9,removeDark:true,offsetY:16,label:"Tarocchi"},
-    {key:"hub",img:"1446192e05eaa1628874082827443bfb.jpg",zoom:1.22,offsetY:1,label:"Hub"},
+    {key:"hub",img:"1446192e05eaa1628874082827443bfb.jpg",zoom:1.45,offsetY:1,label:"Hub"},
   ]:[
     {key:"home",img:"dcd5f9f79cc75a4f12387cea11c2054f.jpg",zoom:1.08,offsetY:1,label:"Zodiac"},
   ];
