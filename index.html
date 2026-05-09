@@ -1075,12 +1075,12 @@ function NavIcon({src,zoom,active}){
 // ── BOTTOM NAV ──
 function BottomNav({view,setView,t,profile}){
   const tabs=profile?[
-    {key:"home",img:"4eb0ce965f4d1cd36e22b1baa1fffc04.jpg",zoom:1.0,label:"Zodiac"},
+    {key:"home",img:"dcd5f9f79cc75a4f12387cea11c2054f.jpg",zoom:1.0,label:"Zodiac"},
     {key:"daily",img:"a0ea66817deaa89a6ad161e74bac44f4.jpg",zoom:2.8,label:"Oroscopo"},
     {key:"tarocchi",icon:"✦",label:"Tarocchi"},
     {key:"hub",icon:"⊕",label:"Hub"},
   ]:[
-    {key:"home",img:"4eb0ce965f4d1cd36e22b1baa1fffc04.jpg",zoom:1.0,label:"Zodiac"},
+    {key:"home",img:"dcd5f9f79cc75a4f12387cea11c2054f.jpg",zoom:1.0,label:"Zodiac"},
   ];
   const show=profile&&["hub","daily","tarocchi","home"].includes(view);
   if(!show)return null;
