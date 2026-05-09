@@ -1883,7 +1883,6 @@ function Meditazione({onBack}){
 ══════════════════════════════════════════════════════ */
 const HUB_COMING=[
   {key:"compatibilita",label:"Compatibilità",        icon:"⋈",  col:"#d4688a", shape:"sq"},
-  {key:"druido",       label:"Oroscopo Druido",      icon:"⊕",  col:"#60b870", shape:"pill"},
   {key:"cinese",       label:"Oroscopo Cinese",      icon:"◈",  col:"#d87840", shape:"sq"},
   {key:"ascendente",   label:"Ascendente",           icon:"△",  col:"#58c8e0", shape:"pill"},
   {key:"sfera",        label:"Sfera di Cristallo",   icon:"◎",  col:"#9888e8", shape:"sq"},
@@ -1959,6 +1958,19 @@ function HomeHub({t,setView,profile}){
             <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(31,31,36,0.45)",letterSpacing:".02em"}}>10 pianeti · 4 stanze · Mappa dell'anima</div>
           </div>
           <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"rgba(112,144,216,0.35)"}}>›</span>
+        </div>
+
+        {/* ── Oroscopo Druido ── */}
+        <div onClick={()=>profile?setView("druido"):setView("setup")} onMouseEnter={()=>setHov("druido")} onMouseLeave={()=>setHov(null)}
+          style={{marginBottom:10,padding:"20px 24px",background:hov==="druido"?"rgba(96,184,112,0.10)":"#ffffff",border:`1px solid ${hov==="druido"?"rgba(96,184,112,0.50)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="druido"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="druido"?"0 14px 26px rgba(96,184,112,0.18)":"0 8px 24px rgba(20,20,30,0.07)"}}>
+          <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(96,184,112,0.12)",border:"1px solid rgba(96,184,112,0.22)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#60b870",lineHeight:1}}>⊕</span>
+          </div>
+          <div style={{flex:1}}>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4.5vw,21px)",fontWeight:600,color:"#1f1f24",marginBottom:2}}>Oroscopo Druido</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(31,31,36,0.45)",letterSpacing:".02em"}}>Il tuo Albero Sacro celtico</div>
+          </div>
+          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"rgba(96,184,112,0.35)"}}>›</span>
         </div>
 
         {/* ── Tarocchi + Profilo — 2 col ── */}
@@ -2824,6 +2836,412 @@ function SogniView({t,profile,onBack}){
   );
 }
 
+/* ══════════════════════════════════════════════════════
+   OROSCOPO DRUIDO
+══════════════════════════════════════════════════════ */
+function getDruidTree(bday){
+  if(!bday)return'quercia';
+  const d=new Date(bday+'T12:00:00'),m=d.getMonth()+1,day=d.getDate();
+  if((m===12&&day>=24)||(m===1&&day<=20))return'betulla';
+  if((m===1&&day>=21)||(m===2&&day<=17))return'sorbo';
+  if((m===2&&day>=18)||(m===3&&day<=17))return'frassino';
+  if((m===3&&day>=18)||(m===4&&day<=14))return'ontano';
+  if((m===4&&day>=15)||(m===5&&day<=12))return'salice';
+  if((m===5&&day>=13)||(m===6&&day<=9))return'biancospino';
+  if((m===6&&day>=10)||(m===7&&day<=7))return'quercia';
+  if((m===7&&day>=8)||(m===8&&day<=4))return'agrifoglio';
+  if((m===8&&day>=5)||(m===9&&day<=1))return'nocciolo';
+  if((m===9&&day>=2)&&day<=29)return'vite';
+  if((m===9&&day===30)||(m===10)||(m===10&&day<=27))return'edera';
+  if((m===10&&day>=28)||(m===11&&day<=24))return'canna';
+  if((m===11&&day>=25)||(m===12&&day<=23))return'sambuco';
+  return'quercia';
+}
+
+const DRUID_TREES={
+  betulla:{
+    nome:'Betulla',ogham:'ᚁ',range:'24 dic – 20 gen',epiteto:'L\'Alba del Rinnovamento',
+    col:'#b8cfa0',bg:'#f4f8f0',
+    svg:<svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <g stroke="#3a5a2b" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="60" y1="150" x2="60" y2="80" strokeWidth="2.5"/>
+        <line x1="60" y1="120" x2="42" y2="104" strokeWidth="1.5"/><line x1="60" y1="108" x2="76" y2="94" strokeWidth="1.5"/>
+        <path d="M60 80 C48 70 36 52 42 34 C48 16 72 12 78 30 C84 48 76 66 60 80Z" strokeWidth="2" fill="rgba(184,207,160,0.25)"/>
+        <path d="M50 58 C46 50 48 40 54 36" strokeWidth="1" strokeDasharray="2,3"/><path d="M68 54 C72 46 72 38 68 34" strokeWidth="1" strokeDasharray="2,3"/>
+        <path d="M44 62 Q52 58 60 60 Q68 58 76 62" strokeWidth="1" opacity=".5"/>
+        <text x="60" y="158" textAnchor="middle" fontSize="9" fill="#5a7a4a" fontFamily="serif" opacity=".7">ᚁ</text>
+      </g>
+    </svg>,
+    radici:'La tua forza nasce dal coraggio di ricominciare. Sei l\'albero che cresce dove gli altri non osano — nei suoli pietrosi, dopo gli incendi. Il tuo inconscio porta le cicatrici di inizi difficili, ma anche la memoria di quanto sei capace di germogliare dal nulla. Fidati di quella memoria ancestrale.',
+    tronco:'Oggi sei un ponte tra ciò che era e ciò che sarà. La tua leggerezza apparente nasconde radici tenaci. Affronti i cambiamenti con una grazia naturale che spesso neanche riconosci come tua. Il pericolo è confondere la flessibilità con la superficialità — non farlo.',
+    rami:'Sei destinato ad aprire strade. Dove tu vai, gli altri troveranno poi un sentiero. I tuoi talenti più rari sono la visione del possibile e la capacità di portare speranza in luoghi bui. Coltiva la tua connessione con la purezza: è da lì che nascono le tue idee più potenti.',
+  },
+  sorbo:{
+    nome:'Sorbo',ogham:'ᚂ',range:'21 gen – 17 feb',epiteto:'Il Guardiano dei Mondi',
+    col:'#c0503a',bg:'#fdf2f0',
+    svg:<svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <g stroke="#7a2a1a" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="60" y1="150" x2="60" y2="90" strokeWidth="2.5"/>
+        <path d="M60 90 L38 70 M60 90 L82 70" strokeWidth="1.5"/>
+        <ellipse cx="30" cy="64" rx="10" ry="6" transform="rotate(-20 30 64)" strokeWidth="1.5" fill="rgba(192,80,58,0.15)"/>
+        <ellipse cx="46" cy="55" rx="10" ry="6" transform="rotate(-10 46 55)" strokeWidth="1.5" fill="rgba(192,80,58,0.15)"/>
+        <ellipse cx="62" cy="50" rx="10" ry="6" strokeWidth="1.5" fill="rgba(192,80,58,0.15)"/>
+        <ellipse cx="78" cy="55" rx="10" ry="6" transform="rotate(10 78 55)" strokeWidth="1.5" fill="rgba(192,80,58,0.15)"/>
+        <ellipse cx="90" cy="64" rx="10" ry="6" transform="rotate(20 90 64)" strokeWidth="1.5" fill="rgba(192,80,58,0.15)"/>
+        <circle cx="34" cy="30" r="3.5" fill="rgba(192,80,58,0.6)" stroke="#7a2a1a" strokeWidth="1"/>
+        <circle cx="50" cy="24" r="3.5" fill="rgba(192,80,58,0.6)" stroke="#7a2a1a" strokeWidth="1"/>
+        <circle cx="68" cy="22" r="3.5" fill="rgba(192,80,58,0.6)" stroke="#7a2a1a" strokeWidth="1"/>
+        <circle cx="84" cy="28" r="3" fill="rgba(192,80,58,0.6)" stroke="#7a2a1a" strokeWidth="1"/>
+        <text x="60" y="158" textAnchor="middle" fontSize="9" fill="#9a3a22" fontFamily="serif" opacity=".7">ᚂ</text>
+      </g>
+    </svg>,
+    radici:'Porti dentro di te un filo sottile che collega il visibile all\'invisibile. Fin da piccolo hai percepito cose che gli altri non vedevano — intuizioni, presagi, sensazioni che non riuscivi a spiegare. È il dono del Sorbo: stare sulla soglia tra i mondi senza perdere l\'equilibrio.',
+    tronco:'Oggi il tuo compito è distinguere: cosa è tuo e cosa appartiene agli altri. Assorbi molto, forse troppo. La tua sensibilità è la tua forza ma anche la tua vulnerabilità. Impara a proteggere la tua energia come si protegge una fiamma nel vento — senza spegnerla.',
+    rami:'Il tuo destino è quello del catalizzatore: non sei il protagonista della storia, ma chi la rende possibile. Hai una rara capacità di vedere il potenziale nascosto nelle persone e nelle situazioni. I tuoi doni più preziosi matureranno quando smetterai di dubitare della tua percezione.',
+  },
+  frassino:{
+    nome:'Frassino',ogham:'ᚃ',range:'18 feb – 17 mar',epiteto:'L\'Albero del Cosmo',
+    col:'#7a9a60',bg:'#f2f6ee',
+    svg:<svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <g stroke="#3a5a28" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="60" y1="152" x2="60" y2="40" strokeWidth="2.5"/>
+        <line x1="60" y1="120" x2="40" y2="105" strokeWidth="1.5"/><line x1="60" y1="100" x2="80" y2="85" strokeWidth="1.5"/>
+        <line x1="60" y1="80" x2="40" y2="65" strokeWidth="1.5"/><line x1="60" y1="60" x2="80" y2="47" strokeWidth="1.5"/>
+        <ellipse cx="32" cy="100" rx="9" ry="5" transform="rotate(-30 32 100)" strokeWidth="1.2" fill="rgba(122,154,96,0.2)"/>
+        <ellipse cx="88" cy="80" rx="9" ry="5" transform="rotate(30 88 80)" strokeWidth="1.2" fill="rgba(122,154,96,0.2)"/>
+        <ellipse cx="32" cy="60" rx="9" ry="5" transform="rotate(-30 32 60)" strokeWidth="1.2" fill="rgba(122,154,96,0.2)"/>
+        <ellipse cx="88" cy="44" rx="9" ry="5" transform="rotate(30 88 44)" strokeWidth="1.2" fill="rgba(122,154,96,0.2)"/>
+        <text x="60" y="158" textAnchor="middle" fontSize="9" fill="#5a7a40" fontFamily="serif" opacity=".7">ᚃ</text>
+      </g>
+    </svg>,
+    radici:'Il tuo inconscio è un archivio vastissimo — immagini, connessioni, memorie di cui non conosci l\'origine. Sei intrecciato al cosmo più di quanto tu creda. Le tue radici non sono solo nella tua storia personale: attingi a qualcosa di più antico, un sapere che precede la tua nascita.',
+    tronco:'Hai una mente che abbraccia il grande e il piccolo allo stesso tempo. Riesci a vedere schemi dove gli altri vedono caos. Oggi sei chiamato a mettere questa capacità al servizio di qualcosa di concreto — la visione senza azione resta solo un sogno bellissimo e inutile.',
+    rami:'Tendi verso la trascendenza: sei fatto per toccare qualcosa di universale con ciò che crei, che dici, che sei. I tuoi rami raggiungeranno cieli che non puoi ancora vedere. Il tuo talento più raro è la capacità di tradurre l\'intangibile in qualcosa che gli altri possono sentire.',
+  },
+  ontano:{
+    nome:'Ontano',ogham:'ᚄ',range:'18 mar – 14 apr',epiteto:'Il Ponte tra le Acque',
+    col:'#8a7040',bg:'#f6f2ea',
+    svg:<svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <g stroke="#5a4520" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="60" y1="152" x2="60" y2="82" strokeWidth="2.5"/>
+        <line x1="60" y1="120" x2="44" y2="110" strokeWidth="1.4"/><line x1="60" y1="104" x2="76" y2="96" strokeWidth="1.4"/>
+        <path d="M60 82 C50 78 38 68 40 52 C42 36 56 28 66 36 C76 44 76 66 60 82Z" strokeWidth="2" fill="rgba(138,112,64,0.18)"/>
+        <path d="M48 62 Q54 56 60 58 Q66 56 72 62" strokeWidth="1" opacity=".5"/>
+        <ellipse cx="60" cy="22" rx="8" ry="12" strokeWidth="1.5" fill="rgba(100,80,40,0.2)"/>
+        <line x1="60" y1="10" x2="60" y2="34" strokeWidth="1"/>
+        <text x="60" y="158" textAnchor="middle" fontSize="9" fill="#7a5a28" fontFamily="serif" opacity=".7">ᚄ</text>
+      </g>
+    </svg>,
+    radici:'La tua natura profonda è quella del mediatore — colui che tiene insieme ciò che altrimenti si divide. Cresci nell\'acqua e nella terra allo stesso tempo, mai del tutto in un solo elemento. Questa ambiguità non è un difetto: è la tua forza ancestrale, la capacità di stare in mezzo senza perderti.',
+    tronco:'Oggi sei chiamato a costruire: ponti tra persone, tra idee, tra mondi che sembrano incompatibili. Hai una lealtà rara e un coraggio pratico che si manifesta nell\'azione, non nelle parole. Attenzione però: costruire ponti non significa non avere confini. Sii selettivo.',
+    rami:'Il tuo futuro è nella comunità. Non quella di superficie, ma quella fondata su legami autentici e profondi. I tuoi rami cercano altri alberi con cui intrecciarsi — non per dipendenza, ma per costruire qualcosa che da soli non potreste reggere. Coltiva le tue alleanze.',
+  },
+  salice:{
+    nome:'Salice',ogham:'ᚅ',range:'15 apr – 12 mag',epiteto:'Il Custode delle Maree',
+    col:'#60a878',bg:'#eef8f2',
+    svg:<svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <g stroke="#2a6a40" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M60 152 C60 100 60 70 62 40" strokeWidth="2.5"/>
+        <path d="M62 40 C70 55 72 70 65 90 C60 104 58 120 60 152" strokeWidth="1" strokeDasharray="3,3" opacity=".4"/>
+        <path d="M48 80 C38 72 34 60 40 48 C43 40 50 38 55 44" strokeWidth="1.5" fill="rgba(96,168,120,0.15)"/>
+        <path d="M72 65 C82 57 86 45 80 35 C77 28 70 27 66 32" strokeWidth="1.5" fill="rgba(96,168,120,0.15)"/>
+        <path d="M44 105 C34 97 32 85 38 74" strokeWidth="1.5" fill="rgba(96,168,120,0.15)"/>
+        <path d="M76 90 C86 82 88 70 82 60" strokeWidth="1.5" fill="rgba(96,168,120,0.15)"/>
+        <text x="60" y="158" textAnchor="middle" fontSize="9" fill="#3a7a50" fontFamily="serif" opacity=".7">ᚅ</text>
+      </g>
+    </svg>,
+    radici:'Sei nato con una permeabilità emotiva straordinaria — senti le correnti dell\'umore altrui come variazioni di pressione nell\'aria. La luna ti governa più di quanto tu ammetta. Le tue radici affondano in acque profonde: emozioni antiche, memorie corporee, un\'intuizione che precede il pensiero.',
+    tronco:'La tua resilienza è la tua gloria e il tuo tormento. Ti pieghi senza spezzarti — ma quante volte ti sei piegato quando avresti potuto restare dritto? Oggi il tuo lavoro è distinguere la flessibilità autentica dalla capitolazione mascherata da eleganza.',
+    rami:'Sei un guaritore naturale — non necessariamente in senso letterale, ma nella tua capacità di far sentire le persone viste e accolte. I tuoi rami cadono verso terra in gesto di cura, non di debolezza. Il tuo talento più prezioso è la tua capacità di contenere il dolore altrui senza annegare.',
+  },
+  biancospino:{
+    nome:'Biancospino',ogham:'ᚆ',range:'13 mag – 9 giu',epiteto:'Il Guardiano della Soglia',
+    col:'#d4a0b8',bg:'#fdf4f7',
+    svg:<svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <g stroke="#8a3060" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="60" y1="152" x2="60" y2="90" strokeWidth="2.5"/>
+        <path d="M60 90 C52 78 44 62 50 44 C53 36 60 32 67 36 C74 40 74 52 70 62 C66 72 64 82 60 90Z" strokeWidth="2" fill="rgba(212,160,184,0.2)"/>
+        <path d="M50 65 C44 58 44 48 50 44" strokeWidth="1" opacity=".6"/>
+        <path d="M70 60 C76 53 76 44 70 40" strokeWidth="1" opacity=".6"/>
+        <line x1="42" y1="72" x2="46" y2="68" strokeWidth="2"/><line x1="74" y1="56" x2="78" y2="52" strokeWidth="2"/>
+        <circle cx="56" cy="26" r="4" fill="rgba(212,160,184,0.6)" stroke="#8a3060" strokeWidth="1"/>
+        <circle cx="68" cy="22" r="3.5" fill="rgba(212,160,184,0.6)" stroke="#8a3060" strokeWidth="1"/>
+        <circle cx="46" cy="24" r="3" fill="rgba(212,160,184,0.6)" stroke="#8a3060" strokeWidth="1"/>
+        <text x="60" y="158" textAnchor="middle" fontSize="9" fill="#9a3868" fontFamily="serif" opacity=".7">ᚆ</text>
+      </g>
+    </svg>,
+    radici:'Porti una dualità primordiale: sei bello e spinoso allo stesso tempo, dolce come il biancospino in fiore e tagliente come i suoi rami. Non è contraddizione — è complessità. Il tuo inconscio custodisce soglie, passaggi, iniziazioni. Sei abituato a stare tra un capitolo e il successivo.',
+    tronco:'Oggi sei in una fase di trasformazione — anche se non riesci a nominarla con precisione. C\'è qualcosa che si chiude e qualcosa che si apre, simultaneamente. La tua forza è la capacità di sostenere questa ambiguità senza affrettare la risoluzione. Resisti all\'urgenza di decidere prima del tempo.',
+    rami:'Il tuo futuro fiorisce esattamente dove il tuo passato ha messo le spine. Ciò che ti ha protetto — i tuoi confini, i tuoi silenzi, le tue distanze — diventerà la cornice dentro cui qualcosa di bellissimo potrà fiorire. Non abbattere le siepi: imparane il linguaggio.',
+  },
+  quercia:{
+    nome:'Quercia',ogham:'ᚇ',range:'10 giu – 7 lug',epiteto:'Il Pilastro del Mondo',
+    col:'#8a6028',bg:'#f6f0e8',
+    svg:<svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <g stroke="#5a3a10" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="60" y1="152" x2="60" y2="85" strokeWidth="3"/>
+        <line x1="60" y1="130" x2="38" y2="118" strokeWidth="1.8"/><line x1="60" y1="114" x2="82" y2="104" strokeWidth="1.8"/>
+        <path d="M60 85 C40 80 24 68 26 50 C28 32 44 24 56 30 C48 20 54 8 62 10 C70 8 76 20 68 30 C80 24 96 32 96 52 C96 70 80 80 60 85Z" strokeWidth="2" fill="rgba(138,96,40,0.15)"/>
+        <path d="M42 56 Q52 48 60 52 Q68 48 78 56" strokeWidth="1" opacity=".5"/>
+        <path d="M36 66 Q48 60 60 64 Q72 60 84 66" strokeWidth="1" opacity=".4"/>
+        <ellipse cx="54" cy="140" rx="6" ry="4" strokeWidth="1.2" fill="rgba(138,96,40,0.3)"/>
+        <rect x="51" y="136" width="6" height="7" rx="0" fill="rgba(138,96,40,0.25)" strokeWidth="1"/>
+        <text x="60" y="158" textAnchor="middle" fontSize="9" fill="#7a4a18" fontFamily="serif" opacity=".7">ᚇ</text>
+      </g>
+    </svg>,
+    radici:'La tua forza è monumentale — e lo sai. Sei il tipo di persona su cui gli altri si appoggiano senza nemmeno chiedere il permesso. Questo ruolo ti è stato assegnato prima ancora che tu potessi sceglierlo. Le tue radici affondano in strati di terra che altri non raggiungono: storia, tradizione, senso del dovere.',
+    tronco:'Oggi porti un peso che non è sempre tuo. La tua solidità attrae le fragilità altrui come la quercia attrae il fulmine. Il rischio non è cedere — sei troppo solido per questo — ma spezzarti sotto un carico che hai scelto di portare da solo. Impara a delegare. Impara a chiedere.',
+    rami:'I tuoi rami sono rifugio per molti. C\'è qualcosa di sacro nel tuo spazio — le persone lo sentono e ci tornano. Il tuo destino è grande, ma richiede che tu impari a ricevere tanto quanto dai. La tua crescita più importante è verso l\'interno, non verso l\'esterno.',
+  },
+  agrifoglio:{
+    nome:'Agrifoglio',ogham:'ᚈ',range:'8 lug – 4 ago',epiteto:'Il Re dell\'Estate',
+    col:'#2a7040',bg:'#eaf5ee',
+    svg:<svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <g stroke="#1a4a28" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="60" y1="152" x2="60" y2="88" strokeWidth="2.5"/>
+        <path d="M60 88 C48 84 36 74 38 60 C40 46 54 40 62 48 C54 36 60 24 68 28 C76 32 74 46 66 52 C76 46 88 52 86 66 C84 80 72 86 60 88Z" strokeWidth="2" fill="rgba(42,112,64,0.18)"/>
+        <path d="M44 72 L40 68 M52 62 L48 56 M70 60 L74 54 M78 72 L82 68" strokeWidth="1.5"/>
+        <circle cx="48" cy="28" r="3.5" fill="rgba(180,40,40,0.65)" stroke="#1a4a28" strokeWidth="1"/>
+        <circle cx="60" cy="22" r="3.5" fill="rgba(180,40,40,0.65)" stroke="#1a4a28" strokeWidth="1"/>
+        <circle cx="72" cy="28" r="3.5" fill="rgba(180,40,40,0.65)" stroke="#1a4a28" strokeWidth="1"/>
+        <text x="60" y="158" textAnchor="middle" fontSize="9" fill="#2a5a30" fontFamily="serif" opacity=".7">ᚈ</text>
+      </g>
+    </svg>,
+    radici:'Sei arrivato al mondo con la volontà di un re — o lo sai già, o stai ancora imparando a riconoscerlo. La tua forza ancestrale è la capacità di prosperare in inverno, quando tutto il resto si ritira. Non hai paura del buio: sei fatto per brillare proprio lì, nella difficoltà.',
+    tronco:'Oggi hai una presenza che le persone sentono prima ancora che tu parli. Quella magnetismo è reale, ma porta con sé una responsabilità: come lo usi? L\'agrifoglio è tanto bello quanto pungente. Il tuo lavoro è affinare il tuo carisma senza usarlo come arma inconsapevole.',
+    rami:'Sei destinato a lasciare un segno duraturo — non la fama effimera, ma qualcosa che sopravvive. I tuoi rami restano verdi anche d\'inverno: stai costruendo qualcosa di perenne. Fidati del ritmo lento della tua crescita. I tuoi frutti più belli matureranno fuori stagione.',
+  },
+  nocciolo:{
+    nome:'Nocciolo',ogham:'ᚉ',range:'5 ago – 1 set',epiteto:'Il Custode della Saggezza',
+    col:'#9a7840',bg:'#f8f4ec',
+    svg:<svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <g stroke="#5a4018" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="60" y1="152" x2="60" y2="88" strokeWidth="2.5"/>
+        <line x1="60" y1="120" x2="42" y2="108" strokeWidth="1.4"/><line x1="60" y1="104" x2="78" y2="94" strokeWidth="1.4"/>
+        <circle cx="60" cy="64" r="24" strokeWidth="2" fill="rgba(154,120,64,0.14)"/>
+        <path d="M42 60 Q52 52 60 56 Q68 52 78 60" strokeWidth="1" opacity=".5"/>
+        <path d="M40 68 Q52 62 60 66 Q68 62 80 68" strokeWidth="1" opacity=".4"/>
+        <ellipse cx="54" cy="36" rx="7" ry="9" strokeWidth="1.5" fill="rgba(154,120,64,0.3)"/>
+        <path d="M48 30 C44 24 46 18 52 18 C58 18 60 24 56 28" strokeWidth="1.2" fill="rgba(90,64,24,0.2)"/>
+        <text x="60" y="158" textAnchor="middle" fontSize="9" fill="#7a5828" fontFamily="serif" opacity=".7">ᚉ</text>
+      </g>
+    </svg>,
+    radici:'La tua intelligenza è un dono antico. Non quella scolastica — quella viscerale, quella che capisce le cose prima di poterle spiegare. Le tue radici affondano in pozze di conoscenza intuitiva: sai come funzionano le persone, sai leggere i sottotesti, sai dove si nasconde la verità.',
+    tronco:'Oggi sei nel mezzo di un processo di integrazione. Stai raccogliendo informazioni, esperienze, frammenti — e stai cercando il filo che li unisce. Non affrettare la sintesi: il nocciolo porta i frutti a settembre, non prima. La saggezza autentica ha bisogno di maturare.',
+    rami:'Sei destinato a insegnare — in qualunque forma quella parola abbia senso per te. Non necessariamente in una classe: forse attraverso ciò che crei, ciò che dici, ciò che sei. Il tuo regalo più prezioso al mondo è la chiarezza. Impara a condividerla senza trattenerla.',
+  },
+  vite:{
+    nome:'Vite',ogham:'ᚊ',range:'2 – 29 set',epiteto:'Il Cuore dell\'Abbondanza',
+    col:'#7048a8',bg:'#f4f0fa',
+    svg:<svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <g stroke="#48208a" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M60 152 C60 120 58 100 55 80" strokeWidth="2.5"/>
+        <path d="M55 80 C40 68 26 52 34 36 C40 24 58 24 62 38 C58 24 76 16 82 30 C88 44 76 60 60 68" strokeWidth="2" fill="rgba(112,72,168,0.15)"/>
+        <path d="M40 52 Q50 44 60 48 Q70 44 80 52" strokeWidth="1" opacity=".5"/>
+        <path d="M36 62 Q50 56 60 60 Q70 56 84 62" strokeWidth="1" opacity=".4"/>
+        <path d="M55 80 C58 92 62 100 68 108" strokeWidth="1.4"/>
+        <circle cx="70" cy="112" r="4" fill="rgba(112,72,168,0.5)" stroke="#48208a" strokeWidth="1"/>
+        <circle cx="62" cy="118" r="3.5" fill="rgba(112,72,168,0.5)" stroke="#48208a" strokeWidth="1"/>
+        <circle cx="76" cy="120" r="3" fill="rgba(112,72,168,0.5)" stroke="#48208a" strokeWidth="1"/>
+        <circle cx="66" cy="126" r="3" fill="rgba(112,72,168,0.5)" stroke="#48208a" strokeWidth="1"/>
+        <text x="60" y="158" textAnchor="middle" fontSize="9" fill="#5830a0" fontFamily="serif" opacity=".7">ᚊ</text>
+      </g>
+    </svg>,
+    radici:'La tua anima è fatta per il piacere — non nel senso superficiale, ma in quello profondo: la capacità di riconoscere il bello, il buono, il ricco di significato. Le tue radici affondano in una sensorialità ancestrale. Hai memoria nel corpo di feste, raccolti, celebrazioni. Questa gioia non è frivola: è sacra.',
+    tronco:'Oggi sei in una stagione di raccolta — consapevole o no. Stai raccogliendo i frutti di ciò che hai seminato. Non tutti i grappoli sono maturi allo stesso tempo: abbi pazienza con le parti di te che non sono ancora pronte. Festeggia ciò che è maturato. Non aspettare la perfezione.',
+    rami:'La tua espansione naturale è verso la celebrazione condivisa. Sei fatto per creare esperienze che le persone ricordano. I tuoi talenti creativi — che siano artistici, culinari, estetici, relazionali — sono il tuo contributo più genuino al mondo. Non tenerli per te.',
+  },
+  edera:{
+    nome:'Edera',ogham:'ᚋ',range:'30 set – 27 ott',epiteto:'Il Tessuto del Mondo',
+    col:'#486878',bg:'#eef2f4',
+    svg:<svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <g stroke="#283848" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M60 152 C62 130 58 110 52 90" strokeWidth="2.5"/>
+        <path d="M52 90 C36 80 26 64 36 50 C44 38 58 42 58 56 C56 40 68 32 76 42 C84 52 78 68 64 74 C58 76 54 82 52 90" strokeWidth="2" fill="rgba(72,104,120,0.14)"/>
+        <path d="M40 60 C36 52 40 44 48 44" strokeWidth="1.2" fill="none"/>
+        <path d="M72 54 C78 46 76 38 68 38" strokeWidth="1.2" fill="none"/>
+        <path d="M60 152 C64 138 68 124 74 112" strokeWidth="1.5"/>
+        <path d="M74 112 C86 100 94 84 86 72 C80 62 68 64 68 76 C68 64 58 58 52 66 C46 74 50 86 60 88" strokeWidth="1.5" fill="rgba(72,104,120,0.10)"/>
+        <text x="60" y="158" textAnchor="middle" fontSize="9" fill="#385868" fontFamily="serif" opacity=".7">ᚋ</text>
+      </g>
+    </svg>,
+    radici:'Sei un sopravvissuto elegante. La tua anima sa come trovare luce anche nelle situazioni più scomode, come l\'edera che cresce su muri scalcinati trasformandoli in qualcosa di bello. Le tue radici si adattano a qualsiasi terreno — e questa è una forza, non una mancanza di identità.',
+    tronco:'Oggi il tuo tema principale è il confine: dove finisci tu e dove inizia l\'altro? Sei naturalmente portato a intrecciarti alle vite altrui, e questo può essere un dono o una dipendenza a seconda di come lo usi. Il tuo lavoro è crescere insieme senza perdere il tuo asse.',
+    rami:'La tua tenacia è leggendaria — anche se non la chiami così. Ciò a cui ti aggrappi, lo tieni. Ciò che vuoi raggiungere, lo raggiungi — lentamente, pazientemente, millimetro per millimetro. Il tuo futuro è fatto di conquiste silenziose e durature.',
+  },
+  canna:{
+    nome:'Canna',ogham:'ᚌ',range:'28 ott – 24 nov',epiteto:'La Voce dell\'Abisso',
+    col:'#5878a8',bg:'#eef2f8',
+    svg:<svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <g stroke="#284878" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="50" y1="152" x2="50" y2="20" strokeWidth="2.5"/>
+        <line x1="62" y1="152" x2="62" y2="30" strokeWidth="2"/>
+        <line x1="72" y1="152" x2="72" y2="40" strokeWidth="1.5"/>
+        <line x1="50" y1="60" x2="34" y2="44" strokeWidth="1.2"/>
+        <line x1="50" y1="80" x2="30" y2="70" strokeWidth="1.2"/>
+        <line x1="50" y1="100" x2="32" y2="94" strokeWidth="1.2"/>
+        <line x1="62" y1="70" x2="78" y2="56" strokeWidth="1.2"/>
+        <line x1="62" y1="90" x2="80" y2="82" strokeWidth="1.2"/>
+        <line x1="62" y1="110" x2="80" y2="104" strokeWidth="1.2"/>
+        <path d="M50 20 C46 16 44 10 48 8 C52 6 54 12 50 20Z" fill="rgba(88,120,168,0.4)" strokeWidth="1"/>
+        <path d="M62 30 C58 26 56 20 60 18 C64 16 66 22 62 30Z" fill="rgba(88,120,168,0.4)" strokeWidth="1"/>
+        <text x="61" y="158" textAnchor="middle" fontSize="9" fill="#385888" fontFamily="serif" opacity=".7">ᚌ</text>
+      </g>
+    </svg>,
+    radici:'Sei fatto di profondità e vuoto allo stesso tempo — come la canna, che è cava all\'interno ma proprio per questo può diventare strumento musicale, può diventare voce. Il tuo inconscio è un canale, non un contenitore. Quello che porti non è tuo: lo attraversa e si trasforma.',
+    tronco:'Oggi sei in contatto con strati della realtà che altri non vedono. Puoi sentirti fuori posto, incompreso, troppo intenso. Non è un problema tuo: è la tua sintonizzazione. Il tuo lavoro è trovare le persone e gli spazi in cui questa profondità è un valore, non un peso.',
+    rami:'Il tuo destino è quello del veggente, del poeta, del cantore — in qualunque forma abbia senso per la tua vita. Sei fatto per tradurre il silenzio in suono, l\'invisibile in forma. I tuoi rami crescono in direzioni che altri non possono ancora prevedere.',
+  },
+  sambuco:{
+    nome:'Sambuco',ogham:'ᚍ',range:'25 nov – 23 dic',epiteto:'Il Signore della Fine e dell\'Inizio',
+    col:'#5a3870',bg:'#f4f0f8',
+    svg:<svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'100%'}}>
+      <g stroke="#3a1850" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="60" y1="152" x2="60" y2="88" strokeWidth="2.5"/>
+        <line x1="60" y1="124" x2="42" y2="112" strokeWidth="1.4"/><line x1="60" y1="108" x2="78" y2="96" strokeWidth="1.4"/>
+        <path d="M60 88 L40 70 M60 88 L80 70" strokeWidth="1.4"/>
+        <ellipse cx="32" cy="64" rx="8" ry="5" transform="rotate(-20 32 64)" strokeWidth="1.2" fill="rgba(90,56,112,0.15)"/>
+        <ellipse cx="48" cy="56" rx="8" ry="5" transform="rotate(-8 48 56)" strokeWidth="1.2" fill="rgba(90,56,112,0.15)"/>
+        <ellipse cx="64" cy="52" rx="8" ry="5" strokeWidth="1.2" fill="rgba(90,56,112,0.15)"/>
+        <ellipse cx="80" cy="56" rx="8" ry="5" transform="rotate(8 80 56)" strokeWidth="1.2" fill="rgba(90,56,112,0.15)"/>
+        <circle cx="38" cy="28" r="3.5" fill="rgba(90,56,112,0.65)" stroke="#3a1850" strokeWidth="1"/>
+        <circle cx="52" cy="22" r="3" fill="rgba(90,56,112,0.65)" stroke="#3a1850" strokeWidth="1"/>
+        <circle cx="66" cy="20" r="3.5" fill="rgba(90,56,112,0.65)" stroke="#3a1850" strokeWidth="1"/>
+        <circle cx="80" cy="26" r="3" fill="rgba(90,56,112,0.65)" stroke="#3a1850" strokeWidth="1"/>
+        <text x="60" y="158" textAnchor="middle" fontSize="9" fill="#4a2060" fontFamily="serif" opacity=".7">ᚍ</text>
+      </g>
+    </svg>,
+    radici:'La tua anima conosce i cicli profondi — sei l\'albero che fiorisce alla fine dell\'anno, nell\'oscurità, quando tutto sembra finito. Porti in te la saggezza della trasformazione radicale. Le tue radici non temono l\'inverno: sanno che contiene già il seme della primavera.',
+    tronco:'Oggi stai attraversando una soglia — consapevole o meno. Qualcosa si sta concludendo, e c\'è in te una resistenza comprensibile. Ma sei, tra tutti gli alberi, quello più equipaggiato per attraversare le fini. Non resistere al cambiamento: guidalo.',
+    rami:'Sei destinato a concludere cicli che altri non riescono a chiudere, e ad aprirne di nuovi dove gli altri vedono solo un muro. Il tuo dono più raro è la capacità di fare luce nell\'oscurità — non eliminandola, ma abitandola con saggezza. Il tuo futuro emerge esattamente da dove pensi che sia finito tutto.',
+  },
+};
+
+function DruidView({t,profile,onBack}){
+  const [phase,setPhase]=useState('forest');
+  const [revealed,setRevealed]=useState(false);
+
+  const treeKey=getDruidTree(profile.birthday);
+  const tree=DRUID_TREES[treeKey];
+  const col=tree.col;
+  const bg=tree.bg;
+
+  useEffect(()=>{
+    if(phase==='reveal'){
+      const timer=setTimeout(()=>setPhase('card'),1400);
+      return()=>clearTimeout(timer);
+    }
+  },[phase]);
+
+  /* ── FASE 1: FORESTA NEBBIOSA ── */
+  if(phase==='forest'){
+    return(
+      <div onClick={()=>setPhase('reveal')} style={{minHeight:'100vh',background:'#080d06',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'40px 24px',cursor:'pointer',position:'relative',overflow:'hidden'}}>
+        {/* Silhouette bosco */}
+        <svg viewBox="0 0 375 320" style={{position:'absolute',bottom:0,left:0,width:'100%',opacity:.55,pointerEvents:'none'}} fill="none">
+          <path d="M0 320 L0 200 L18 180 L36 200 L36 160 L60 130 L84 160 L84 140 L108 100 L132 140 L132 120 L156 85 L180 120 L180 100 L204 70 L228 100 L228 80 L252 50 L276 80 L276 60 L300 90 L324 60 L324 90 L348 110 L375 80 L375 320Z" fill="#1a2a10"/>
+          <path d="M0 320 L0 240 L24 220 L48 240 L48 210 L72 185 L96 210 L120 190 L144 210 L168 175 L192 210 L216 185 L240 210 L264 180 L288 210 L312 185 L336 210 L375 190 L375 320Z" fill="#0f1a08"/>
+        </svg>
+        {/* Nebbia */}
+        <div style={{position:'absolute',bottom:0,left:0,right:0,height:200,background:'linear-gradient(to top,rgba(12,20,8,0.9),transparent)',pointerEvents:'none'}}/>
+        {/* Goccia d'ambra pulsante */}
+        <div style={{width:56,height:56,borderRadius:'50% 50% 50% 50% / 60% 60% 40% 40%',background:'radial-gradient(circle at 40% 35%,rgba(210,160,40,0.9),rgba(160,100,20,0.7))',boxShadow:'0 0 40px rgba(200,150,30,0.5),0 0 80px rgba(200,150,30,0.2)',marginBottom:48,animation:'pulse 2.5s ease-in-out infinite',position:'relative',zIndex:1}}/>
+        <div style={{position:'relative',zIndex:1,textAlign:'center'}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(9px,2.5vw,11px)',fontWeight:500,letterSpacing:'.52em',textTransform:'uppercase',color:'rgba(180,150,60,0.65)',marginBottom:20}}>ARCANA · DRUIDO</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(24px,6.5vw,34px)',fontWeight:400,fontStyle:'italic',color:'rgba(240,230,200,0.88)',lineHeight:1.4,marginBottom:48,maxWidth:320}}>C'è una radice<br/>che porta il tuo nome.</div>
+          <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:8,opacity:.55}}>
+            <svg width="16" height="24" viewBox="0 0 16 24" fill="none"><path d="M8 2 C8 2 8 14 8 22" stroke="rgba(200,160,60,0.7)" strokeWidth="1.5" strokeLinecap="round"/><path d="M4 18 L8 22 L12 18" stroke="rgba(200,160,60,0.7)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.32em',color:'rgba(200,160,60,0.65)',textTransform:'uppercase'}}>tocca per scoprire</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── FASE 2: REVEAL ── */
+  if(phase==='reveal'){
+    return(
+      <div style={{minHeight:'100vh',background:'#080d06',display:'flex',alignItems:'center',justifyContent:'center'}}>
+        <div style={{width:120,height:120,borderRadius:'50%',background:`radial-gradient(circle,${col}dd,${col}44,transparent 70%)`,animation:'pulse 0.7s ease-out forwards',boxShadow:`0 0 80px ${col}88,0 0 160px ${col}44`}}/>
+      </div>
+    );
+  }
+
+  /* ── FASE 3: CARTA COMPLETA ── */
+  const card={background:'#ffffff',border:`1px solid ${col}30`,borderRadius:20,boxShadow:`0 4px 20px rgba(0,0,0,0.07),0 0 0 0.5px ${col}20`};
+  return(
+    <div style={{minHeight:'100vh',background:bg,color:'#1f1f24',overflowY:'auto',paddingBottom:'calc(env(safe-area-inset-bottom,0px) + 80px)'}}>
+      {/* Sfondo foglie leggere */}
+      <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0,overflow:'hidden'}}>
+        {[...Array(14)].map((_,i)=>(
+          <div key={i} style={{position:'absolute',width:2,height:2,borderRadius:'50%',background:`${col}`,opacity:0.12+i%3*0.04,top:`${(i*41+9)%100}%`,left:`${(i*73+13)%100}%`,animation:`pulse ${2.5+(i*0.3)%2}s ${(i*0.22)%2}s ease-in-out infinite`}}/>
+        ))}
+      </div>
+      <div style={{position:'relative',zIndex:1,maxWidth:640,margin:'0 auto',padding:'0 16px'}}>
+
+        {/* NAV */}
+        <div style={{display:'flex',alignItems:'center',padding:'calc(env(safe-area-inset-top,0px) + 14px) 4px 0'}}>
+          <button onClick={onBack} style={{color:'rgba(31,31,36,0.4)',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:400,letterSpacing:'.14em',padding:'12px 4px',background:'none',border:'none',cursor:'pointer'}}>← indietro</button>
+        </div>
+
+        {/* HEADER */}
+        <div style={{textAlign:'center',padding:'clamp(20px,5vw,36px) 0 28px'}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(9px,2.4vw,11px)',fontWeight:500,letterSpacing:'.52em',textTransform:'uppercase',color:`${col}bb`,marginBottom:14}}>ARCANA · CALENDARIO OGHAMICO</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(34px,9vw,54px)',fontWeight:500,color:'#1f1f24',letterSpacing:'-.02em',lineHeight:1,marginBottom:6}}>{tree.nome}</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(13px,3.5vw,16px)',fontStyle:'italic',color:`${col}99`,marginBottom:10}}>{tree.epiteto}</div>
+          <div style={{width:36,height:1,background:`linear-gradient(to right,transparent,${col}88,transparent)`,margin:'0 auto 10px'}}/>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.28em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase'}}>{tree.range}</div>
+        </div>
+
+        {/* SVG ILLUSTRAZIONE */}
+        <div style={{display:'flex',justifyContent:'center',marginBottom:28}}>
+          <div style={{width:'min(200px,52vw)',height:'min(200px,52vw)',background:`radial-gradient(circle,${col}18,transparent 70%)`,borderRadius:'50%',padding:24,boxSizing:'border-box',border:`1px solid ${col}30`}} className="fade-in">
+            {tree.svg}
+          </div>
+        </div>
+
+        {/* RADICI */}
+        <div style={{...card,marginBottom:12,padding:'22px 22px 20px'}} className="fade-in-up">
+          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:14}}>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2 C10 2 6 8 4 13 C2 18 6 19 10 19 C14 19 18 18 16 13 C14 8 10 2 10 2Z" stroke={col} strokeWidth="1.3" fill={`${col}22`}/><path d="M10 19 C8 15 5 12 3 10 M10 19 C12 15 15 12 17 10" stroke={col} strokeWidth="1" strokeLinecap="round"/></svg>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:600,color:'#1f1f24'}}>Le Radici</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.18em',color:`${col}88`,textTransform:'uppercase',marginLeft:'auto'}}>Passato · Inconscio</div>
+          </div>
+          <div style={{width:'100%',height:1,background:`linear-gradient(to right,${col}40,transparent)`,marginBottom:14}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'#2a2a2f',lineHeight:1.85,fontStyle:'italic'}}>{tree.radici}</div>
+        </div>
+
+        {/* TRONCO */}
+        <div style={{...card,marginBottom:12,padding:'22px 22px 20px'}} className="fade-in-up">
+          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:14}}>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="7" y="2" width="6" height="16" rx="2" stroke={col} strokeWidth="1.3" fill={`${col}22`}/><line x1="10" y1="6" x2="10" y2="14" stroke={col} strokeWidth="1" strokeDasharray="2,2"/></svg>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:600,color:'#1f1f24'}}>Il Tronco</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.18em',color:`${col}88`,textTransform:'uppercase',marginLeft:'auto'}}>Presente · Volontà</div>
+          </div>
+          <div style={{width:'100%',height:1,background:`linear-gradient(to right,${col}40,transparent)`,marginBottom:14}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'#2a2a2f',lineHeight:1.85,fontStyle:'italic'}}>{tree.tronco}</div>
+        </div>
+
+        {/* RAMI */}
+        <div style={{...card,marginBottom:28,padding:'22px 22px 20px'}} className="fade-in-up">
+          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:14}}>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 18 L10 8 M10 8 L5 4 M10 8 L15 4 M10 12 L7 9 M10 12 L13 9" stroke={col} strokeWidth="1.3" strokeLinecap="round" fill="none"/><circle cx="10" cy="18" r="1.5" fill={col} opacity=".5"/></svg>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:600,color:'#1f1f24'}}>I Rami</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.18em',color:`${col}88`,textTransform:'uppercase',marginLeft:'auto'}}>Futuro · Spirito</div>
+          </div>
+          <div style={{width:'100%',height:1,background:`linear-gradient(to right,${col}40,transparent)`,marginBottom:14}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'#2a2a2f',lineHeight:1.85,fontStyle:'italic'}}>{tree.rami}</div>
+        </div>
+
+        {/* FOOTER */}
+        <div style={{textAlign:'center',paddingBottom:20}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(11px,3vw,13px)',fontStyle:'italic',color:`${col}66`,letterSpacing:'.06em'}}>Calendario Oghamico Celtico · {tree.ogham}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function TemanataleView({t,profile,onBack}){
   const [open,setOpen]=useState([true,true,true,true]);
   const toggle=useCallback((i)=>setOpen(o=>{const n=[...o];n[i]=!n[i];return n;}),[]);
@@ -3146,6 +3564,7 @@ function App(){
       {!splash&&view==="daily"&&profile&&<DailyHoroscope t={t} profile={profile} onBack={()=>setView("hub")} onProfile={()=>setView("profile")} onEdit={()=>setView("setup")}/>}
       {!splash&&view==="natale"&&profile&&<TemanataleView t={t} profile={profile} onBack={()=>setView("hub")}/>}
       {!splash&&view==="sogni"&&profile&&<SogniView t={t} profile={profile} onBack={()=>setView("hub")}/>}
+      {!splash&&view==="druido"&&profile&&<DruidView t={t} profile={profile} onBack={()=>setView("hub")}/>}
       {!splash&&view==="tarocchi"&&<Tarocchi t={t}/>}
       {!splash&&view==="meditazione"&&<Meditazione onBack={()=>setView("hub")}/>}
       {!splash&&view==="profile"&&profile&&<PersonalProfile t={t} profile={profile} onEdit={()=>setView("setup")} onBack={()=>setView("daily")}/>}
