@@ -769,9 +769,7 @@ function SignFlipCard({sg,t,i,onSelect}){
 
 // ── HOME ──
 function Home({t,onSelect,profile,onSetup}){
-  const[filter,setFilter]=useState("all");
-  const elColor={Fuoco:"#b04a18",Terra:"#4a7a38",Aria:"#8a7010",Acqua:"#1860a0"};
-  const shown=filter==="all"?SIGNS:SIGNS.filter(s=>s.element===filter);
+  const shown=SIGNS;
   return(
     <div style={{minHeight:"100vh",background:t.bg,position:"relative",overflow:"hidden"}}>
       <div className="fade-in-up" style={{textAlign:"center",padding:"calc(clamp(44px,8vw,72px) + env(safe-area-inset-top,0px)) 20px 48px",position:"relative",zIndex:1}}>
@@ -785,11 +783,6 @@ function Home({t,onSelect,profile,onSetup}){
         )}
         <div style={{display:"flex",justifyContent:"center",gap:"clamp(14px,4vw,36px)",flexWrap:"wrap",marginBottom:36}}>
           {[lunarPhase(),planetDay(),season()].map((v,i)=><div key={i} style={{fontSize:"11px",letterSpacing:".14em",color:t.muted}}>{v}</div>)}
-        </div>
-        <div style={{display:"flex",justifyContent:"center",gap:8,flexWrap:"nowrap",overflowX:"auto",paddingBottom:2,msOverflowStyle:"none",scrollbarWidth:"none"}}>
-          {["all","Fuoco","Terra","Aria","Acqua"].map(el=>(
-            <button key={el} onClick={()=>setFilter(el)} style={{padding:"11px 18px",fontSize:"8px",letterSpacing:".22em",textTransform:"uppercase",whiteSpace:"nowrap",flexShrink:0,border:`1px solid ${filter===el?(elColor[el]||t.accent):t.border}`,color:filter===el?(elColor[el]||t.accent):t.muted,background:filter===el?`${(elColor[el]||t.accent)}14`:"transparent",transition:"all .2s"}}>{el==="all"?"Tutti":el}</button>
-          ))}
         </div>
       </div>
       <div style={{display:"flex",flexDirection:"column",gap:20,padding:"0 clamp(16px,6vw,48px)",maxWidth:520,margin:"0 auto calc(env(safe-area-inset-bottom,0px) + 80px)",position:"relative",zIndex:1}}>
