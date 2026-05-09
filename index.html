@@ -646,7 +646,7 @@ function SignFlipCard({sg,t,i,onSelect}){
   // CSS-animated flip to target (0=front, 180=back)
   const flipTo=useCallback((target)=>{
     if(!innerRef.current)return;
-    innerRef.current.style.transition='transform 0.48s cubic-bezier(0.4,0,0.2,1)';
+    innerRef.current.style.transition='transform 0.30s cubic-bezier(0.22,0.9,0.2,1)';
     flippedRef.current=target===180;
     // defer transform so browser sees transition change first
     requestAnimationFrame(()=>{ setAngle(target); });
@@ -684,7 +684,7 @@ function SignFlipCard({sg,t,i,onSelect}){
     }
     d.moved+=Math.abs(e.clientX-d.lx);
     d.lx=e.clientX;
-    setAngle(d.sa+dx*0.55);
+    setAngle(d.sa+dx*0.78);
   },[setAngle,flipTo]);
 
   const onUp=useCallback(e=>{
@@ -697,7 +697,7 @@ function SignFlipCard({sg,t,i,onSelect}){
       return;
     }
     // drag: snap to nearest face, no velocity kick
-    const ang=d.sa+(e.clientX-d.sx)*0.55;
+    const ang=d.sa+(e.clientX-d.sx)*0.78;
     const norm=(ang%360+360)%360;
     flipTo(norm>90&&norm<=270?180:0);
   },[flipTo]);
