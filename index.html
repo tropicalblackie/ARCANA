@@ -1112,7 +1112,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
 function BottomNav({view,setView,t,profile}){
   const tabs=profile?[
     {key:"home",img:"4eb0ce965f4d1cd36e22b1baa1fffc04.jpg",label:"Zodiac"},
-    {key:"daily",img:"62169fb4262db82692205b0b46c7fa77.jpg",label:"Oroscopo"},
+    {key:"daily",img:"a0ea66817deaa89a6ad161e74bac44f4.jpg",label:"Oroscopo"},
     {key:"tarocchi",icon:"✦",label:"Tarocchi"},
     {key:"hub",icon:"⊕",label:"Hub"},
   ]:[
@@ -1129,7 +1129,7 @@ function BottomNav({view,setView,t,profile}){
             <button key={tab.key} onClick={()=>setView(tab.key)} style={{flex:1,padding:"12px 8px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:"transparent",border:"none",cursor:"pointer",position:"relative"}}>
               {active&&<div style={{position:"absolute",top:0,left:"25%",right:"25%",height:"2px",background:`linear-gradient(to right,transparent,${t.accent},transparent)`,borderRadius:"0 0 2px 2px"}}/>}
               {tab.img
-                ?<img src={tab.img} alt="" style={{width:28,height:28,borderRadius:"50%",objectFit:"cover",objectPosition:"center",opacity:active?1:0.42,filter:active?`drop-shadow(0 0 8px ${t.accent}90)`:"grayscale(40%)",transition:"all .2s",border:active?`1.5px solid ${t.accent}`:"1.5px solid transparent",backgroundColor:t.card}}/>
+                ?<img src={tab.img} alt="" style={{width:34,height:34,borderRadius:"50%",objectFit:"cover",objectPosition:"center",opacity:active?1:0.42,filter:active?`drop-shadow(0 0 8px ${t.accent}90)`:"grayscale(40%)",transition:"all .2s",border:active?`1.5px solid ${t.accent}`:"1.5px solid transparent",backgroundColor:t.card}}/>
                 :<span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:active?t.accent:t.muted,lineHeight:1,filter:active?`drop-shadow(0 0 6px ${t.accent}90)`:"none",transition:"all .2s"}}>{tab.icon}</span>}
               <span style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:active?600:400,letterSpacing:".22em",textTransform:"uppercase",color:active?t.accent:t.muted,transition:"all .2s"}}>{tab.label}</span>
             </button>
