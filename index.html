@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -2632,252 +2632,6 @@ const NATAL_SECTIONS=[
    ]},
 ];
 
-function interpretDream(text){
-  // Hash multipli indipendenti per varietà reale
-  let h1=0,h2=0,h3=0;
-  for(let i=0;i<text.length;i++){
-    const c=text.charCodeAt(i);
-    h1=(Math.imul(31,h1)+c)|0;
-    h2=(Math.imul(1664525,h2)+c+1013904223)|0;
-    h3=(Math.imul(1103515245,h3)+c+12345)|0;
-  }
-  const a1=Math.abs(h1),a2=Math.abs(h2),a3=Math.abs(h3);
-  const p1=(arr)=>arr[a1%arr.length];
-  const p2=(arr)=>arr[a2%arr.length];
-  const p3=(arr)=>arr[a3%arr.length];
-  const p4=(arr)=>arr[(a1^a2)%arr.length];
-  const p5=(arr)=>arr[(a2^a3)%arr.length];
-
-  const t=text.toLowerCase();
-  // Estrai parole significative dal testo per eco personalizzata
-  const stopwords=new Set(['sono','era','ero','stavo','stava','una','uno','che','del','della','dei','degli','alle','all','nel','nella','nei','per','con','non','poi','come','quando','dove','cosa','questo','quella','quello','questi','quelle','anche','molto','troppo','però','ancora','dopo','prima','verso','sotto','sopra','attraverso','insieme','mentre','senza','tutto','tutta','tutti','tutte','aveva','avevo','hanno','essere','avere','fare','dire','andare','venire','stare','vedere','sapere','volere','potere','dovere','altri','altra','altro','miei','tuoi','suoi','mia','tua','sua','nostro','vostro','loro']);
-  const echoWords=text.split(/[\s,.\!\?;:\n]+/).map(w=>w.replace(/[^\wàèéìòùÀÈÉÌÒÙ]/g,'')).filter(w=>w.length>4&&!stopwords.has(w.toLowerCase()));
-  const echo1=echoWords.length>0?p1(echoWords).toLowerCase():null;
-  const echo2=echoWords.length>2?p3(echoWords).toLowerCase():null;
-
-  const SYM={
-    acqua:/acqua|mare|oceano|fiume|lago|pioggia|alluvione|anneg|nuotare|onda|corrente|stagno|bagnato|sommerso|inondaz/,
-    fuoco:/fuoco|fiamma|bruciare|incendio|ardere|vampa|brace|cenere|bruciava|brucio|incendia/,
-    volare:/volar|volo\b|cielo|nuvol|planare|librarsi|galleggiare in aria|fluttu|alzarmi|alzarsi|levitare/,
-    cadere:/cader|precipitar|caduta|abisso|vuoto|sprofond|precipizio|vortic|casco|cadevo/,
-    fuga:/inseguire|scappare|fuggire|correre|inseguito|braccato|nascondersi|sfuggire|rincorrere|scappavo|fuggivo/,
-    casa:/casa\b|stanza|porta\b|corridoio|appartamento|edificio|palazzo|soffitto|pavimento|cantina|soffitta|finestra|muro\b|stanze/,
-    foresta:/foresta|bosco|albero|radice|ramo|foglie|selva|vegetazione|giungla|prato|campo aperto/,
-    animale:/serpente|lupo|orso|uccello|leone|tigre|cane\b|gatto\b|cavallo|aquila|cervo|volpe|corvo|animale|creature|insetto|ragno|toro\b|capro/,
-    morte:/morte\b|morire|morto\b|cadavere|cimitero|funerale|sepoltura|scompare|uccidere|ucciso|scomparire/,
-    bambino:/bambino|bambina|neonato|infanzia|piccolo\b|figlio|figlia|bimbo|fanciullo/,
-    figure:/persona\b|uomo\b|donna\b|vecchio|re\b|regina|guerriero|sacerdote|saggio|straniero|figura\b|silhouette|qualcuno|qualcuna|ombra umana/,
-    luce:/luce\b|sole\b|splendere|brillare|chiarore|alba\b|illuminare|bagliore|lampo|fulgore|riflesso\b/,
-    buio:/buio\b|oscurità|tenebre|tenebra|notte\b|nero\b|ombra\b|buco nero|buia/,
-    labirinto:/labirinto|perdersi|perduto|perdevo|sentiero|vicolo|confondevo|giravo in tondo|non trovavo la via/,
-    specchio:/specchio|riflesso\b|immagine\b|doppio\b|copia\b|riconoscere|guardarmi/,
-    viaggio:/viaggio|treno|aereo|partenza|arrivo\b|camminare|cammino|destinazione|percorso|partivo|arrivavo/,
-    trasform:/trasformat|diventat|mutat|metamorfosi|cambiat|forma diversa|corpo diverso|diventavo/,
-    acqua_buia:/profond|abissal|fondale|sommerso|annegare|trascinato nell/,
-  };
-
-  const found=Object.entries(SYM).filter(([k,r])=>r.test(t)).map(([k])=>k);
-
-  // Aperture — 12 varianti, alcune citano le parole del sogno
-  const AP_GENERICHE=[
-    `C'è una logica precisa in ciò che hai sognato stanotte — non lineare, non rassicurante, ma reale.`,
-    `L'inconscio ha costruito questa scena con un'intenzione. Niente è casuale nelle immagini del sonno.`,
-    `Alcune notti l'anima parla più chiaramente del giorno. Questa è una di quelle.`,
-    `Questo sogno non è arrivato per caso. È arrivato perché qualcosa in te aveva bisogno di essere visto.`,
-    `Il tessuto di questo sogno è fatto di simboli che ti appartengono — e solo tu puoi decifrarli fino in fondo.`,
-    `C'è qualcosa che la tua mente diurna tiene a bada. Di notte, l'inconscio lo porta alla luce.`,
-  ];
-  const AP_ECHO=echo1?[
-    `«${echo1}» — questa parola, questo frammento del sogno, non è arrivato per caso nel tuo sonno.`,
-    `Porta attenzione a ${echo1}: è lì che l'inconscio ha concentrato la sua energia stanotte.`,
-    `L'immagine legata a ${echo1} è l'ingresso di questo sogno. Tutto il resto le ruota attorno.`,
-    `Qualcosa che ha a che fare con ${echo1} sta cercando di emergere dalla profondità — e ha scelto la notte per farlo.`,
-  ]:[];
-  const APERTURE=[...AP_GENERICHE,...AP_ECHO];
-
-  // Frammenti brevi a livello di frase singola per ogni simbolo
-  const F={
-    acqua:[
-      `L'acqua in sogno è sempre l'immagine dell'inconscio stesso — fluida, senza confini, piena di ciò che non riesci ancora a nominare.`,
-      `Dove scorre l'acqua nel sogno, scorre anche una trasformazione emotiva che la mente diurna non ha ancora registrato.`,
-      `Jung vedeva nell'acqua onirica il simbolo della psiche: capace di adattarsi, di scorrere attorno agli ostacoli, di trovare sempre la via verso il profondo.`,
-      `L'acqua ti dice che sei nel mezzo di qualcosa — non ancora sulla riva. Non combattere la corrente.`,
-      `Il tuo inconscio ha scelto l'elemento che dissolve i confini tra sé e il mondo. C'è qualcosa in te che vuole ammorbidirsi, non indurirsi.`,
-    ],
-    fuoco:[
-      `Il fuoco è il simbolo alchemico della purgazione: qualcosa di vecchio deve consumarsi perché qualcosa di nuovo possa emergere.`,
-      `Dove c'è fuoco nel sogno, c'è urgenza nell'anima — un'energia che non trova uscita e chiede di essere riconosciuta.`,
-      `Il fuoco onico non distrugge: purifica. Ciò che brucia è ciò che trattenevi senza sapere di trattenerlo.`,
-      `Una passione repressa o una forza vitale senza forma — l'inconscio accende il fuoco per richiamare la tua attenzione su di essa.`,
-      `Ciò che sopravvive alle fiamme nel sogno è ciò che è davvero tuo. Il fuoco separa l'essenziale dall'accidentale.`,
-    ],
-    volare:[
-      `Volare è il gesto archetipico dell'anima che vuole trascendere i limiti dell'Io — non per fuggire, ma per vedere il disegno più grande.`,
-      `Il volo rivela il desiderio di liberarsi da qualcosa che appesantisce. Ma ciò da cui ti alzi in volo ha ancora bisogno di essere guardato.`,
-      `Librarsi nell'aria è l'immagine dell'individuazione — diventare pienamente se stessi, al di là dei ruoli che la vita impone.`,
-      `Nel volo onirico c'è sempre una domanda nascosta: cosa ti tiene ancora a terra nella vita sveglia?`,
-      `L'inconscio ti mostra che sei capace di elevarti. La domanda è: sei pronto ad atterrare in un posto diverso da dove sei partito?`,
-    ],
-    cadere:[
-      `La caduta è uno dei grandi sogni iniziatici: non simboleggia sconfitta, ma discesa necessaria verso gli strati più profondi della psiche.`,
-      `Precipitare rivela la paura di perdere il controllo — ma anche la necessità di lasciarlo andare. L'ego resiste; l'inconscio sa che certe verità si capiscono solo cadendo.`,
-      `Jung chiamava queste cadute oniriche «nekyia»: discese agli inferi da cui si torna trasformati.`,
-      `Il vuoto sotto di te non è il nulla — è lo spazio in cui il vecchio sé si dissolve per fare posto a qualcosa di più vero.`,
-      `Il corpo che precipita nel sogno è l'Io che smette di controllare. E solo in quel momento l'anima può finalmente parlare.`,
-    ],
-    fuga:[
-      `Ciò che ti inseguiva non è un nemico esterno: è l'Ombra — tutto ciò che hai rifiutato, represso, non voluto vedere in te stesso.`,
-      `Non puoi correre per sempre: a un certo punto dovrai voltarti e chiedere a ciò che ti insegue cosa vuole da te.`,
-      `La fuga onirica parla di qualcosa che nella vita sveglia continui a rimandare. L'Ombra non dimentica. L'Ombra aspetta.`,
-      `Essere braccato nel sogno è il segnale che l'energia repressa ha raggiunto una soglia critica. Non si scappa dall'Ombra — si dialoga con essa.`,
-      `L'inseguitore del sogno porta un nome — anche se non lo riconosci. È una parte di te che ha bisogno di essere integrata, non eliminata.`,
-    ],
-    casa:[
-      `La casa nel sogno sei tu: ogni stanza è un aspetto della tua psiche, alcune illuminate, altre chiuse a chiave da tempo.`,
-      `L'edificio che appare è la mappa della tua struttura interiore. Stanze sconosciute rivelano potenziali inesplorati; stanze in rovina, ferite che aspettano di essere guardate.`,
-      `Ogni porta in sogno è una soglia della coscienza. Cosa c'è dietro quelle che non hai aperto?`,
-      `Le fondamenta della casa onirica sono la tua storia; i piani più alti, le tue aspirazioni. La casa dell'anima ha sempre qualcosa da mostrarti.`,
-      `L'inconscio ti ha portato tra muri che conosci — ma i muri nascondono sempre stanze che non ricordavi di avere.`,
-    ],
-    foresta:[
-      `La foresta è il regno dell'istinto primordiale — il territorio dell'inconscio prima che la cultura lo civilizzi. Non è pericoloso: è tuo.`,
-      `Perdersi nel bosco è un rito di passaggio archetipico. Non sei perduto — sei nel mezzo del processo di ritrovarti.`,
-      `La foresta onirica parla di radici. C'è qualcosa di selvatico in te che vuole essere riconosciuto — non addomesticato, ma integrato.`,
-      `Tra gli alberi del sogno si muove qualcosa di antico. Ascoltalo prima di tentare di spiegarlo.`,
-    ],
-    animale:[
-      `L'animale che appare porta con sé un'energia che la mente cosciente ha addomesticato o dimenticato. Non razionalizzarlo — sentilo.`,
-      `Gli animali onici incarnano le forze vitali che la civilizzazione reprime. Quale parte di te è quell'animale?`,
-      `L'incontro con un animale in sogno è sempre un incontro con una parte di te. Il suo comportamento — aggressivo, quieto, sfuggente — rivela come stai trattando quell'energia dentro di te.`,
-      `I dettagli contano: lo sguardo dell'animale, il suo movimento, la sensazione nel corpo al vederlo. Questi sono il messaggio, non l'animale in sé.`,
-    ],
-    morte:[
-      `La morte in sogno non è mai letterale: è il simbolo della metamorfosi. Qualcosa di vecchio si conclude perché qualcosa di nuovo vuole nascere.`,
-      `Incontrare la morte nell'onirico è un'iniziazione. Ciò che muore non è la tua vita — è una parte di te che non serve più il tuo cammino.`,
-      `Il tuo inconscio ti prepara a un passaggio. Lascia andare senza resistere: la fine di un ciclo è sempre l'inizio del successivo.`,
-      `Jung chiamava la morte onirica «Grande Rinnovamento». È una benedizione travestita da paura.`,
-    ],
-    bambino:[
-      `Il bambino che appare è l'archetipo del Puer — l'anima giovane, il potenziale non ancora espresso, ciò in te che è ancora vivo e curioso.`,
-      `L'immagine del bambino parla di qualcosa di vulnerabile che ha bisogno di essere visto — forse una parte ferita che aspetta da troppo tempo.`,
-      `Il bambino onico è sempre un messaggio sull'inizio: di un progetto, di una trasformazione, di un modo di essere più autentico di quello attuale.`,
-    ],
-    figure:[
-      `Le figure che appaiono non sono persone reali: sono proiezioni di aspetti della tua psiche. Chi ammiri in loro porta qualcosa che non riconosci ancora in te stesso.`,
-      `Ogni personaggio del sogno parla a tuo nome. Sono tutti frammenti di te — alcuni conosciuti, altri esiliati da tempo.`,
-      `Il dialogo tra le figure oniriche è il dialogo che la tua coscienza non riesce ancora a tenere da sveglio.`,
-      `Chi incontri nei sogni non è mai davvero un altro. È sempre, in qualche modo, un rispecchiamento di te.`,
-    ],
-    luce:[
-      `La luce nel sogno è la coscienza che si espande — un frammento del Sé che bussa alla porta dell'Io.`,
-      `Dove la luce illumina, qualcosa si sta chiarendo. Il tuo inconscio ti dice che sei pronto a vedere ciò che hai a lungo evitato.`,
-      `Ogni fonte di luce indica un centro di energia psichica attiva. Vai verso di essa — anche se abbaglia. Soprattutto se abbaglia.`,
-    ],
-    buio:[
-      `L'oscurità del sogno non è il vuoto: è piena. È il contenitore di tutto ciò che non hai ancora il coraggio di essere.`,
-      `L'Ombra junghiana non è il tuo nemico — è la tua incompletezza che chiede di essere integrata. Il buio non ti minaccia: ti invita.`,
-      `C'è qualcosa nell'oscurità che aspetta solo di essere nominato da te. Siediti in quel buio. Gli occhi dell'anima vedono meglio di quanto credi.`,
-      `Le tenebre oniriche parlano di ciò che non è ancora venuto alla luce nella vita sveglia. Non fuggire — esplora.`,
-    ],
-    labirinto:[
-      `Il labirinto è la psiche stessa: complessa, circolare, piena di vicoli ciechi. Non esiste uscita che non passi per il centro.`,
-      `Al centro del labirinto c'è sempre qualcosa di essenziale che l'ego evita. Smetti di cercare l'uscita e inizia ad abitare il percorso.`,
-      `Il labirinto onico rivela che il problema che stai affrontando non ha soluzione lineare. Si comprende camminando — non conquistando.`,
-    ],
-    specchio:[
-      `Lo specchio nel sogno è l'incontro con l'Ombra — la parte di te che non vuoi guardare. Ciò che vedi riflesso è come sei davvero, al di là della maschera.`,
-      `Il riflesso parla del tuo Doppio — il lato nascosto che coesiste con quello visibile. Incontrarlo in sogno è uno degli atti più profondi di autoconoscenza.`,
-      `Lo specchio onico rivela ciò che non riesci a vedere direttamente: una verità che l'ego diurno preferisce non affrontare.`,
-    ],
-    viaggio:[
-      `Il viaggio nel sogno è il simbolo del processo di individuazione — il cammino verso se stessi. Non è la destinazione che conta, ma ciò che incontri lungo la strada.`,
-      `Partire in sogno significa che qualcosa in te è pronto per una trasformazione. L'inconscio ti mette in moto.`,
-      `Non sapere la meta non è un difetto del sogno — è il punto. Il viaggio interiore si rivela mentre si cammina, non prima.`,
-      `Il mezzo con cui ti muovi nel sogno rivela come stai affrontando questo passaggio nella vita sveglia: veloce o lento, padrone o passeggero.`,
-    ],
-    trasform:[
-      `La metamorfosi che hai vissuto nel sogno rivela che sei in un momento di transizione profonda. L'Io che conosci sta cambiando forma.`,
-      `Trasformarsi in sogno è il segnale che il processo di individuazione è in moto: stai diventando chi sei sempre stato, sotto gli strati di ruoli e maschere.`,
-      `La trasformazione fa paura solo finché si resiste. L'inconscio ti dice: lascia che accada.`,
-    ],
-    acqua_buia:[
-      `La profondità oscura dell'acqua parla degli strati più remoti della psiche — luoghi che la coscienza non raggiunge quasi mai. Sei stato portato lì per una ragione.`,
-      `Nelle acque profonde del sogno vive ciò che è primordiale in te: non ancora formato, non ancora nominato, ma già presente e potente.`,
-    ],
-  };
-
-  // Frasi-ponte tra simboli
-  const BRIDGES=[
-    `Ma il sogno non si ferma qui.`,
-    `E c'è un secondo livello.`,
-    `L'inconscio sovrappone a questo un'altra immagine:`,
-    `Accanto a tutto questo,`,
-    `Eppure il sogno aggiunge qualcosa di più:`,
-  ];
-
-  // Riflessioni sulla lunghezza/densità del sogno
-  const wc=echoWords.length;
-  const CORTO=[
-    `Anche in poche immagini, l'inconscio ha detto tutto il necessario. La brevità del ricordo non ne diminuisce la profondità.`,
-    `Il sogno che ricordi è un frammento — ma i frammenti sono spesso i messaggeri più precisi dell'anima.`,
-    `Pochissime parole, ma dense. L'inconscio è efficiente: non spreca immagini.`,
-  ];
-  const LUNGO=[
-    `La ricchezza di questo sogno suggerisce un'elaborazione intensa: l'inconscio stava lavorando su più livelli contemporaneamente.`,
-    `Un sogno così denso porta con sé strati sovrapposti. Non cercare un unico significato — cercane molti, e lascia che coesistano.`,
-  ];
-
-  // Chiusure — alcune con eco personale
-  const CL_G=[
-    `Porta questo sogno con te oggi — non come enigma da risolvere, ma come seme. Il suo significato si aprirà vivendo.`,
-    `Jung scrisse: «Chi guarda fuori sogna; chi guarda dentro si sveglia.» Questo sogno ti ha già detto qualcosa di essenziale.`,
-    `L'inconscio non sbaglia mai la scelta delle immagini. Ciò che hai sognato stanotte è esattamente ciò di cui la tua anima aveva bisogno.`,
-    `Non cercare di spiegare questo sogno — lascia che ti abiti. Le immagini oniriche parlano alla pelle prima ancora che alla mente.`,
-    `Questo sogno non va interpretato una volta sola. Rileggilo domani, tra una settimana: ogni volta dirà qualcosa di diverso.`,
-    `Il sogno non mente mai. Parla soltanto una lingua che dobbiamo imparare a decifrare, un frammento alla volta.`,
-    `Tieni queste immagini come si tiene una candela: con cura, senza stringere troppo. La loro luce si rivelerà nel tempo.`,
-    `Non tutta la verità del sogno emerge subito. Alcune cose tornano nel corpo durante il giorno, in modi che non ti aspetti.`,
-  ];
-  const CL_ECHO=echo2?[
-    `Quello che hai vissuto attorno a ${echo2} non ha ancora detto tutto. Tienilo presente.`,
-    `La sensazione legata a ${echo2} è il filo da seguire — non la testa, ma il petto.`,
-  ]:[];
-  const CLOSINGS=[...CL_G,...CL_ECHO];
-
-  const DEFAULT_BODY=[
-    `Il sogno appartiene a quel territorio in cui l'anima parla senza censura. La logica che lo governa non è quella del giorno — è la logica del simbolo, più antica del linguaggio.`,
-    `Non tutto ciò che appare in sogno ha un nome immediato. Eppure qualcosa in te sa già cosa significa. Siediti con queste immagini prima di cercare di spiegarle.`,
-    `L'inconscio ha costruito questo sogno con precisione assoluta. Anche ciò che sembra confuso obbedisce a una logica: quella dell'anima, non dell'intelletto.`,
-    `Ci sono sogni che non si traducono in parole — si vivono. Cosa senti nel corpo quando lo ricordi? Inizia da lì.`,
-    `Il tessuto di questa notte porta qualcosa di sottile e preciso allo stesso tempo. Non forzare un significato: lascia che emerga, come il ricordo di una musica.`,
-  ];
-
-  const parts=[];
-  // Apertura
-  parts.push(p4(APERTURE));
-  // Corpo principale
-  if(found.length===0){
-    parts.push(p1(DEFAULT_BODY));
-  }else{
-    const sym1=p1(found);
-    parts.push(p2(F[sym1]||DEFAULT_BODY));
-    if(found.length>1){
-      const others=found.filter(k=>k!==sym1);
-      const sym2=p3(others);
-      const bridge=p5(BRIDGES);
-      // Solo la prima frase del secondo simbolo
-      const frag2=p4(F[sym2]||DEFAULT_BODY);
-      parts.push(bridge+' '+frag2.split('. ')[0]+'.');
-    }
-  }
-  // Riflessione lunghezza
-  if(wc<12) parts.push(p3(CORTO));
-  else if(wc>60) parts.push(p2(LUNGO));
-  // Chiusura
-  parts.push(p5(CLOSINGS));
-  return parts.join('\n\n');
-}
-
 function SogniView({t,profile,onBack}){
   const [step,setStep]=useState('write');
   const [dreamText,setDreamText]=useState('');
@@ -2885,16 +2639,43 @@ function SogniView({t,profile,onBack}){
   const [history,setHistory]=useState(()=>{try{const s=localStorage.getItem('arcana_sogni');return s?JSON.parse(s):[];}catch(e){return [];}});
   const [expandedId,setExpandedId]=useState(null);
 
-  const interrogate=useCallback(()=>{
+  const SYSTEM=`Sei uno psicoanalista junghiano di rara profondità. L'utente ti racconta un sogno. Il tuo compito:
+- Scrivi un'interpretazione poetica, personalizzata e profonda di circa 120-150 parole
+- Cita elementi specifici e concreti del sogno che l'utente ha descritto
+- Usa la seconda persona singolare, come se parlassi direttamente all'anima di chi legge
+- Parla di archetipi, Ombra, Anima, Sé, inconscio collettivo dove pertinente — senza elencarli in modo scolastico
+- Lo stile deve essere letterario, non clinico: caldo, diretto, a tratti poetico
+- Ogni interpretazione deve sembrare scritta apposta per questo sogno, non generica
+- Non dare mai consigli medici. Non prevedere il futuro.
+- Scrivi solo in italiano. Nessuna intestazione, nessun elenco puntato — solo prosa fluida.`;
+
+  const interrogate=useCallback(async()=>{
     if(!dreamText.trim())return;
     setStep('loading');
-    setTimeout(()=>{
-      const interp=interpretDream(dreamText.trim());
+    try{
+      const resp=await fetch('https://text.pollinations.ai/',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          messages:[
+            {role:'system',content:SYSTEM},
+            {role:'user',content:dreamText.trim()}
+          ],
+          model:'openai',
+          seed:Math.floor(Math.random()*999999),
+          temperature:0.95
+        })
+      });
+      if(!resp.ok) throw new Error('network');
+      const interp=(await resp.text()).trim();
       setInterpretation(interp);
       const entry={id:Date.now().toString(),date:new Date().toISOString().slice(0,10),dateIt:new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}),dream:dreamText.trim(),interpretation:interp};
-      setHistory(prev=>{const updated=[entry,...prev];try{localStorage.setItem('arcana_sogni',JSON.stringify(updated));}catch(e){}return updated;});
+      setHistory(prev=>{const upd=[entry,...prev];try{localStorage.setItem('arcana_sogni',JSON.stringify(upd));}catch(e){}return upd;});
       setStep('result');
-    },2200);
+    }catch(e){
+      setInterpretation("Il canale dell'inconscio è momentaneamente disturbato. Riprova tra qualche istante — l'interpretazione del sogno richiede connessione.");
+      setStep('result');
+    }
   },[dreamText]);
 
   const reset=useCallback(()=>{setDreamText('');setInterpretation('');setStep('write');},[]);
