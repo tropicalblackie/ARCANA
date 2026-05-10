@@ -717,7 +717,7 @@ function SignFlipCard({sg,t,i,onSelect}){
 
           {/* ── FRONT ── */}
           <div ref={frontRef} style={{backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",transform:"translateZ(1px)"}}>
-            <div style={{background:"linear-gradient(165deg,rgba(255,255,255,0.16) 0%,rgba(255,255,255,0.05) 50%,rgba(255,255,255,0.10) 100%)",padding:8,border:"1px solid rgba(255,255,255,0.26)",borderRadius:16,boxShadow:`inset 0 1.5px 0 rgba(255,255,255,0.62),inset 0.5px 0 0 rgba(255,255,255,0.16),inset -0.5px 0 0 rgba(255,255,255,0.06),inset 0 -1px 0 rgba(255,255,255,0.10),0 24px 60px rgba(0,0,0,0.58),0 6px 20px rgba(0,0,0,0.36),0 0 0 0.5px rgba(${sg.rgb},0.22)`,position:"relative",overflow:"hidden"}}>
+            <div style={{background:"linear-gradient(165deg,rgba(255,255,255,0.16) 0%,rgba(255,255,255,0.05) 50%,rgba(255,255,255,0.10) 100%)",padding:8,border:"1px solid rgba(255,255,255,0.26)",borderRadius:16,boxShadow:`inset 0 1.5px 0 rgba(255,255,255,0.62),inset 0.5px 0 0 rgba(255,255,255,0.16),inset -0.5px 0 0 rgba(255,255,255,0.06),inset 0 -1px 0 rgba(255,255,255,0.10)`,position:"relative",overflow:"hidden"}}>
               <CandleShine/>
               <GlassOverlay/>
               <div style={{position:"relative",aspectRatio:frontRatio,borderRadius:11,overflow:"hidden",background:"#EEF1F4",zIndex:1}}>
@@ -744,7 +744,7 @@ function SignFlipCard({sg,t,i,onSelect}){
             borderRadius:16,
             background:"linear-gradient(165deg,rgba(255,255,255,0.16) 0%,rgba(255,255,255,0.05) 50%,rgba(255,255,255,0.10) 100%)",
             border:"1px solid rgba(255,255,255,0.26)",
-            boxShadow:`inset 0 1.5px 0 rgba(255,255,255,0.62),inset 0.5px 0 0 rgba(255,255,255,0.16),inset -0.5px 0 0 rgba(255,255,255,0.06),inset 0 -1px 0 rgba(255,255,255,0.10),0 24px 60px rgba(0,0,0,0.58),0 6px 20px rgba(0,0,0,0.36),0 0 0 0.5px rgba(${sg.rgb},0.22)`,
+            boxShadow:`inset 0 1.5px 0 rgba(255,255,255,0.62),inset 0.5px 0 0 rgba(255,255,255,0.16),inset -0.5px 0 0 rgba(255,255,255,0.06),inset 0 -1px 0 rgba(255,255,255,0.10)`,
             display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
             padding:"32px 24px",gap:0,overflow:"hidden",
           }}>
