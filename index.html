@@ -4073,18 +4073,11 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
 
         {/* ── HEADER ── */}
         <div style={{textAlign:"center",padding:"clamp(28px,7vw,44px) 0 32px"}}>
-          {/* simbolo grande segno */}
-          <div style={{width:80,height:80,borderRadius:"50%",background:`rgba(${sunSg.rgb},0.10)`,border:`1px solid rgba(${sunSg.rgb},0.20)`,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 18px",boxShadow:`0 0 40px rgba(${sunSg.rgb},0.12)`}}>
-            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"36px",color:`rgba(${sunSg.rgb},0.90)`,lineHeight:1}}>{sunSg.symbol}</span>
-          </div>
           <div style={{fontFamily:"'Inter',sans-serif",fontSize:"10px",fontWeight:400,letterSpacing:".32em",color:"rgba(31,31,36,0.38)",textTransform:"uppercase",marginBottom:10}}>{dateIt}</div>
           <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(30px,8vw,42px)",fontWeight:500,color:"#1f1f24",letterSpacing:"-.02em",lineHeight:1,marginBottom:8}}>Oroscopo del Giorno</div>
           <div style={{width:36,height:1,background:`linear-gradient(to right,transparent,rgba(${sunSg.rgb},0.5),transparent)`,margin:"0 auto 12px"}}/>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4.5vw,20px)",fontWeight:300,fontStyle:"italic",color:"rgba(31,31,36,0.52)",marginBottom:20}}>{greeting}, {profile.name}</div>
-          {/* badge segno */}
-          <div style={{display:"inline-flex",alignItems:"center",gap:10,padding:"8px 18px",border:`1px solid rgba(${sunSg.rgb},0.28)`,background:`rgba(${sunSg.rgb},0.07)`,borderRadius:20}}>
-            <span style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:600,letterSpacing:".18em",color:`rgba(${sunSg.rgb},0.85)`,textTransform:"uppercase"}}>{sunSg.name}</span>
-          </div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(16px,4.5vw,20px)",fontWeight:300,fontStyle:"italic",color:"rgba(31,31,36,0.52)",marginBottom:10}}>{greeting}, {profile.name}</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(30px,8.5vw,46px)",fontWeight:600,color:`rgba(${sunSg.rgb},0.9)`,lineHeight:1.05,letterSpacing:".01em",marginBottom:10}}>{sunSg.name}</div>
         </div>
 
         {/* ── TRINITÀ ── */}
