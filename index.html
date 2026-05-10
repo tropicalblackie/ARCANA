@@ -725,7 +725,7 @@ function SignFlipCard({sg,t,i,onSelect}){
               <CandleShine/>
               <GlassOverlay/>
               <div style={{position:"relative",aspectRatio:"3/4",borderRadius:11,overflow:"hidden",background:t.surface,zIndex:1}}>
-                {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" decoding="async" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:11,zIndex:1}}/>}
+                {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" decoding="async" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"contain",objectPosition:"center",borderRadius:11,zIndex:1}}/>}
               </div>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 13px 4px",color:t.text,position:"relative",zIndex:1}}>
                 <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(20px,5.5vw,28px)"}}>{sg.name}</div>
