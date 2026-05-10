@@ -21,10 +21,11 @@ body{font-family:'Inter',sans-serif;background:#030008;color:#ede8f5;-webkit-fon
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes slideIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes cardDrift{0%,100%{transform:translate3d(0,0,0)}25%{transform:translate3d(5px,-7px,0)}50%{transform:translate3d(0,-11px,0)}75%{transform:translate3d(-5px,-6px,0)}}
 @keyframes glow{0%,100%{opacity:.15;transform:scale(.9)}50%{opacity:.9;transform:scale(1.4)}}
 @keyframes pulse{0%,100%{opacity:.25}50%{opacity:.8}}
 @keyframes shimmer{0%{opacity:.3}50%{opacity:.7}100%{opacity:.3}}
-.fade-in-up{animation:fadeInUp .7s cubic-bezier(.16,1,.3,1) forwards}
+.fade-in-up{animation:fadeInUp .5s cubic-bezier(.16,1,.3,1) forwards}
 .fade-in{animation:fadeIn .4s ease forwards}
 .slide-in{animation:slideIn .4s ease forwards}
 .float{animation:float 8s ease-in-out infinite}
@@ -648,7 +649,7 @@ function SignFlipCard({sg,t,i,onSelect}){
   // CSS-animated flip to target (0=front, 180=back)
   const flipTo=useCallback((target)=>{
     if(!innerRef.current)return;
-    innerRef.current.style.transition='transform 0.30s cubic-bezier(0.22,0.9,0.2,1)';
+    innerRef.current.style.transition='transform 0.42s cubic-bezier(0.2,0.9,0.24,1)';
     flippedRef.current=target===180;
     // defer transform so browser sees transition change first
     requestAnimationFrame(()=>{ setAngle(target); });
@@ -686,7 +687,7 @@ function SignFlipCard({sg,t,i,onSelect}){
     }
     d.moved+=Math.abs(e.clientX-d.lx);
     d.lx=e.clientX;
-    setAngle(d.sa+dx*0.78);
+    setAngle(d.sa+dx*0.64);
   },[setAngle,flipTo]);
 
   const onUp=useCallback(e=>{
@@ -699,7 +700,7 @@ function SignFlipCard({sg,t,i,onSelect}){
       return;
     }
     // drag: snap to nearest face, no velocity kick
-    const ang=d.sa+(e.clientX-d.sx)*0.78;
+    const ang=d.sa+(e.clientX-d.sx)*0.64;
     const norm=(ang%360+360)%360;
     flipTo(norm>90&&norm<=270?180:0);
   },[flipTo]);
@@ -709,14 +710,14 @@ function SignFlipCard({sg,t,i,onSelect}){
     flipTo(flippedRef.current?180:0);
   },[flipTo]);
 
-  const floatDur=`${2.4+(i%5)*0.32}s`;
+  const floatDur=`${3.1+(i%5)*0.38}s`;
   const floatDel=`-${((i*0.55)%2.4).toFixed(2)}s`;
 
   return(
-    <div className="fade-in-up" style={{animationDelay:`${i*.06}s`,opacity:0,width:"88%",maxWidth:460,margin:"0 auto"}}>
-      <div ref={floatRef} style={{animation:`float ${floatDur} ease-in-out ${floatDel} infinite`,willChange:"transform"}}>
+    <div className="fade-in-up" style={{animationDelay:`${i*.04}s`,opacity:0,width:"84%",maxWidth:430,margin:"0 auto",contentVisibility:"auto",containIntrinsicSize:"760px",contain:"layout paint"}}>
+      <div ref={floatRef} style={{animation:`cardDrift ${floatDur} ease-in-out ${floatDel} infinite`,willChange:"transform"}}>
       <div
-        style={{perspective:"1100px",perspectiveOrigin:"50% 40%",touchAction:"pan-y",userSelect:"none",WebkitUserSelect:"none",cursor}}
+        style={{perspective:"1200px",perspectiveOrigin:"50% 40%",touchAction:"pan-y",userSelect:"none",WebkitUserSelect:"none",cursor}}
         onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onCancel}>
         <div ref={innerRef} style={{transformStyle:"preserve-3d",WebkitTransformStyle:"preserve-3d",transform:"rotateY(0deg)",willChange:"transform",position:"relative"}}>
 
@@ -795,7 +796,7 @@ function Home({t,onSelect,profile,onSetup}){
           {[lunarPhase(),planetDay(),season()].map((v,i)=><div key={i} style={{fontSize:"11px",letterSpacing:".14em",color:t.muted}}>{v}</div>)}
         </div>
       </div>
-      <div style={{display:"flex",flexDirection:"column",gap:20,padding:"0 clamp(16px,6vw,48px)",maxWidth:520,margin:"0 auto calc(env(safe-area-inset-bottom,0px) + 80px)",position:"relative",zIndex:1}}>
+      <div style={{display:"flex",flexDirection:"column",gap:30,padding:"0 clamp(16px,6vw,48px)",maxWidth:520,margin:"0 auto calc(env(safe-area-inset-bottom,0px) + 80px)",position:"relative",zIndex:1}}>
         {shown.map((sg,i)=><SignFlipCard key={sg.key} sg={sg} t={t} i={i} onSelect={onSelect}/>)}
       </div>
     </div>
@@ -4261,7 +4262,7 @@ _root.render(<App/>);
 // Dismiss static loader once React is up
 requestAnimationFrame(()=>{
   const el=document.getElementById("arcana-loader");
-  if(el){el.style.opacity="0";setTimeout(()=>{el.style.display="none";},520);}
+  if(el){el.style.opacity="0";setTimeout(()=>{el.style.display="none";},900);}
 });
 </script>
 </body>
