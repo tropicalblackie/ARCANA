@@ -949,7 +949,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
         <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 10px)",left:16,zIndex:20,color:t.muted,fontSize:"10px",letterSpacing:".16em",display:"flex",alignItems:"center",gap:8,padding:"14px 14px"}}>← tutti i segni</button>
         <div className="fade-in-up" style={{position:"relative",zIndex:1,textAlign:"center",padding:"0 24px 52px"}}>
           <div style={{display:"flex",justifyContent:"center",marginBottom:24}}>
-            <img src={sg.backLogo} alt={sg.name} loading="lazy" style={{width:"clamp(280px,60vw,520px)",height:"clamp(280px,60vw,520px)",objectFit:"cover",objectPosition:"center",border:"none",opacity:1}}/>
+            <img src={sg.backLogo} alt={sg.name} loading="lazy" style={{width:"clamp(280px,60vw,520px)",height:"clamp(280px,60vw,520px)",objectFit:"cover",objectPosition:"center 15%",border:"none",opacity:1}}/>
           </div>
           <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(40px,9vw,68px)",fontWeight:300,color:t.text,letterSpacing:".08em",marginBottom:10,textShadow:`0 0 60px ${sg.color}28`}}>{sg.name}</div>
           <div style={{fontSize:"8px",letterSpacing:".44em",color:sg.colorLight,textTransform:"uppercase",marginBottom:34}}>{sg.archetype}</div>
