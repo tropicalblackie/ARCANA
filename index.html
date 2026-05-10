@@ -982,12 +982,18 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
       {/* ── PROFILO ── */}
       {mode==="profilo"&&(
         <div className="fade-in">
-          <div className="hs" style={{display:"flex",borderBottom:`1px solid ${t.border}`}}>
-            {PROFILE_TABS.map(s=>(
-              <button key={s.key} onClick={()=>setPTab(s.key)} style={{padding:"15px 15px",fontSize:"8px",letterSpacing:".18em",textTransform:"uppercase",whiteSpace:"nowrap",color:pTab===s.key?sg.colorLight:t.muted,borderBottom:pTab===s.key?`1px solid ${sg.color}`:"1px solid transparent",transition:"all .2s",marginBottom:-1,display:"flex",alignItems:"center",gap:5}}>
-                <span style={{opacity:.45,fontSize:"8px"}}>{s.icon}</span>{s.label}
-              </button>
-            ))}
+          <div style={{borderBottom:`1px solid ${t.border}`,padding:"12px 14px",background:`${t.bg}f2`}}>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:8,maxWidth:760,margin:"0 auto"}}>
+              {PROFILE_TABS.map(s=>{
+                const active=pTab===s.key;
+                return(
+                  <button key={s.key} onClick={()=>setPTab(s.key)} style={{minHeight:56,padding:"9px 8px",fontSize:"8px",letterSpacing:".12em",textTransform:"uppercase",lineHeight:1.25,color:active?t.text:t.muted,background:active?`rgba(${sg.rgb},.16)`:"transparent",border:`1px solid ${active?`${sg.color}88`:t.border}`,borderRadius:10,transition:"all .2s",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4}}>
+                    <span style={{opacity:active ? .9 : .45,fontSize:"10px",lineHeight:1}}>{s.icon}</span>
+                    <span>{s.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
           <div className="fade-in slide-in" key={pTab} style={{maxWidth:700,margin:"0 auto",padding:"40px 20px calc(env(safe-area-inset-bottom,0px) + 80px)"}}>
             <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
