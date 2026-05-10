@@ -943,10 +943,10 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
   return(
     <div ref={scrollRef} className="screen-h" style={{overflowY:"auto",backgroundColor:t.bg,backgroundImage:`linear-gradient(165deg,rgba(${sg.rgb},.22) 0%,${t.bg} 56%),url(${sg.backLogo})`,backgroundSize:"cover",backgroundPosition:"center 22%",backgroundBlendMode:"soft-light"}}>
       {/* hero */}
-      <div style={{position:"relative",minHeight:"68vh",background:`linear-gradient(160deg,rgba(${sg.rgb},.12) 0%,${t.bg} 72%)`,overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
+      <div style={{position:"relative",minHeight:"68vh",background:`linear-gradient(180deg,#ffffff 0%,#ffffff 58%,${t.bg} 100%)`,overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
         <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none"}}>
           <img src={sg.backLogo} alt="" aria-hidden="true" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 24%",opacity:.36,filter:"blur(26px) saturate(1.18) contrast(1.05)",transform:"scale(1.12)"}}/>
-          <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(0,0,0,.22) 0%,rgba(0,0,0,.34) 58%,${t.bg} 100%)`}}/>
+          <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(255,255,255,.96) 0%,rgba(255,255,255,.92) 58%,${t.bg} 100%)`}}/>
         </div>
         <StarField color={sg.starColor} count={80} opacity={.75}/>
         <div style={{position:"absolute",top:"30%",left:"50%",transform:"translate(-50%,-50%)",width:"60vw",height:"60vw",maxWidth:520,maxHeight:520,borderRadius:"50%",background:`radial-gradient(circle,rgba(${sg.rgb},.2) 0%,transparent 65%)`,pointerEvents:"none"}}/>
