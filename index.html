@@ -728,7 +728,7 @@ function SignFlipCard({sg,t,i,onSelect}){
     const doPeek=()=>{
       if(!innerRef.current||flippedRef.current||drg.current.active)return;
       innerRef.current.style.transition='transform .28s cubic-bezier(.4,0,.6,1)';
-      setAngle(20);
+      setAngle(-20);
       t2=setTimeout(()=>{
         if(!innerRef.current||flippedRef.current)return;
         innerRef.current.style.transition='transform .56s cubic-bezier(.2,.9,.24,1)';
