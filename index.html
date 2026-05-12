@@ -662,6 +662,8 @@ function SignFlipCard({sg,t,i,onSelect}){
 
   const onDown=useCallback(e=>{
     if(e.pointerType==="mouse"&&e.button!==0)return;
+    // let button clicks pass through — don't hijack the pointer
+    if(e.target.closest("button"))return;
     const d=drg.current;
     d.active=true;d.locked=false;
     d.sx=e.clientX;d.sy=e.clientY;
