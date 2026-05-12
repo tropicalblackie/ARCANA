@@ -993,7 +993,7 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
         <div style={{position:"absolute",top:"30%",left:"50%",transform:"translate(-50%,-50%)",width:"60vw",height:"60vw",maxWidth:520,maxHeight:520,borderRadius:"50%",background:`radial-gradient(circle,rgba(${sg.rgb},.2) 0%,transparent 65%)`,pointerEvents:"none"}}/>
         <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 10px)",left:16,zIndex:20,color:`${t.text}cc`,fontSize:"11px",letterSpacing:".14em",display:"flex",alignItems:"center",gap:8,padding:"14px 14px",textShadow:"0 1px 12px rgba(0,0,0,.35)"}}>← tutti i segni</button>
         <div className="fade-in-up" style={{position:"relative",zIndex:1,textAlign:"center",padding:"0 24px 48px"}}>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(48px,11vw,80px)",fontWeight:400,color:`${t.text}f5`,letterSpacing:".07em",marginBottom:10,textShadow:`0 2px 32px rgba(${sg.rgb},.5),0 1px 4px rgba(0,0,0,.28)"}}>{sg.name}</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(48px,11vw,80px)",fontWeight:400,color:`${t.text}f5`,letterSpacing:".07em",marginBottom:10,textShadow:`0 2px 32px rgba(${sg.rgb},.5),0 1px 4px rgba(0,0,0,.28)`}}>{sg.name}</div>
           <div style={{fontSize:"9px",letterSpacing:".42em",color:`${sg.colorLight}f2`,textTransform:"uppercase",marginBottom:34,textShadow:"0 1px 10px rgba(0,0,0,.3)"}}>{sg.archetype}</div>
           <div style={{display:"flex",justifyContent:"center",gap:"clamp(14px,4vw,30px)",flexWrap:"wrap"}}>
             {[{l:"Pianeta",v:sg.planet},{l:"Elemento",v:sg.element},{l:"Modalità",v:sg.modality},{l:"Pietra",v:sg.stone},{l:"Tarocco",v:sg.tarot},{l:"Corpo",v:sg.body.split(",")[0]}].map(a=>(
