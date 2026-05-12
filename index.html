@@ -984,21 +984,16 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
   return(
     <div ref={scrollRef} className="screen-h" style={{overflowY:"auto",backgroundColor:t.bg,backgroundImage:`linear-gradient(165deg,rgba(${sg.rgb},.22) 0%,${t.bg} 56%),url(${sg.backLogo})`,backgroundSize:"cover",backgroundPosition:"center 22%",backgroundBlendMode:"soft-light"}}>
       {/* hero */}
-      <div style={{position:"relative",minHeight:"68vh",background:`linear-gradient(180deg,#ffffff 0%,#ffffff 58%,${t.bg} 100%)`,overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
+      <div style={{position:"relative",minHeight:"44vh",background:`linear-gradient(180deg,rgba(${sg.rgb},.28) 0%,rgba(${sg.rgb},.14) 60%,${t.bg} 100%)`,overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
         <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none"}}>
-          <img src={sg.backLogo} alt="" aria-hidden="true" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 24%",opacity:.36,filter:"blur(26px) saturate(1.18) contrast(1.05)",transform:"scale(1.12)"}}/>
-          <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(255,255,255,.96) 0%,rgba(255,255,255,.92) 58%,${t.bg} 100%)`}}/>
+          <img src={sg.backLogo} alt="" aria-hidden="true" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 24%",opacity:.22,filter:"blur(32px) saturate(1.3) contrast(1.05)",transform:"scale(1.12)"}}/>
+          <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(${sg.rgb},.18) 0%,rgba(${sg.rgb},.08) 60%,${t.bg} 100%)`}}/>
         </div>
         <StarField color={sg.starColor} count={80} opacity={.75}/>
         <div style={{position:"absolute",top:"30%",left:"50%",transform:"translate(-50%,-50%)",width:"60vw",height:"60vw",maxWidth:520,maxHeight:520,borderRadius:"50%",background:`radial-gradient(circle,rgba(${sg.rgb},.2) 0%,transparent 65%)`,pointerEvents:"none"}}/>
         <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 10px)",left:16,zIndex:20,color:`${t.text}cc`,fontSize:"11px",letterSpacing:".14em",display:"flex",alignItems:"center",gap:8,padding:"14px 14px",textShadow:"0 1px 12px rgba(0,0,0,.35)"}}>← tutti i segni</button>
-        <div className="fade-in-up" style={{position:"relative",zIndex:1,textAlign:"center",padding:"0 24px 52px"}}>
-          <div style={{display:"flex",justifyContent:"center",marginBottom:24}}>
-            <div style={{width:"clamp(220px,46vw,340px)",height:"clamp(220px,46vw,340px)",borderRadius:"50%",overflow:"hidden"}}>
-              <img src={sg.backLogo} alt={sg.name} loading="lazy" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 26%",transform:"scale(1.38)",transformOrigin:"center 26%",opacity:1}}/>
-            </div>
-          </div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(44px,10vw,74px)",fontWeight:400,color:`${t.text}f5`,letterSpacing:".07em",marginBottom:10,textShadow:"0 2px 20px rgba(0,0,0,.38)"}}>{sg.name}</div>
+        <div className="fade-in-up" style={{position:"relative",zIndex:1,textAlign:"center",padding:"0 24px 48px"}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(48px,11vw,80px)",fontWeight:400,color:`${t.text}f5`,letterSpacing:".07em",marginBottom:10,textShadow:`0 2px 32px rgba(${sg.rgb},.5),0 1px 4px rgba(0,0,0,.28)"}}>{sg.name}</div>
           <div style={{fontSize:"9px",letterSpacing:".42em",color:`${sg.colorLight}f2`,textTransform:"uppercase",marginBottom:34,textShadow:"0 1px 10px rgba(0,0,0,.3)"}}>{sg.archetype}</div>
           <div style={{display:"flex",justifyContent:"center",gap:"clamp(14px,4vw,30px)",flexWrap:"wrap"}}>
             {[{l:"Pianeta",v:sg.planet},{l:"Elemento",v:sg.element},{l:"Modalità",v:sg.modality},{l:"Pietra",v:sg.stone},{l:"Tarocco",v:sg.tarot},{l:"Corpo",v:sg.body.split(",")[0]}].map(a=>(
