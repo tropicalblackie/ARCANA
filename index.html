@@ -986,22 +986,21 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
   return(
     <div ref={scrollRef} className="screen-h" style={{overflowY:"auto",backgroundColor:t.bg,backgroundImage:`linear-gradient(165deg,rgba(${sg.rgb},.22) 0%,${t.bg} 56%),url(${sg.backLogo})`,backgroundSize:"cover",backgroundPosition:"center 22%",backgroundBlendMode:"soft-light"}}>
       {/* hero */}
-      <div style={{position:"relative",minHeight:"44vh",background:`linear-gradient(180deg,rgba(${sg.rgb},.28) 0%,rgba(${sg.rgb},.14) 60%,${t.bg} 100%)`,overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
+      <div style={{position:"relative",background:sg.color,overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
         <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none"}}>
-          <img src={sg.backLogo} alt="" aria-hidden="true" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 24%",opacity:.22,filter:"blur(32px) saturate(1.3) contrast(1.05)",transform:"scale(1.12)"}}/>
-          <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(${sg.rgb},.18) 0%,rgba(${sg.rgb},.08) 60%,${t.bg} 100%)`}}/>
+          <img src={sg.backLogo} alt="" aria-hidden="true" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 24%",opacity:.10,filter:"blur(40px) saturate(1.2)",transform:"scale(1.15)"}}/>
+          <div style={{position:"absolute",bottom:0,left:0,right:0,height:"80px",background:`linear-gradient(to bottom,transparent,${t.bg})`}}/>
         </div>
-        <StarField color={sg.starColor} count={80} opacity={.75}/>
-        <div style={{position:"absolute",top:"30%",left:"50%",transform:"translate(-50%,-50%)",width:"60vw",height:"60vw",maxWidth:520,maxHeight:520,borderRadius:"50%",background:`radial-gradient(circle,rgba(${sg.rgb},.2) 0%,transparent 65%)`,pointerEvents:"none"}}/>
-        <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 10px)",left:16,zIndex:20,color:`${t.text}cc`,fontSize:"11px",letterSpacing:".14em",display:"flex",alignItems:"center",gap:8,padding:"14px 14px",textShadow:"0 1px 12px rgba(0,0,0,.35)"}}>← tutti i segni</button>
-        <div className="fade-in-up" style={{position:"relative",zIndex:1,textAlign:"center",padding:"0 24px 48px"}}>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(48px,11vw,80px)",fontWeight:400,color:`${t.text}f5`,letterSpacing:".07em",marginBottom:10,textShadow:`0 2px 32px rgba(${sg.rgb},.5),0 1px 4px rgba(0,0,0,.28)`}}>{sg.name}</div>
-          <div style={{fontSize:"9px",letterSpacing:".42em",color:`${sg.colorLight}f2`,textTransform:"uppercase",marginBottom:34,textShadow:"0 1px 10px rgba(0,0,0,.3)"}}>{sg.archetype}</div>
+        <StarField color="rgba(255,255,255,0.7)" count={60} opacity={.45}/>
+        <button onClick={onBack} style={{position:"absolute",top:"calc(env(safe-area-inset-top,0px) + 10px)",left:16,zIndex:20,color:"rgba(255,255,255,.85)",fontSize:"11px",letterSpacing:".14em",display:"flex",alignItems:"center",gap:8,padding:"14px 14px"}}>← tutti i segni</button>
+        <div className="fade-in-up" style={{position:"relative",zIndex:1,textAlign:"center",padding:"clamp(64px,13vw,96px) 24px 56px"}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(54px,13vw,92px)",fontWeight:400,color:"#fff",letterSpacing:".07em",marginBottom:10,textShadow:"0 2px 24px rgba(0,0,0,.22)"}}>{sg.name}</div>
+          <div style={{fontSize:"10px",letterSpacing:".42em",color:"rgba(255,255,255,.72)",textTransform:"uppercase",marginBottom:36}}>{sg.archetype}</div>
           <div style={{display:"flex",justifyContent:"center",gap:"clamp(14px,4vw,30px)",flexWrap:"wrap"}}>
             {[{l:"Pianeta",v:sg.planet},{l:"Elemento",v:sg.element},{l:"Modalità",v:sg.modality},{l:"Pietra",v:sg.stone},{l:"Tarocco",v:sg.tarot},{l:"Corpo",v:sg.body.split(",")[0]}].map(a=>(
               <div key={a.l} style={{textAlign:"center",minWidth:64}}>
-                <div style={{fontSize:"7px",letterSpacing:".24em",color:`${t.text}cc`,textTransform:"uppercase",marginBottom:5}}>{a.l}</div>
-                <div style={{fontSize:"12px",color:`${sg.colorLight}f0`,fontFamily:"'Cormorant Garamond',serif",lineHeight:1.35,textShadow:"0 1px 8px rgba(0,0,0,.24)"}}>{a.v}</div>
+                <div style={{fontSize:"8px",letterSpacing:".24em",color:"rgba(255,255,255,.5)",textTransform:"uppercase",marginBottom:5}}>{a.l}</div>
+                <div style={{fontSize:"14px",color:"rgba(255,255,255,.92)",fontFamily:"'Cormorant Garamond',serif",lineHeight:1.35}}>{a.v}</div>
               </div>
             ))}
           </div>
