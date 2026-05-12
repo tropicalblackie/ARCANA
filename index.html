@@ -674,7 +674,7 @@ function SignFlipCard({sg,t,i,onSelect}){
     const dx=e.clientX-d.sx,dy=e.clientY-d.sy;
     if(!d.locked){
       if(Math.abs(dx)<3&&Math.abs(dy)<3)return;
-      if(Math.abs(dy)>Math.abs(dx)*1.5){
+      if(Math.abs(dy)>Math.abs(dx)*2.5){
         d.active=false;
         flipTo(flippedRef.current?180:0);
         setCursor("grab");return;
@@ -684,20 +684,20 @@ function SignFlipCard({sg,t,i,onSelect}){
     }
     d.moved+=Math.abs(e.clientX-d.lx);
     d.lx=e.clientX;
-    setAngle(d.sa+dx*0.64);
+    setAngle(d.sa+dx*1.6);
   },[setAngle,flipTo]);
 
   const onUp=useCallback(e=>{
     const d=drg.current;
     if(!d.active)return;
     d.active=false;setCursor("grab");
-    if(d.moved<8){
-      // click: toggle front↔back, user navigates via button
+    if(d.moved<6){
+      // tap: toggle
       flipTo(flippedRef.current?0:180);
       return;
     }
-    // drag: snap to nearest face, no velocity kick
-    const ang=d.sa+(e.clientX-d.sx)*0.64;
+    // drag: snap to nearest face
+    const ang=d.sa+(e.clientX-d.sx)*1.6;
     const norm=(ang%360+360)%360;
     flipTo(norm>90&&norm<=270?180:0);
   },[flipTo]);
