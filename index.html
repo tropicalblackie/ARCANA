@@ -44,6 +44,8 @@ textarea{font-family:inherit;resize:none;outline:none;border:none;-webkit-appear
 .gold-text{background:linear-gradient(90deg,#c8a868 0%,#f0d898 40%,#c8a868 60%,#a07840 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gold-sweep 4s linear infinite}
 @keyframes candle-flicker{0%,100%{opacity:1}93%{opacity:.92}94%{opacity:.85}95%{opacity:.93}97%{opacity:.88}98%{opacity:.96}}
 @keyframes med-breathe{0%,100%{transform:scale(1);opacity:.38}40%{transform:scale(1.58);opacity:.82}}
+@keyframes card-in{0%{opacity:0;transform:translateY(62px) scale(.92)}62%{transform:translateY(-8px) scale(1.018)}80%{transform:translateY(3px) scale(.998)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.card-in{animation:card-in .75s cubic-bezier(.16,1,.3,1) forwards;opacity:0}
 @keyframes pendulum{0%{transform:rotate(-24deg)}100%{transform:rotate(24deg)}}
 </style>
 </head>
@@ -665,6 +667,7 @@ function SignFlipCard({sg,t,i,onSelect}){
     d.sa=flippedRef.current?180:0;
     d.lx=e.clientX;d.moved=0;
     if(innerRef.current)innerRef.current.style.transition='none';
+    if(floatRef.current){floatRef.current.style.transition='none';floatRef.current.style.transform='';}
     setCursor("grabbing");
   },[]);
 
@@ -704,11 +707,38 @@ function SignFlipCard({sg,t,i,onSelect}){
 
   const onCancel=useCallback(()=>{
     drg.current.active=false;setCursor("grab");
+    if(floatRef.current){floatRef.current.style.transition='transform .5s cubic-bezier(.16,1,.3,1)';floatRef.current.style.transform='';}
     flipTo(flippedRef.current?180:0);
   },[flipTo]);
 
+  // hover lift (direct DOM, no re-render)
+  const onEnter=useCallback(()=>{
+    if(drg.current.active)return;
+    if(floatRef.current){floatRef.current.style.transition='transform .36s cubic-bezier(.16,1,.3,1)';floatRef.current.style.transform='translateY(-9px) scale(1.022)';}
+  },[]);
+  const onLeave=useCallback(()=>{
+    if(drg.current.active)return;
+    if(floatRef.current){floatRef.current.style.transition='transform .5s cubic-bezier(.16,1,.3,1)';floatRef.current.style.transform='';}
+  },[]);
+
+  // sequential hint-peek after entry
+  useEffect(()=>{
+    const t=setTimeout(()=>{
+      if(!innerRef.current||flippedRef.current)return;
+      innerRef.current.style.transition='transform .28s cubic-bezier(.4,0,.6,1)';
+      setAngle(20);
+      const t2=setTimeout(()=>{
+        if(!innerRef.current)return;
+        innerRef.current.style.transition='transform .56s cubic-bezier(.2,.9,.24,1)';
+        setAngle(0);
+      },280);
+      return()=>clearTimeout(t2);
+    },1000+i*140);
+    return()=>clearTimeout(t);
+  },[i,setAngle]);
+
   return(
-    <div className="fade-in-up" style={{animationDelay:`${i*.04}s`,opacity:0,width:"84%",maxWidth:430,margin:"0 auto",contentVisibility:"auto",containIntrinsicSize:"760px",contain:"layout paint"}}>
+    <div className="card-in" style={{animationDelay:`${i*.09}s`,width:"84%",maxWidth:430,margin:"0 auto",contentVisibility:"auto",containIntrinsicSize:"760px"}} onPointerEnter={onEnter} onPointerLeave={onLeave}>
       <div ref={floatRef} style={{willChange:"transform"}}>
       <div
         style={{perspective:"1200px",perspectiveOrigin:"50% 40%",touchAction:"pan-y",userSelect:"none",WebkitUserSelect:"none",cursor}}
