@@ -640,13 +640,13 @@ function SignFlipCard({sg,t,i,onSelect}){
     if(backRef.current){backRef.current.style.opacity=onBack?1:0;backRef.current.style.pointerEvents=onBack?"auto":"none";}
   },[]);
 
-  // CSS-animated flip to target (0=front, 180=back)
+  // CSS-animated flip — direction-aware, any target angle
   const flipTo=useCallback((target)=>{
     if(!innerRef.current)return;
-    innerRef.current.style.transition='transform 0.42s cubic-bezier(0.2,0.9,0.24,1)';
-    flippedRef.current=target===180;
-    // defer transform so browser sees transition change first
-    requestAnimationFrame(()=>{ setAngle(target); });
+    innerRef.current.style.transition='transform 0.52s cubic-bezier(0.16,1.08,0.3,1)';
+    const norm=((target%360)+360)%360;
+    flippedRef.current=norm>90&&norm<=270;
+    requestAnimationFrame(()=>{setAngle(target);});
   },[setAngle]);
 
   useEffect(()=>{
@@ -691,15 +691,25 @@ function SignFlipCard({sg,t,i,onSelect}){
     const d=drg.current;
     if(!d.active)return;
     d.active=false;setCursor("grab");
+    const totalDx=e.clientX-d.sx;
+    const dir=totalDx>=0?1:-1;
     if(d.moved<6){
-      // tap: toggle
-      flipTo(flippedRef.current?0:180);
+      // tap: flip in natural direction
+      if(!flippedRef.current) flipTo(dir>=0?180:-180);
+      else flipTo(dir>=0?360:0);
       return;
     }
-    // drag: snap to nearest face
-    const ang=d.sa+(e.clientX-d.sx)*1.6;
+    const ang=d.sa+totalDx*1.6;
     const norm=(ang%360+360)%360;
-    flipTo(norm>90&&norm<=270?180:0);
+    const toBack=norm>90&&norm<=270;
+    if(toBack){
+      // snap to back — keep drag direction
+      flipTo(flippedRef.current?180:dir>=0?180:-180);
+    } else {
+      // snap to front
+      if(flippedRef.current) flipTo(dir>=0?360:0);
+      else flipTo(0);
+    }
   },[flipTo]);
 
   const onCancel=useCallback(()=>{
