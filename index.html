@@ -282,15 +282,9 @@ const JOURNAL_TABS=[
 ];
 
 const PROFILE_TABS=[
-  {key:"map",           icon:"⊗", label:"Mappa"},
-  {key:"essence",       icon:"✦", label:"Essenza"},
-  {key:"depth",         icon:"◉", label:"Profondità"},
-  {key:"wound",         icon:"◈", label:"Ferita"},
-  {key:"shadow",        icon:"▲", label:"Ombra & Luce"},
-  {key:"relationships", icon:"◆", label:"Eros"},
-  {key:"growth",        icon:"◎", label:"Crescita"},
-  {key:"karma",         icon:"⊕", label:"Karma"},
-  {key:"ritual",        icon:"✧", label:"Rituale"}
+  {key:"archetipo", icon:"⊗", label:"L'Archetipo"},
+  {key:"manuale",   icon:"◆", label:"Il Manuale"},
+  {key:"ombra",     icon:"▲", label:"Ombra & Luce"}
 ];
 
 // ── helpers ──
@@ -860,86 +854,92 @@ function SecretCard({sg,t}){
 
 // ── PROFILE CONTENT ──
 function ProfileContent({tab,sg,t}){
-  const map={
-    essence:sg.essence, depth:sg.depth, wound:sg.wound,
-    relationships:sg.relationships, growth:sg.growth,
-    karma:sg.karma, ritual:sg.ritual
-  };
-  const accent=(
-    <div style={{height:1,background:`linear-gradient(to right,${sg.color}60,transparent)`,margin:"20px 0 32px"}}/>
+  const divider=<div style={{height:1,background:`linear-gradient(to right,${sg.color}60,transparent)`,margin:"28px 0 36px"}}/>;
+  const label=(txt)=>(
+    <div style={{fontSize:"8px",letterSpacing:".42em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>{txt}</div>
   );
-  if(tab==="shadow") return(
+  const body=(txt,size="clamp(17px,3.5vw,20px)")=>(
+    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:size,color:t.text,lineHeight:1.88}}>{txt}</div>
+  );
+  const block=(title,content,accent)=>(
+    <div style={{padding:"26px 28px",border:`1px solid ${accent||t.border}`,background:accent?`rgba(${sg.rgb},.06)`:t.surface,marginBottom:20}}>
+      {label(title)}{body(content)}
+    </div>
+  );
+
+  if(tab==="archetipo") return(
     <div>
-      {accent}
-      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,3.5vw,20px)",color:t.text,lineHeight:1.85,marginBottom:28}}>{sg.shadow}</div>
-      <div style={{padding:"24px 26px",border:`1px solid ${t.border}`,background:t.surface}}>
-        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>La Luce nell'Ombra</div>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"19px",color:t.text,lineHeight:1.8}}>{sg.light}</div>
+      {/* dati celesti */}
+      <div style={{textAlign:"center",marginBottom:36,padding:"20px 0",borderBottom:`1px solid ${t.border}`}}>
+        <div style={{fontSize:"12px",letterSpacing:".22em",color:t.muted,fontFamily:"'Cormorant Garamond',serif"}}>
+          {sg.element} · {sg.modality} · {sg.planet} · {sg.stone} · {sg.day}
+        </div>
+      </div>
+      {/* essenza */}
+      <div style={{marginBottom:36}}>
+        {label("L'Essenza")}
+        {body(sg.essence,"clamp(18px,4vw,22px)")}
+      </div>
+      {divider}
+      {/* mito fondativo */}
+      <div style={{marginBottom:36}}>
+        {label("Il Mito Fondativo")}
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,3.5vw,20px)",fontStyle:"italic",color:`${t.text}cc`,lineHeight:1.88,borderLeft:`2px solid ${sg.color}60`,paddingLeft:22}}>
+          {sg.vision}
+        </div>
+      </div>
+      <div style={{marginBottom:36}}>
+        {body(sg.depth)}
+      </div>
+      {divider}
+      {/* anatomia del simbolo */}
+      <div style={{padding:"26px 28px",border:`1px solid ${sg.color}40`,background:`rgba(${sg.rgb},.06)`}}>
+        {label("L'Anatomia del Simbolo")}
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(40px,10vw,56px)",color:sg.colorLight,textAlign:"center",lineHeight:1,marginBottom:18,opacity:.8}}>{sg.symbol}</div>
+        {body(sg.symbol_meaning)}
       </div>
     </div>
   );
-  if(tab==="map") return(
+
+  if(tab==="manuale") return(
     <div>
-      {accent}
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:1,background:t.border,marginBottom:28}}>
-        {[
-          {l:"Pianeta",v:sg.planet},{l:"Elemento",v:sg.element},{l:"Modalità",v:sg.modality},
-          {l:"Pietra",v:sg.stone},{l:"Metallo",v:sg.metal},{l:"Tarocco",v:sg.tarot},
-          {l:"Mito",v:sg.myth},{l:"Corpo",v:sg.body},{l:"Giorno",v:sg.day},
-          {l:"Numero",v:sg.number},{l:"Stagione",v:sg.season}
-        ].map(d=>(
-          <div key={d.l} style={{padding:"18px",background:t.card}}>
-            <div style={{fontSize:"7px",letterSpacing:".28em",color:t.muted,textTransform:"uppercase",marginBottom:7}}>{d.l}</div>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",color:t.text,lineHeight:1.4}}>{d.val||d.v}</div>
-          </div>
-        ))}
+      {block("L'Anatomia del Conflitto",sg.shadow,`${sg.color}40`)}
+      {block("Il Linguaggio dell'Eros",sg.relationships)}
+      {block("L'Auto-Sabotaggio",sg.wound)}
+      {divider}
+      {/* istruzioni per l'uso */}
+      <div style={{padding:"26px 28px",border:`1px solid ${t.border}`,background:t.surface}}>
+        {label("Istruzioni per l'Uso")}
+        {body(sg.growth)}
       </div>
-      <div style={{padding:"24px 26px",border:`1px solid ${sg.color}30`,background:`rgba(${sg.rgb},.05)`,marginBottom:28}}>
-        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>◆ Voce Archetipica</div>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"18px",fontStyle:"italic",color:t.text,lineHeight:1.8}}>{sg.voice}</div>
-      </div>
-      <div style={{padding:"24px 26px",border:`1px solid ${t.border}`,background:t.surface}}>
-        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>⟷ Affinità & Tensioni</div>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:t.text,lineHeight:1.85}}>{sg.compatibility}</div>
-      </div>
-      <div style={{padding:"24px 26px",border:`1px solid ${t.border}`,background:t.surface,marginTop:16}}>
-        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>⊗ Il Simbolo</div>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:t.text,lineHeight:1.85}}>{sg.symbol_meaning}</div>
+      <div style={{marginTop:20,padding:"26px 28px",border:`1px solid ${sg.color}40`,background:`rgba(${sg.rgb},.06)`}}>
+        {label("⟷ Affinità & Tensioni")}
+        {body(sg.compatibility)}
       </div>
     </div>
   );
-  if(tab==="wound") return(
+
+  if(tab==="ombra") return(
     <div>
-      {accent}
-      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,4vw,23px)",fontStyle:"italic",color:`${t.text}88`,lineHeight:1.65,borderLeft:`2px solid ${sg.color}50`,paddingLeft:22,marginBottom:32}}>{sg.vision}</div>
-      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,3.5vw,20px)",color:t.text,lineHeight:1.85}}>{sg.wound}</div>
-    </div>
-  );
-  if(tab==="ritual") return(
-    <div>
-      {accent}
-      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,3.5vw,20px)",color:t.text,lineHeight:1.85,marginBottom:32}}>{sg.ritual}</div>
-      <div style={{padding:"24px 26px",border:`1px solid ${sg.color}30`,background:`rgba(${sg.rgb},.05)`}}>
-        <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>Affermazione</div>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"19px",fontStyle:"italic",color:t.text,lineHeight:1.8}}>{sg.affirmation}</div>
+      {block("La Ferita Primordiale",sg.wound,`${sg.color}40`)}
+      <div style={{marginBottom:20}}>{divider}</div>
+      {block("La Maschera dell'Ombra",sg.shadow)}
+      {block("Il Veleno Segreto",sg.secret)}
+      {divider}
+      {block("L'Integrazione — La Via della Luce",sg.light+"\n\n"+sg.growth,`${sg.color}30`)}
+      {/* rituale */}
+      <div style={{padding:"28px",border:`1px solid ${sg.color}50`,background:`rgba(${sg.rgb},.07)`,marginTop:4}}>
+        {label("✧ Il Rituale")}
+        {body(sg.ritual,"clamp(17px,3.5vw,20px)")}
+        <div style={{marginTop:28,paddingTop:22,borderTop:`1px solid ${t.border}`}}>
+          {label("Affermazione")}
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,4vw,22px)",fontStyle:"italic",color:sg.colorLight,lineHeight:1.7}}>{sg.affirmation}</div>
+        </div>
       </div>
     </div>
   );
-  if(tab==="depth") return(
-    <div>
-      {accent}
-      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,3.5vw,20px)",color:t.text,lineHeight:1.85}}>{sg.depth}</div>
-      <SecretCard sg={sg} t={t}/>
-    </div>
-  );
-  const txt=map[tab];
-  if(!txt) return null;
-  return(
-    <div>
-      {accent}
-      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,3.5vw,20px)",color:t.text,lineHeight:1.85}}>{txt}</div>
-    </div>
-  );
+
+  return null;
 }
 
 // ── JOURNAL ENTRY ──
@@ -970,9 +970,7 @@ function JournalEntry({sg,tab,t,entry,onSave}){
 
 // ── SIGN SCREEN ──
 function SignScreen({sg,t,onBack,journal,saveEntry}){
-  const[mode,setMode]=useState("profilo");
-  const[pTab,setPTab]=useState("map");
-  const[jTab,setJTab]=useState("psiche");
+  const[pTab,setPTab]=useState("archetipo");
   const[scrolled,setScrolled]=useState(false);
   const scrollRef=useRef(null);
 
@@ -983,8 +981,6 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
     el.addEventListener("scroll",fn);
     return()=>el.removeEventListener("scroll",fn);
   },[]);
-
-  const pSec=PROFILE_TABS.find(x=>x.key===pTab);
 
   return(
     <div ref={scrollRef} className="screen-h" style={{overflowY:"auto",backgroundColor:t.bg,backgroundImage:`linear-gradient(165deg,rgba(${sg.rgb},.22) 0%,${t.bg} 56%),url(${sg.backLogo})`,backgroundSize:"cover",backgroundPosition:"center 22%",backgroundBlendMode:"soft-light"}}>
@@ -1012,82 +1008,18 @@ function SignScreen({sg,t,onBack,journal,saveEntry}){
       {/* nav */}
       <div style={{position:"sticky",top:0,zIndex:30,background:scrolled?`${t.bg}f0`:t.bg,backdropFilter:scrolled?"blur(18px)":"none",borderBottom:`1px solid ${t.border}`,transition:"background .3s"}}>
         <div style={{display:"flex"}}>
-          {[{k:"profilo",l:"Profilo"}].map(m=>(
-            <button key={m.k} onClick={()=>setMode(m.k)} style={{flex:1,padding:"18px 8px",fontSize:"8px",letterSpacing:".26em",textTransform:"uppercase",color:mode===m.k?sg.colorLight:t.muted,borderBottom:mode===m.k?`1px solid ${sg.color}`:"1px solid transparent",transition:"all .2s",marginBottom:-1}}>{m.l}</button>
+          {PROFILE_TABS.map(m=>(
+            <button key={m.key} onClick={()=>setPTab(m.key)} style={{flex:1,padding:"17px 8px",fontSize:"8px",letterSpacing:".22em",textTransform:"uppercase",color:pTab===m.key?sg.colorLight:t.muted,borderBottom:pTab===m.key?`1px solid ${sg.color}`:"1px solid transparent",transition:"all .2s",marginBottom:-1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
+              <span style={{fontSize:"11px",opacity:pTab===m.key?1:.45}}>{m.icon}</span>
+              {m.label}
+            </button>
           ))}
         </div>
       </div>
 
-      {/* ── PROFILO ── */}
-      {mode==="profilo"&&(
-        <div className="fade-in">
-          <div style={{borderBottom:`1px solid ${t.border}`,padding:"12px 14px",background:`${t.bg}f2`}}>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:8,maxWidth:760,margin:"0 auto"}}>
-              {PROFILE_TABS.map(s=>{
-                const active=pTab===s.key;
-                return(
-                  <button key={s.key} onClick={()=>setPTab(s.key)} style={{minHeight:56,padding:"9px 8px",fontSize:"8px",letterSpacing:".12em",textTransform:"uppercase",lineHeight:1.25,color:active?t.text:t.muted,background:active?`rgba(${sg.rgb},.16)`:"transparent",border:`1px solid ${active?`${sg.color}88`:t.border}`,borderRadius:10,transition:"all .2s",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4}}>
-                    <span style={{opacity:active ? .9 : .45,fontSize:"10px",lineHeight:1}}>{s.icon}</span>
-                    <span>{s.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          <div className="fade-in slide-in" key={pTab} style={{maxWidth:700,margin:"0 auto",padding:"40px 20px calc(env(safe-area-inset-bottom,0px) + 80px)"}}>
-            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
-              <span style={{fontSize:"14px",color:`${sg.colorLight}80`}}>{pSec?.icon}</span>
-              <div style={{fontSize:"8px",letterSpacing:".4em",color:sg.colorLight,textTransform:"uppercase"}}>{pSec?.label}</div>
-            </div>
-            <ProfileContent tab={pTab} sg={sg} t={t}/>
-          </div>
-        </div>
-      )}
-
-      {/* ── DIARIO ── */}
-      {mode==="diario"&&(
-        <div className="fade-in">
-          <div className="hs" style={{display:"flex",borderBottom:`1px solid ${t.border}`}}>
-            {JOURNAL_TABS.map(tab=>(
-              <button key={tab.key} onClick={()=>setJTab(tab.key)} style={{padding:"15px 17px",fontSize:"8px",letterSpacing:".2em",textTransform:"uppercase",whiteSpace:"nowrap",color:jTab===tab.key?sg.colorLight:t.muted,borderBottom:jTab===tab.key?`1px solid ${sg.color}`:"1px solid transparent",transition:"all .2s",marginBottom:-1}}>{tab.label}</button>
-            ))}
-          </div>
-          <JournalEntry sg={sg} tab={JOURNAL_TABS.find(x=>x.key===jTab)} t={t}
-            entry={journal[`${toKey()}_${sg.key}_${jTab}`]||""}
-            onSave={text=>saveEntry(sg.key,jTab,text)}/>
-        </div>
-      )}
-
-      {/* ── MAPPA ── */}
-      {mode==="mappa"&&(
-        <div className="fade-in" style={{maxWidth:700,margin:"0 auto",padding:"40px 20px calc(env(safe-area-inset-bottom,0px) + 80px)"}}>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,4vw,24px)",fontStyle:"italic",color:`${t.text}80`,lineHeight:1.65,borderLeft:`2px solid ${sg.color}50`,paddingLeft:22,marginBottom:40}}>{sg.vision}</div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:36}}>
-            {[{l:"Luce",v:sg.light,c:sg.colorLight},{l:"Ombra",v:sg.shadow.split(".")[0],c:`${sg.colorLight}70`}].map(p=>(
-              <div key={p.l} style={{padding:"22px 24px",border:`1px solid ${t.border}`,background:t.surface}}>
-                <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:12}}>{p.l}</div>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",color:p.c,lineHeight:1.6}}>{p.v}</div>
-              </div>
-            ))}
-          </div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:1,background:t.border,marginBottom:28}}>
-            {[
-              {l:"Pianeta",v:sg.planet},{l:"Elemento",v:sg.element},{l:"Modalità",v:sg.modality},
-              {l:"Pietra",v:sg.stone},{l:"Metallo",v:sg.metal},{l:"Tarocco",v:sg.tarot},
-              {l:"Mito",v:sg.myth},{l:"Corpo",v:sg.body},{l:"Stagione",v:sg.season},{l:"Numero",v:sg.number}
-            ].map(d=>(
-              <div key={d.l} style={{padding:"17px",background:t.card}}>
-                <div style={{fontSize:"6px",letterSpacing:".28em",color:t.muted,textTransform:"uppercase",marginBottom:7}}>{d.l}</div>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",color:t.text,lineHeight:1.4}}>{d.v}</div>
-              </div>
-            ))}
-          </div>
-          <div style={{padding:"24px 26px",border:`1px solid ${sg.color}35`,background:`rgba(${sg.rgb},.06)`}}>
-            <div style={{fontSize:"7px",letterSpacing:".35em",color:sg.colorLight,textTransform:"uppercase",marginBottom:14}}>⟷ Affinità & Tensioni</div>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",color:t.text,lineHeight:1.85}}>{sg.compatibility}</div>
-          </div>
-        </div>
-      )}
+      <div className="fade-in" key={pTab} style={{maxWidth:700,margin:"0 auto",padding:"40px 20px calc(env(safe-area-inset-bottom,0px) + 80px)"}}>
+        <ProfileContent tab={pTab} sg={sg} t={t}/>
+      </div>
     </div>
   );
 }
