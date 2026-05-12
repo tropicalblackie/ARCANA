@@ -4,12 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>ARCANA — Psicologia Archetipica</title>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.2.5/source/astronomy.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.2.5/source/astronomy.js" async></script>
+<!-- Three.js and GSAP are loaded on-demand by ShaderBall -->
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -771,7 +773,7 @@ function SignFlipCard({sg,t,i,onSelect}){
               <CandleShine/>
               <GlassOverlay/>
               <div style={{position:"relative",aspectRatio:frontRatio,borderRadius:11,overflow:"hidden",background:"#EEF1F4",zIndex:1}}>
-                {sg.img&&<img src={sg.img} alt={sg.name} loading="lazy" decoding="async" onLoad={e=>{
+                {sg.img&&<img src={sg.img} alt={sg.name} loading={i<3?"eager":"lazy"} decoding={i<3?"sync":"async"} fetchpriority={i===0?"high":"auto"} onLoad={e=>{
                   const w=e.currentTarget.naturalWidth;
                   const h=e.currentTarget.naturalHeight;
                   if(w>0&&h>0)setFrontRatio(`${w}/${h}`);
@@ -1581,85 +1583,108 @@ function ShaderBall({color=[0.60,0.28,0.95]}){
   const mountRef=useRef(null);
   useEffect(()=>{
     const container=mountRef.current;
-    if(!container||!window.THREE)return;
-    const THREE=window.THREE;
-    const scene=new THREE.Scene();
-    const w=container.clientWidth, h=container.clientHeight;
-    const camera=new THREE.PerspectiveCamera(40,w/h,0.1,10000);
-    camera.position.set(0,0,10);
-    const renderer=new THREE.WebGLRenderer({antialias:true});
-    renderer.setSize(w,h);
-    renderer.setPixelRatio(window.devicePixelRatio||1);
-    container.appendChild(renderer.domElement);
+    if(!container)return;
+    let cancelled=false;
+    let cleanupFn=null;
 
-    // main sphere
-    const material=new THREE.ShaderMaterial({
-      vertexShader:VERT_SHADER,fragmentShader:FRAG_SHADER,wireframe:false,
-      uniforms:{u_time:{value:0},u_progress:{value:0},u_baseColor:{value:new THREE.Vector3(...color)}}
-    });
-    const sphere=new THREE.Mesh(new THREE.SphereGeometry(1,162,162),material);
-    scene.add(sphere);
+    const runSetup=()=>{
+      if(cancelled||!container||!window.THREE)return;
+      const THREE=window.THREE;
+      const scene=new THREE.Scene();
+      const w=container.clientWidth, h=container.clientHeight;
+      const camera=new THREE.PerspectiveCamera(40,w/h,0.1,10000);
+      camera.position.set(0,0,10);
+      const renderer=new THREE.WebGLRenderer({antialias:true});
+      renderer.setSize(w,h);
+      renderer.setPixelRatio(window.devicePixelRatio||1);
+      container.appendChild(renderer.domElement);
 
-    // particles
-    const pointsMaterial=new THREE.ShaderMaterial({
-      vertexShader:PARTICLE_VERT,fragmentShader:PARTICLE_FRAG,wireframe:false,
-      side:THREE.DoubleSide,transparent:true,
-      uniforms:{u_time:{value:0},u_progress:{value:0}}
-    });
-    const N=30000;const pos=new Float32Array(N*3);
-    const inc=Math.PI*(3-Math.sqrt(5));const offset=2/N;const radius=2;
-    for(let i=0;i<N;i++){
-      const y=i*offset-1+offset/2;const r=Math.sqrt(1-y*y);const phi=i*inc;
-      pos[3*i]=radius*Math.cos(phi)*r;pos[3*i+1]=radius*y;pos[3*i+2]=radius*Math.sin(phi)*r;
-    }
-    const particleGeo=new THREE.BufferGeometry();
-    particleGeo.setAttribute('position',new THREE.BufferAttribute(pos,3));
-    const points=new THREE.Points(particleGeo,pointsMaterial);
-    scene.add(points);
+      const material=new THREE.ShaderMaterial({
+        vertexShader:VERT_SHADER,fragmentShader:FRAG_SHADER,wireframe:false,
+        uniforms:{u_time:{value:0},u_progress:{value:0},u_baseColor:{value:new THREE.Vector3(...color)}}
+      });
+      const sphere=new THREE.Mesh(new THREE.SphereGeometry(1,162,162),material);
+      scene.add(sphere);
 
-    // background plane
-    const bgMaterial=new THREE.ShaderMaterial({
-      vertexShader:BG_VERT,fragmentShader:BG_FRAG,wireframe:false,
-      uniforms:{u_time:{value:0},u_progress:{value:0}}
-    });
-    const bgMesh=new THREE.Mesh(new THREE.PlaneGeometry(100,15,16),bgMaterial);
-    bgMesh.position.z=-2;
-    scene.add(bgMesh);
+      const pointsMaterial=new THREE.ShaderMaterial({
+        vertexShader:PARTICLE_VERT,fragmentShader:PARTICLE_FRAG,wireframe:false,
+        side:THREE.DoubleSide,transparent:true,
+        uniforms:{u_time:{value:0},u_progress:{value:0}}
+      });
+      const N=30000;const pos=new Float32Array(N*3);
+      const inc=Math.PI*(3-Math.sqrt(5));const offset=2/N;const radius=2;
+      for(let j=0;j<N;j++){
+        const y=j*offset-1+offset/2;const r=Math.sqrt(1-y*y);const phi=j*inc;
+        pos[3*j]=radius*Math.cos(phi)*r;pos[3*j+1]=radius*y;pos[3*j+2]=radius*Math.sin(phi)*r;
+      }
+      const particleGeo=new THREE.BufferGeometry();
+      particleGeo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+      const points=new THREE.Points(particleGeo,pointsMaterial);
+      scene.add(points);
 
-    // GSAP animation
-    if(window.gsap){
-      window.gsap.timeline({repeat:-1,yoyo:true})
-        .to(material.uniforms.u_progress,{value:5,duration:5,ease:'power3.inOut'})
-        .to(material.uniforms.u_progress,{value:1,duration:5,ease:'power3.inOut'});
-      window.gsap.to(pointsMaterial.uniforms.u_progress,{value:0.4,duration:5,ease:'power3.inOut'});
-    }
+      const bgMaterial=new THREE.ShaderMaterial({
+        vertexShader:BG_VERT,fragmentShader:BG_FRAG,wireframe:false,
+        uniforms:{u_time:{value:0},u_progress:{value:0}}
+      });
+      const bgMesh=new THREE.Mesh(new THREE.PlaneGeometry(100,15,16),bgMaterial);
+      bgMesh.position.z=-2;
+      scene.add(bgMesh);
 
-    const clock=new THREE.Clock();
-    let rafId;
-    const render=()=>{
-      rafId=requestAnimationFrame(render);
-      const t=clock.getElapsedTime();
-      material.uniforms.u_time.value=t;
-      pointsMaterial.uniforms.u_time.value=t;
-      bgMaterial.uniforms.u_time.value=t;
-      points.rotation.y+=0.005;
-      camera.lookAt(scene.position);
-      renderer.render(scene,camera);
+      if(window.gsap){
+        window.gsap.timeline({repeat:-1,yoyo:true})
+          .to(material.uniforms.u_progress,{value:5,duration:5,ease:'power3.inOut'})
+          .to(material.uniforms.u_progress,{value:1,duration:5,ease:'power3.inOut'});
+        window.gsap.to(pointsMaterial.uniforms.u_progress,{value:0.4,duration:5,ease:'power3.inOut'});
+      }
+
+      const clock=new THREE.Clock();
+      let rafId;
+      const render=()=>{
+        rafId=requestAnimationFrame(render);
+        const elapsed=clock.getElapsedTime();
+        material.uniforms.u_time.value=elapsed;
+        pointsMaterial.uniforms.u_time.value=elapsed;
+        bgMaterial.uniforms.u_time.value=elapsed;
+        points.rotation.y+=0.005;
+        camera.lookAt(scene.position);
+        renderer.render(scene,camera);
+      };
+      render();
+
+      const onResize=()=>{
+        const nw=container.clientWidth,nh=container.clientHeight;
+        camera.aspect=nw/nh;camera.updateProjectionMatrix();
+        renderer.setSize(nw,nh);
+      };
+      window.addEventListener('resize',onResize);
+
+      cleanupFn=()=>{
+        cancelAnimationFrame(rafId);
+        window.removeEventListener('resize',onResize);
+        renderer.dispose();
+        if(renderer.domElement.parentNode)renderer.domElement.parentNode.removeChild(renderer.domElement);
+      };
     };
-    render();
 
-    const onResize=()=>{
-      const nw=container.clientWidth,nh=container.clientHeight;
-      camera.aspect=nw/nh;camera.updateProjectionMatrix();
-      renderer.setSize(nw,nh);
-    };
-    window.addEventListener('resize',onResize);
+    const loadScript=(src)=>new Promise((resolve,reject)=>{
+      if(document.querySelector(`script[src="${src}"]`)){resolve();return;}
+      const s=document.createElement('script');
+      s.src=src;s.onload=resolve;s.onerror=reject;
+      document.head.appendChild(s);
+    });
+
+    if(window.THREE&&window.gsap){
+      runSetup();
+    }else{
+      Promise.all([
+        loadScript('https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js'),
+        loadScript('https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js')
+      ]).then(runSetup).catch(()=>{});
+    }
 
     return()=>{
-      cancelAnimationFrame(rafId);
-      window.removeEventListener('resize',onResize);
-      renderer.dispose();
-      if(renderer.domElement.parentNode)renderer.domElement.parentNode.removeChild(renderer.domElement);
+      cancelled=true;
+      if(cleanupFn)cleanupFn();
     };
   },[]);
   return <div ref={mountRef} style={{position:"absolute",inset:0,zIndex:0}}/>;
