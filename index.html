@@ -741,7 +741,7 @@ function SignFlipCard({sg,t,i,onSelect}){
       const iv=setInterval(()=>{
         if(flippedRef.current){clearInterval(iv);return;}
         doPeek();
-      },1000);
+      },2000);
       return()=>clearInterval(iv);
     },900+i*120);
     return()=>{clearTimeout(t0);if(t2)clearTimeout(t2);};
