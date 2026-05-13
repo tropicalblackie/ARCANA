@@ -49,6 +49,8 @@ textarea{font-family:inherit;resize:none;outline:none;border:none;-webkit-appear
 @keyframes card-in{0%{opacity:0;transform:translateY(62px) scale(.92)}62%{transform:translateY(-8px) scale(1.018)}80%{transform:translateY(3px) scale(.998)}100%{opacity:1;transform:translateY(0) scale(1)}}
 .card-in{animation:card-in .75s cubic-bezier(.16,1,.3,1) forwards;opacity:0}
 @keyframes pendulum{0%{transform:rotate(-24deg)}100%{transform:rotate(24deg)}}
+@keyframes bio-ping{0%{r:3.5;opacity:.7}100%{r:12;opacity:0}}
+@keyframes bio-pulse{0%,100%{opacity:.22;transform:scale(.88)}50%{opacity:.9;transform:scale(1.5)}}
 </style>
 </head>
 <body>
@@ -2869,60 +2871,168 @@ function BioChart({birthday,dateStr,t}){
     const v=Math.round((r-b)/86400000);
     return isNaN(v)?0:v;
   },[birthday,dateStr]);
+
+  const[sel,setSel]=useState(0);
+  const[hov,setHov]=useState(null);
+  const[drawn,setDrawn]=useState(false);
+  useEffect(()=>{const id=setTimeout(()=>setDrawn(true),80);return()=>clearTimeout(id);},[]);
+
   const CYCLES=[
-    {key:"f",period:23,col:"#e07060",label:"Fisico"},
-    {key:"e",period:28,col:"#b060a8",label:"Emotivo"},
-    {key:"i",period:33,col:"#5890d8",label:"Intellettuale"},
-    {key:"s",period:26,col:"#48b870",label:"Sociale"},
+    {key:"f",period:23,col:"#e07060",label:"Fisico",period_label:"23g"},
+    {key:"e",period:28,col:"#b060a8",label:"Emotivo",period_label:"28g"},
+    {key:"i",period:33,col:"#5890d8",label:"Intellettuale",period_label:"33g"},
+    {key:"s",period:26,col:"#48b870",label:"Sociale",period_label:"26g"},
   ];
-  const W=320,H=148,PL=8,PR=8,PT=12,PB=26;
+
+  const W=360,H=152,PL=10,PR=10,PT=14,PB=28;
   const cW=W-PL-PR,cH=H-PT-PB;
+  const days=[-3,-2,-1,0,1,2,3];
   const toX=d=>PL+(d+3.5)/7*cW;
-  const toY=v=>PT+cH/2-v*(cH*0.46);
+  const toY=v=>PT+cH/2-v*(cH*0.44);
+  const getV=(period,d)=>Math.sin(2*Math.PI*(baseDays+d)/period);
+  const pct=(period,d)=>Math.round((getV(period,d)+1)/2*100);
   const makePath=period=>{
-    let p=`M${toX(-3.5).toFixed(1)},${toY(Math.sin(2*Math.PI*(baseDays-3.5)/period)).toFixed(1)}`;
-    for(let i=1;i<=70;i++){const d=-3.5+i*7/70;p+=` L${toX(d).toFixed(1)},${toY(Math.sin(2*Math.PI*(baseDays+d)/period)).toFixed(1)}`;}
+    let p=`M${toX(-3.5).toFixed(1)},${toY(getV(period,-3.5)).toFixed(1)}`;
+    for(let i=1;i<=84;i++){const d=-3.5+i*7/84;p+=` L${toX(d).toFixed(1)},${toY(getV(period,d)).toFixed(1)}`;}
     return p;
   };
-  const todayX=toX(0);
-  const isLight=parseInt(t.text.slice(1,3),16)<128;
-  const gC=isLight?"rgba(0,0,0,0.06)":"rgba(255,255,255,0.06)";
-  const gM=isLight?"rgba(0,0,0,0.16)":"rgba(255,255,255,0.14)";
-  const lC=isLight?"rgba(0,0,0,0.32)":"rgba(255,255,255,0.28)";
-  const lT=isLight?"rgba(0,0,0,0.68)":"rgba(255,255,255,0.65)";
-  const tC=isLight?"rgba(0,0,0,0.13)":"rgba(255,255,255,0.14)";
   const dow=new Date(dateStr+"T12:00:00").getDay();
   const DN=["Dom","Lun","Mar","Mer","Gio","Ven","Sab"];
+
+  const handleSvgClick=e=>{
+    const rect=e.currentTarget.getBoundingClientRect();
+    const cx=(e.clientX-rect.left)*(W/rect.width);
+    let best=0,bd=Infinity;
+    days.forEach(d=>{const dist=Math.abs(toX(d)-cx);if(dist<bd){bd=dist;best=d;}});
+    setSel(best);
+  };
+
+  const selDayLabel=sel===0?"Oggi":sel>0?`+${sel}g`:`${sel}g`;
+
   return(
-    <svg viewBox={`0 0 ${W} ${H}`} style={{width:"100%",height:"auto",display:"block"}}>
-      {[-1,-0.5,0,0.5,1].map(v=>(
-        <line key={v} x1={PL} x2={W-PR} y1={toY(v)} y2={toY(v)} stroke={v===0?gM:gC} strokeWidth={v===0?0.9:0.4}/>
-      ))}
-      {[-3,-2,-1,0,1,2,3].map(d=>(
-        <line key={d} x1={toX(d)} x2={toX(d)} y1={PT} y2={PT+cH} stroke={gC} strokeWidth={0.4}/>
-      ))}
-      <line x1={todayX} x2={todayX} y1={PT-3} y2={PT+cH+3} stroke={tC} strokeWidth={1} strokeDasharray="3,2.5"/>
-      {CYCLES.map(c=>(
-        <path key={c.key} d={makePath(c.period)} fill="none" stroke={c.col} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round" opacity={0.90}/>
-      ))}
-      {CYCLES.map(c=>{
-        const v=Math.sin(2*Math.PI*baseDays/c.period);
-        return(
-          <g key={c.key}>
-            <circle cx={todayX} cy={toY(v)} r={5} fill={c.col} opacity={0.18}/>
-            <circle cx={todayX} cy={toY(v)} r={2.6} fill={c.col} stroke="rgba(0,0,0,0.25)" strokeWidth={0.8}/>
-          </g>
-        );
-      })}
-      {[-3,-2,-1,0,1,2,3].map(d=>{
-        const n=(((dow+d)%7)+7)%7;
-        return(
-          <text key={d} x={toX(d)} y={H-7} textAnchor="middle" fontSize={d===0?8:7} fontWeight={d===0?600:400} fill={d===0?lT:lC} fontFamily="Inter,sans-serif">
-            {d===0?"oggi":DN[n]}
-          </text>
-        );
-      })}
-    </svg>
+    <div>
+      {/* ── GRAFICO SVG ── */}
+      <div onClick={handleSvgClick} style={{borderRadius:14,overflow:"hidden",background:"rgba(0,0,0,0.025)",border:"1px solid rgba(0,0,0,0.06)",marginBottom:12,cursor:"pointer",WebkitTapHighlightColor:"transparent"}}>
+        <svg viewBox={`0 0 ${W} ${H}`} style={{width:"100%",height:"auto",display:"block"}}>
+          <defs>
+            {CYCLES.map(c=>(
+              <filter key={c.key} id={`bgf-${c.key}`} x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="3.5" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            ))}
+          </defs>
+
+          {/* griglia horizontale */}
+          {[-1,-0.5,0,0.5,1].map(v=>(
+            <line key={v} x1={PL} x2={W-PR} y1={toY(v)} y2={toY(v)}
+              stroke={v===0?"rgba(0,0,0,0.14)":"rgba(0,0,0,0.05)"}
+              strokeWidth={v===0?0.8:0.4}/>
+          ))}
+
+          {/* colonne giorni — highlight selezionato */}
+          {days.map(d=>(
+            <rect key={d} x={toX(d)-cW/14} width={cW/7} y={PT} height={cH}
+              fill={d===sel?"rgba(184,138,43,0.09)":"transparent"} rx={3}
+              style={{transition:"fill .18s"}}/>
+          ))}
+
+          {/* linee verticali giorni */}
+          {days.map(d=>(
+            <line key={d} x1={toX(d)} x2={toX(d)} y1={PT} y2={PT+cH}
+              stroke={d===sel?"rgba(184,138,43,0.35)":"rgba(0,0,0,0.05)"}
+              strokeWidth={d===sel?1.2:0.4}
+              style={{transition:"stroke .18s,stroke-width .18s"}}/>
+          ))}
+
+          {/* curva oggi sempre visibile */}
+          <line x1={toX(0)} x2={toX(0)} y1={PT-4} y2={PT+cH+4}
+            stroke="rgba(184,138,43,0.28)" strokeWidth={1.5} strokeDasharray="3,2.5"/>
+
+          {/* onde sinusoidali — animate al mount con pathLength normalization */}
+          {CYCLES.map((c,ci)=>(
+            <path key={c.key} d={makePath(c.period)} fill="none"
+              stroke={c.col}
+              strokeWidth={hov===c.key?2.7:1.8}
+              strokeLinecap="round" strokeLinejoin="round"
+              opacity={hov&&hov!==c.key?0.2:0.88}
+              filter={hov===c.key?`url(#bgf-${c.key})`:(sel!==0&&!hov)?"none":"none"}
+              pathLength="1"
+              strokeDasharray="1"
+              strokeDashoffset={drawn?"0":"1"}
+              style={{transition:`stroke-width .2s,opacity .2s,stroke-dashoffset ${1.0+ci*0.18}s cubic-bezier(.4,0,.2,1) ${ci*0.1}s`}}/>
+          ))}
+
+          {/* dots sul giorno selezionato */}
+          {CYCLES.map(c=>{
+            const v=getV(c.period,sel);
+            const cx2=toX(sel),cy=toY(v);
+            return(
+              <g key={c.key}>
+                <circle cx={cx2} cy={cy} r={7} fill={c.col} opacity={0.14}
+                  style={{animation:"bio-pulse 2.4s ease-in-out infinite",transformOrigin:`${cx2}px ${cy}px`}}/>
+                <circle cx={cx2} cy={cy} r={3.2} fill={c.col} stroke="white" strokeWidth={1.3}/>
+              </g>
+            );
+          })}
+
+          {/* etichette giorni */}
+          {days.map(d=>{
+            const n=(((dow+d)%7)+7)%7;
+            const isSel=d===sel;
+            return(
+              <text key={d} x={toX(d)} y={H-8} textAnchor="middle"
+                fontSize={isSel?8.5:7} fontWeight={isSel||d===0?600:400}
+                fill={isSel?"rgba(184,138,43,0.88)":d===0?"rgba(0,0,0,0.5)":"rgba(0,0,0,0.28)"}
+                fontFamily="Inter,sans-serif"
+                style={{transition:"fill .18s,font-size .15s"}}>
+                {d===0&&!isSel?"oggi":DN[n]}
+              </text>
+            );
+          })}
+        </svg>
+      </div>
+
+      {/* ── CARD VALORI 2×2 ── */}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:7,marginBottom:10}}>
+        {CYCLES.map(c=>{
+          const p=pct(c.period,sel);
+          const trend=getV(c.period,sel+0.3)-getV(c.period,sel-0.3);
+          const arrow=trend>0.04?"↑":trend<-0.04?"↓":"→";
+          const isH=hov===c.key;
+          return(
+            <div key={c.key}
+              onClick={()=>setHov(h=>h===c.key?null:c.key)}
+              onMouseEnter={()=>setHov(c.key)}
+              onMouseLeave={()=>setHov(null)}
+              style={{padding:"10px 12px",borderRadius:11,
+                background:isH?`${c.col}14`:`${c.col}08`,
+                border:`1px solid ${isH?c.col+"55":c.col+"20"}`,
+                cursor:"pointer",transition:"all .2s"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:5}}>
+                <span style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:700,letterSpacing:".13em",textTransform:"uppercase",color:c.col}}>{c.label}</span>
+                <span style={{fontSize:"12px",color:c.col,lineHeight:1,opacity:.85}}>{arrow}</span>
+              </div>
+              <div style={{height:2.5,background:`${c.col}1a`,borderRadius:2,marginBottom:7,overflow:"hidden"}}>
+                <div style={{height:"100%",width:`${p}%`,
+                  background:`linear-gradient(to right,${c.col}77,${c.col})`,
+                  borderRadius:2,transition:"width .65s cubic-bezier(.16,1,.3,1)"}}/>
+              </div>
+              <div style={{display:"flex",alignItems:"baseline",gap:3}}>
+                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",fontWeight:600,color:c.col,lineHeight:1}}>{p}</span>
+                <span style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",color:c.col,opacity:.6}}>%</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* hint */}
+      <div style={{textAlign:"center",fontFamily:"'Inter',sans-serif",fontSize:"9px",letterSpacing:".2em",textTransform:"uppercase",color:"rgba(60,60,67,0.28)"}}>
+        {sel===0?"oggi":sel>0?`tra ${sel} ${sel===1?"giorno":"giorni"}`:`${Math.abs(sel)} ${Math.abs(sel)===1?"giorno":"giorni"} fa`}
+        {" · tocca il grafico per esplorare"}
+      </div>
+    </div>
   );
 }
 
@@ -4484,16 +4594,7 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
         <div style={{marginBottom:10,...card}}>
           <div style={{padding:"18px 20px"}}>
             <div style={{...secLabel,marginBottom:14}}>Bioritmi Settimanali</div>
-            <div style={{marginBottom:14}}><BioChart birthday={profile.birthday} dateStr={dateStr} t={localT}/></div>
-            <div style={{display:"flex",flexWrap:"wrap",gap:"8px 18px"}}>
-              {[["Fisico","#e07060","23g"],["Emotivo","#b060a8","28g"],["Intellettuale","#5890d8","33g"],["Sociale","#48b870","26g"]].map(([l,c,p])=>(
-                <div key={l} style={{display:"flex",alignItems:"center",gap:7}}>
-                  <div style={{width:12,height:3,background:c,borderRadius:2}}/>
-                  <span style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(60,60,67,0.65)"}}>{l}</span>
-                  <span style={{fontFamily:"'Inter',sans-serif",fontSize:"10px",color:"rgba(60,60,67,0.35)"}}>({p})</span>
-                </div>
-              ))}
-            </div>
+            <BioChart birthday={profile.birthday} dateStr={dateStr} t={localT}/>
           </div>
         </div>
 
