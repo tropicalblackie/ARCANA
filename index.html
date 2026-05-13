@@ -627,30 +627,30 @@ const SIGN_DATES={ariete:"21 mar – 19 apr",toro:"20 apr – 20 mag",gemelli:"2
 //            inner color layer + inverted sprite with multiply = colored glyph lines.
 // ── ZODIAC GLYPH (inline SVG) ──
 const ZODIAC_SVG_PATHS={
-  // ♈ Ariete — due corna di montone che si dipartono dal centro
-  ariete:    "M12 18v-5M12 13C9 13 5 10 5 6M12 13C15 13 19 10 19 6",
-  // ♉ Toro — cerchio con corna a U sul cima
-  toro:      "M7 15a5 5 0 1 0 10 0M7 15C7 10 17 10 17 15",
-  // ♊ Gemelli — doppia I con sbarre orizzontali
-  gemelli:   "M8 4v16M16 4v16M8 4h8M8 20h8",
-  // ♋ Cancro — spirale 69 (due spirali opposte)
-  cancro:    "M6 9C4 9 4 13 7 14C10 15 11 11 11 8C11 5 9 4 7 5M18 15C20 15 20 11 17 10C14 9 13 13 13 16C13 19 15 20 17 19",
-  // ♌ Leone — cerchio con coda arricciolata a destra
-  leone:     "M6 11a5 5 0 1 0 10 0M16 11C18 9 20 10 20 13C20 17 17 18 15 16",
-  // ♍ Vergine — tre archi (forma m) con piede ricurvo
-  vergine:   "M4 8v8M4 8C4 5 8 5 8 8v8M8 8C8 5 12 5 12 8v8M12 14C12 17 15 17 16 15",
-  // ♎ Bilancia — arco sopra due linee orizzontali
-  bilancia:  "M4 19h16M4 13h16M8 13a4 4 0 0 1 8 0",
-  // ♏ Scorpione — tre archi (m) con coda e pungiglione
-  scorpione: "M4 9v7M4 9C4 5 8 5 8 9v7M8 9C8 5 12 5 12 9v7M12 9C12 5 16 5 16 9v4M15 13l3 3-3 0M18 16v-3",
-  // ♐ Sagittario — freccia diagonale verso l'alto-destra
-  sagittario:"M5 19L19 5M12 5h7v7",
-  // ♑ Capricorno — gamba di capra con coda di pesce
-  capricorno:"M5 5v11C5 18 8 20 8 20M8 13C9 10 13 8 16 10C19 12 20 16 18 19C16 22 12 21 10 19",
-  // ♒ Acquario — due linee ondulate parallele
-  acquario:  "M3 9C5 7 7 11 9 9C11 7 13 11 15 9C17 7 19 11 21 9M3 15C5 13 7 17 9 15C11 13 13 17 15 15C17 13 19 17 21 15",
-  // ♓ Pesci — due archi verticali opposti uniti da barra orizzontale
-  pesci:     "M6 4C3 9 3 15 6 20M18 4C21 9 21 15 18 20M6 12h12",
+  // ♈ Ariete — due archi che si aprono verso l'alto da un punto centrale in basso
+  ariete:    "M12 20C10 15 5 11 5 7M12 20C14 15 19 11 19 7",
+  // ♉ Toro — cerchio con due corna curve verso l'esterno in alto
+  toro:      "M7 15a5 5 0 1 0 10 0M7 12C5 9 6 5 9 5M17 12C19 9 18 5 15 5",
+  // ♊ Gemelli — due barre verticali con sbarre orizzontali curve in alto e in basso
+  gemelli:   "M9 5v14M15 5v14M9 5C9 3 15 3 15 5M9 19C9 21 15 21 15 19",
+  // ♋ Cancro — forma 69: due spirali circolari opposte
+  cancro:    "M15 9C15 6 11 5 9 8C7 10 9 14 13 13M9 15C9 18 13 19 15 16C17 14 15 10 11 11",
+  // ♌ Leone — spirale-loop a sinistra con coda che si arriccia verso destra
+  leone:     "M6 15C6 10 10 7 14 10C17 12 17 17 14 19C11 20 8 18 9 15C10 12 14 11 15 8",
+  // ♍ Vergine — tre archi discendenti (mℙ) con uncino che torna indietro
+  vergine:   "M4 8C4 5 8 5 8 8v8M8 8C8 5 12 5 12 8v8M12 8C12 5 16 5 16 8v5C16 17 14 18 12 16",
+  // ♎ Bilancia — cupola Ω sopra due linee orizzontali parallele
+  bilancia:  "M8 13C8 9 16 9 16 13M5 16h14M5 19h14",
+  // ♏ Scorpione — tre archi come Vergine con coda e freccia a destra
+  scorpione: "M4 9C4 6 8 6 8 9v7M8 9C8 6 12 6 12 9v7M12 9C12 6 16 6 16 9v4M16 13h3M17 11l2 2-2 2",
+  // ♐ Sagittario — X diagonale con punta di freccia in alto a destra
+  sagittario:"M5 19L19 5M14 5h5v5M5 5L19 19",
+  // ♑ Capricorno — gamba curva sinistra + loop di pesce che ricade a destra
+  capricorno:"M5 5C7 10 8 15 8 20M8 13C10 8 15 7 17 11C19 14 17 19 13 19",
+  // ♒ Acquario — due file di zigzag (onde d'acqua)
+  acquario:  "M3 11l3-3 3 3 3-3 3 3 3-3M3 17l3-3 3 3 3-3 3 3 3-3",
+  // ♓ Pesci — due archi ( ) con barra orizzontale centrale
+  pesci:     "M10 4C7 8 7 16 10 20M14 4C17 8 17 16 14 20M7 12h10",
 };
 function ZodiacGlyph({sgKey,size=24,color='#1f1f24',opacity=1,glow,style={}}){
   const d=ZODIAC_SVG_PATHS[sgKey];
