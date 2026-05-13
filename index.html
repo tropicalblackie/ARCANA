@@ -51,6 +51,11 @@ textarea{font-family:inherit;resize:none;outline:none;border:none;-webkit-appear
 @keyframes pendulum{0%{transform:rotate(-24deg)}100%{transform:rotate(24deg)}}
 @keyframes bio-ping{0%{r:3.5;opacity:.7}100%{r:12;opacity:0}}
 @keyframes bio-pulse{0%,100%{opacity:.22;transform:scale(.88)}50%{opacity:.9;transform:scale(1.5)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes glow-orb{0%,100%{opacity:.07;transform:scale(.78)}50%{opacity:.22;transform:scale(1.22)}}
+::selection{background:rgba(184,138,43,.22);color:inherit}
+.float{animation:float 5s ease-in-out infinite}
+button:active:not(:disabled){transform:scale(.97);transition:transform .09s}
 </style>
 </head>
 <body>
@@ -1138,7 +1143,7 @@ function NavIcon({src,zoom,active,removeDark,offsetX,offsetY,size=43}){
     };
     img.src=src;
   },[src,zoom,removeDark,offsetX,offsetY]);
-  return <canvas ref={canvasRef} style={{width:size,height:size,borderRadius:'50%',opacity:active?1:0.38,transition:'opacity .2s'}}/>;
+  return <canvas ref={canvasRef} style={{width:size,height:size,borderRadius:'50%',opacity:active?1:0.44,transition:'opacity .22s ease'}}/>;
 }
 
 // ── BOTTOM NAV ──
@@ -1160,11 +1165,11 @@ function BottomNav({view,setView,t,profile}){
           const active=view===tab.key;
           return(
             <button key={tab.key} onClick={()=>setView(tab.key)} style={{flex:1,padding:"12px 8px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:"transparent",border:"none",cursor:"pointer",position:"relative"}}>
-              {active&&<div style={{position:"absolute",top:0,left:"25%",right:"25%",height:"2px",background:`linear-gradient(to right,transparent,${t.accent},transparent)`,borderRadius:"0 0 2px 2px"}}/>}
+              {active&&<><div style={{position:"absolute",top:0,left:"18%",right:"18%",height:"2.5px",background:`linear-gradient(to right,transparent,${t.accent},transparent)`,borderRadius:"0 0 4px 4px",boxShadow:`0 2px 20px ${t.accent}55`}}/><div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 56% 50% at 50% 28%,${t.accent}10,transparent 70%)`,pointerEvents:"none",animation:"glow-orb 3.5s ease-in-out infinite"}}/></>}
               {tab.img
                 ?<NavIcon src={tab.img} zoom={tab.zoom} active={active} removeDark={tab.removeDark} offsetX={tab.offsetX} offsetY={tab.offsetY}/>
                 :<span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:active?t.accent:t.muted,lineHeight:1,filter:active?`drop-shadow(0 0 6px ${t.accent}90)`:"none",transition:"all .2s"}}>{tab.icon}</span>}
-              <span style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:active?600:400,letterSpacing:".22em",textTransform:"uppercase",color:active?t.accent:t.muted,transition:"all .2s"}}>{tab.label}</span>
+              <span style={{fontFamily:"'Inter',sans-serif",fontSize:active?"9px":"8px",fontWeight:active?600:400,letterSpacing:active?".16em":".22em",textTransform:"uppercase",color:active?t.accent:t.muted,transition:"all .22s"}}>{tab.label}</span>
             </button>
           );
         })}
@@ -1281,7 +1286,7 @@ function Tarocchi({t,setView}){
             return(
               <div key={a.key} onClick={()=>startSpread(a.key)}
                 onMouseEnter={()=>setHovArea(a.key)} onMouseLeave={()=>setHovArea(null)}
-                style={{background:isHov?`linear-gradient(135deg,${a.color}22,#ffffff)`:`linear-gradient(160deg,#ffffff,#fafafa)`,border:`1.5px solid ${isHov?a.color+"88":a.color+"40"}`,borderRadius:20,padding:"22px 16px 18px",textAlign:"center",cursor:"pointer",transform:isHov?"translateY(-4px) scale(1.02)":"scale(1)",transition:"all .35s cubic-bezier(.16,1,.3,1)",boxShadow:isHov?`0 16px 34px ${a.color}30`:`0 4px 16px ${a.color}18`,position:"relative",overflow:"hidden"}}>
+                style={{background:isHov?`linear-gradient(135deg,${a.color}22,#ffffff)`:`linear-gradient(160deg,#ffffff,#fafafa)`,border:`1.5px solid ${isHov?a.color+"88":a.color+"40"}`,borderRadius:20,padding:"22px 16px 18px",textAlign:"center",cursor:"pointer",transform:isHov?"translateY(-4px) scale(1.02)":"scale(1)",transition:"all .35s cubic-bezier(.16,1,.3,1)",boxShadow:isHov?`0 22px 44px ${a.color}32,0 6px 14px ${a.color}18`:`0 2px 8px ${a.color}10,0 6px 22px ${a.color}22`,position:"relative",overflow:"hidden"}}>
                 <div style={{position:"absolute",top:"40%",left:"50%",transform:"translate(-50%,-50%)",width:88,height:88,borderRadius:"50%",background:`radial-gradient(circle,${a.color}${isHov?"28":"12"},transparent 70%)`,transition:"all .35s",pointerEvents:"none"}}/>
                 <div style={{marginBottom:12,position:"relative",transition:"transform .25s",transform:isHov?"scale(1.12)":"scale(1)",display:"flex",justifyContent:"center"}}>
                   {a.img?<img src={a.img} alt={a.label} style={{width:52,height:"auto",objectFit:"contain"}}/>:<span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(34px,9vw,44px)",color:a.color,lineHeight:1}}>{a.icon}</span>}
@@ -2204,14 +2209,18 @@ function HomeHub({t,setView,profile}){
         {/* ── Header ── */}
         <div style={{padding:"clamp(52px,12vw,82px) 0 36px",textAlign:"center"}}>
           <div className="gold-text" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(10px,2.8vw,12px)",fontWeight:500,letterSpacing:".52em",textTransform:"uppercase",marginBottom:14}}>ARCANA</div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(30px,8vw,48px)",fontWeight:500,color:"#1f1f24",letterSpacing:"-.02em",lineHeight:1,marginBottom:10}}>Il Tuo Cosmo</div>
-          <div style={{width:36,height:1,background:"linear-gradient(to right,transparent,rgba(200,165,80,0.55),transparent)",margin:"0 auto"}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(30px,8vw,48px)",fontWeight:500,color:"#1f1f24",letterSpacing:"-.02em",lineHeight:1,marginBottom:14}}>Il Tuo Cosmo</div>
+          <div style={{width:64,height:1,background:"linear-gradient(to right,transparent,rgba(200,165,80,0.72),transparent)",margin:"0 auto"}}/>
         </div>
 
         {/* ── Oroscopo — pill hero ── */}
-        <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:600,letterSpacing:".36em",color:"rgba(31,31,36,0.46)",textTransform:"uppercase",marginBottom:14,paddingLeft:2}}>Attivo</div>
+        <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:16}}>
+          <div style={{flex:1,height:"1px",background:"linear-gradient(to right,rgba(31,31,36,0.07),transparent)"}}/>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:500,letterSpacing:".44em",color:"rgba(31,31,36,0.34)",textTransform:"uppercase"}}>Attivo</div>
+          <div style={{flex:1,height:"1px",background:"linear-gradient(to left,rgba(31,31,36,0.07),transparent)"}}/>
+        </div>
         <div onClick={()=>setView("daily")} onMouseEnter={()=>setHov("daily")} onMouseLeave={()=>setHov(null)}
-          style={{marginBottom:10,padding:"20px 24px",background:hov==="daily"?"rgba(136,136,232,0.1)":"#ffffff",border:`1px solid ${hov==="daily"?"rgba(136,136,232,0.5)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="daily"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="daily"?"0 14px 26px rgba(136,136,232,0.2)":"0 8px 24px rgba(20,20,30,0.07)"}}>
+          style={{marginBottom:10,padding:"20px 24px",background:hov==="daily"?"rgba(136,136,232,0.1)":"#ffffff",border:`1px solid ${hov==="daily"?"rgba(136,136,232,0.5)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="daily"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="daily"?"0 20px 44px rgba(136,136,232,0.20),0 4px 14px rgba(136,136,232,0.08),inset 0 1px 0 rgba(255,255,255,0.92)":"0 1px 4px rgba(20,20,30,0.05),0 8px 24px rgba(20,20,30,0.08),inset 0 1px 0 rgba(255,255,255,0.92)"}}>
           <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(136,136,232,0.12)",border:"1px solid rgba(136,136,232,0.22)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
             <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"24px",color:"#8888e8",lineHeight:1}}>☽</span>
           </div>
@@ -2224,7 +2233,7 @@ function HomeHub({t,setView,profile}){
 
         {/* ── Meditazione ── */}
         <div onClick={()=>setView("meditazione")} onMouseEnter={()=>setHov("med")} onMouseLeave={()=>setHov(null)}
-          style={{marginBottom:10,padding:"20px 24px",background:hov==="med"?"rgba(88,200,144,0.1)":"#ffffff",border:`1px solid ${hov==="med"?"rgba(88,200,144,0.5)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="med"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="med"?"0 14px 26px rgba(88,200,144,0.18)":"0 8px 24px rgba(20,20,30,0.07)"}}>
+          style={{marginBottom:10,padding:"20px 24px",background:hov==="med"?"rgba(88,200,144,0.1)":"#ffffff",border:`1px solid ${hov==="med"?"rgba(88,200,144,0.5)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="med"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="med"?"0 20px 44px rgba(88,200,144,0.22),0 4px 14px rgba(88,200,144,0.08),inset 0 1px 0 rgba(255,255,255,0.92)":"0 1px 4px rgba(20,20,30,0.05),0 8px 24px rgba(20,20,30,0.08),inset 0 1px 0 rgba(255,255,255,0.92)"}}>
           <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(88,200,144,0.12)",border:"1px solid rgba(88,200,144,0.22)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
             <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#58c890",lineHeight:1}}>◎</span>
           </div>
@@ -2237,7 +2246,7 @@ function HomeHub({t,setView,profile}){
 
         {/* ── Sogni ── */}
         <div onClick={()=>profile?setView("sogni"):setView("setup")} onMouseEnter={()=>setHov("sogni")} onMouseLeave={()=>setHov(null)}
-          style={{marginBottom:10,padding:"20px 24px",background:hov==="sogni"?"rgba(148,104,216,0.10)":"#ffffff",border:`1px solid ${hov==="sogni"?"rgba(148,104,216,0.50)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="sogni"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="sogni"?"0 14px 26px rgba(148,104,216,0.18)":"0 8px 24px rgba(20,20,30,0.07)"}}>
+          style={{marginBottom:10,padding:"20px 24px",background:hov==="sogni"?"rgba(148,104,216,0.10)":"#ffffff",border:`1px solid ${hov==="sogni"?"rgba(148,104,216,0.50)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="sogni"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="sogni"?"0 20px 44px rgba(148,104,216,0.22),0 4px 14px rgba(148,104,216,0.08),inset 0 1px 0 rgba(255,255,255,0.92)":"0 1px 4px rgba(20,20,30,0.05),0 8px 24px rgba(20,20,30,0.08),inset 0 1px 0 rgba(255,255,255,0.92)"}}>
           <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(148,104,216,0.12)",border:"1px solid rgba(148,104,216,0.22)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
             <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#9468d8",lineHeight:1}}>◗</span>
           </div>
@@ -2250,7 +2259,7 @@ function HomeHub({t,setView,profile}){
 
         {/* ── Tema Natale ── */}
         <div onClick={()=>profile?setView("natale"):setView("setup")} onMouseEnter={()=>setHov("natale")} onMouseLeave={()=>setHov(null)}
-          style={{marginBottom:10,padding:"20px 24px",background:hov==="natale"?"rgba(112,144,216,0.10)":"#ffffff",border:`1px solid ${hov==="natale"?"rgba(112,144,216,0.50)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="natale"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="natale"?"0 14px 26px rgba(112,144,216,0.18)":"0 8px 24px rgba(20,20,30,0.07)"}}>
+          style={{marginBottom:10,padding:"20px 24px",background:hov==="natale"?"rgba(112,144,216,0.10)":"#ffffff",border:`1px solid ${hov==="natale"?"rgba(112,144,216,0.50)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="natale"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="natale"?"0 20px 44px rgba(112,144,216,0.22),0 4px 14px rgba(112,144,216,0.08),inset 0 1px 0 rgba(255,255,255,0.92)":"0 1px 4px rgba(20,20,30,0.05),0 8px 24px rgba(20,20,30,0.08),inset 0 1px 0 rgba(255,255,255,0.92)"}}>
           <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(112,144,216,0.12)",border:"1px solid rgba(112,144,216,0.22)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
             <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#7090d8",lineHeight:1}}>✧</span>
           </div>
@@ -2263,7 +2272,7 @@ function HomeHub({t,setView,profile}){
 
         {/* ── Oroscopo Cinese ── */}
         <div onClick={()=>profile?setView("cinese"):setView("setup")} onMouseEnter={()=>setHov("cinese")} onMouseLeave={()=>setHov(null)}
-          style={{marginBottom:10,padding:"20px 24px",background:hov==="cinese"?"rgba(200,56,42,0.08)":"#ffffff",border:`1px solid ${hov==="cinese"?"rgba(200,56,42,0.45)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="cinese"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="cinese"?"0 14px 26px rgba(200,56,42,0.15)":"0 8px 24px rgba(20,20,30,0.07)"}}>
+          style={{marginBottom:10,padding:"20px 24px",background:hov==="cinese"?"rgba(200,56,42,0.08)":"#ffffff",border:`1px solid ${hov==="cinese"?"rgba(200,56,42,0.45)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="cinese"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="cinese"?"0 20px 44px rgba(200,56,42,0.18),0 4px 14px rgba(200,56,42,0.08),inset 0 1px 0 rgba(255,255,255,0.92)":"0 1px 4px rgba(20,20,30,0.05),0 8px 24px rgba(20,20,30,0.08),inset 0 1px 0 rgba(255,255,255,0.92)"}}>
           <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(200,56,42,0.10)",border:"1px solid rgba(200,56,42,0.20)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
             <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#c8382a",lineHeight:1}}>龍</span>
           </div>
@@ -2276,7 +2285,7 @@ function HomeHub({t,setView,profile}){
 
         {/* ── Oroscopo Druido ── */}
         <div onClick={()=>profile?setView("druido"):setView("setup")} onMouseEnter={()=>setHov("druido")} onMouseLeave={()=>setHov(null)}
-          style={{marginBottom:10,padding:"20px 24px",background:hov==="druido"?"rgba(96,184,112,0.10)":"#ffffff",border:`1px solid ${hov==="druido"?"rgba(96,184,112,0.50)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="druido"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="druido"?"0 14px 26px rgba(96,184,112,0.18)":"0 8px 24px rgba(20,20,30,0.07)"}}>
+          style={{marginBottom:10,padding:"20px 24px",background:hov==="druido"?"rgba(96,184,112,0.10)":"#ffffff",border:`1px solid ${hov==="druido"?"rgba(96,184,112,0.50)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="druido"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="druido"?"0 20px 44px rgba(96,184,112,0.22),0 4px 14px rgba(96,184,112,0.08),inset 0 1px 0 rgba(255,255,255,0.92)":"0 1px 4px rgba(20,20,30,0.05),0 8px 24px rgba(20,20,30,0.08),inset 0 1px 0 rgba(255,255,255,0.92)"}}>
           <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(96,184,112,0.12)",border:"1px solid rgba(96,184,112,0.22)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
             <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#60b870",lineHeight:1}}>⊕</span>
           </div>
@@ -2289,7 +2298,7 @@ function HomeHub({t,setView,profile}){
 
         {/* ── Compatibilità ── */}
         <div onClick={()=>profile?setView("compatibilita"):setView("setup")} onMouseEnter={()=>setHov("compatibilita")} onMouseLeave={()=>setHov(null)}
-          style={{marginBottom:10,padding:"20px 24px",background:hov==="compatibilita"?"rgba(212,104,138,0.08)":"#ffffff",border:`1px solid ${hov==="compatibilita"?"rgba(212,104,138,0.45)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="compatibilita"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="compatibilita"?"0 14px 26px rgba(212,104,138,0.15)":"0 8px 24px rgba(20,20,30,0.07)"}}>
+          style={{marginBottom:10,padding:"20px 24px",background:hov==="compatibilita"?"rgba(212,104,138,0.08)":"#ffffff",border:`1px solid ${hov==="compatibilita"?"rgba(212,104,138,0.45)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="compatibilita"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="compatibilita"?"0 20px 44px rgba(212,104,138,0.22),0 4px 14px rgba(212,104,138,0.08),inset 0 1px 0 rgba(255,255,255,0.92)":"0 1px 4px rgba(20,20,30,0.05),0 8px 24px rgba(20,20,30,0.08),inset 0 1px 0 rgba(255,255,255,0.92)"}}>
           <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(212,104,138,0.10)",border:"1px solid rgba(212,104,138,0.20)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
             <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"22px",color:"#d4688a",lineHeight:1}}>♥</span>
           </div>
@@ -2303,14 +2312,14 @@ function HomeHub({t,setView,profile}){
         {/* ── Tarocchi + Profilo — 2 col ── */}
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:36}}>
           <div onClick={()=>setView("tarocchi")} onMouseEnter={()=>setHov("tarocchi")} onMouseLeave={()=>setHov(null)}
-            style={{padding:"30px 16px 24px",background:hov==="tarocchi"?"rgba(200,160,48,0.1)":"#ffffff",border:`1px solid ${hov==="tarocchi"?"rgba(200,160,48,0.5)":"rgba(31,31,36,0.1)"}`,borderRadius:20,textAlign:"center",cursor:"pointer",transition:"all .32s cubic-bezier(.16,1,.3,1)",transform:hov==="tarocchi"?"translateY(-3px)":"translateY(0)",boxShadow:hov==="tarocchi"?"0 14px 26px rgba(200,160,48,0.18)":"0 8px 24px rgba(20,20,30,0.07)",position:"relative",overflow:"hidden"}}>
+            style={{padding:"30px 16px 24px",background:hov==="tarocchi"?"rgba(200,160,48,0.1)":"#ffffff",border:`1px solid ${hov==="tarocchi"?"rgba(200,160,48,0.5)":"rgba(31,31,36,0.1)"}`,borderRadius:20,textAlign:"center",cursor:"pointer",transition:"all .32s cubic-bezier(.16,1,.3,1)",transform:hov==="tarocchi"?"translateY(-3px)":"translateY(0)",boxShadow:hov==="tarocchi"?"0 20px 44px rgba(200,160,48,0.22),0 4px 14px rgba(200,160,48,0.10),inset 0 1px 0 rgba(255,255,255,0.92)":"0 1px 4px rgba(20,20,30,0.05),0 8px 24px rgba(20,20,30,0.08),inset 0 1px 0 rgba(255,255,255,0.92)",position:"relative",overflow:"hidden"}}>
             <div style={{position:"absolute",top:"38%",left:"50%",transform:"translate(-50%,-50%)",width:72,height:72,borderRadius:"50%",background:`radial-gradient(circle,rgba(200,160,48,${hov==="tarocchi"?".2":".07"}),transparent 70%)`,pointerEvents:"none",transition:"all .35s"}}/>
             <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(38px,10vw,50px)",color:"rgba(200,160,48,0.88)",lineHeight:1,marginBottom:12,position:"relative",filter:hov==="tarocchi"?"drop-shadow(0 0 18px rgba(200,160,48,0.6))":"none",transition:"filter .3s"}}>✦</div>
             <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,18px)",fontWeight:600,color:"#1f1f24",marginBottom:4,position:"relative"}}>Tarocchi</div>
             <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",letterSpacing:".07em",color:"rgba(31,31,36,0.36)",textTransform:"uppercase",position:"relative"}}>22 arcani</div>
           </div>
           <div onClick={()=>profile?setView("profile"):setView("setup")} onMouseEnter={()=>setHov("profile")} onMouseLeave={()=>setHov(null)}
-            style={{padding:"30px 16px 24px",background:hov==="profile"?"rgba(212,104,138,0.1)":"#ffffff",border:`1px solid ${hov==="profile"?"rgba(212,104,138,0.5)":"rgba(31,31,36,0.1)"}`,borderRadius:20,textAlign:"center",cursor:"pointer",transition:"all .32s cubic-bezier(.16,1,.3,1)",transform:hov==="profile"?"translateY(-3px)":"translateY(0)",boxShadow:hov==="profile"?"0 14px 26px rgba(212,104,138,0.18)":"0 8px 24px rgba(20,20,30,0.07)",position:"relative",overflow:"hidden"}}>
+            style={{padding:"30px 16px 24px",background:hov==="profile"?"rgba(212,104,138,0.1)":"#ffffff",border:`1px solid ${hov==="profile"?"rgba(212,104,138,0.5)":"rgba(31,31,36,0.1)"}`,borderRadius:20,textAlign:"center",cursor:"pointer",transition:"all .32s cubic-bezier(.16,1,.3,1)",transform:hov==="profile"?"translateY(-3px)":"translateY(0)",boxShadow:hov==="profile"?"0 20px 44px rgba(212,104,138,0.22),0 4px 14px rgba(212,104,138,0.10),inset 0 1px 0 rgba(255,255,255,0.92)":"0 1px 4px rgba(20,20,30,0.05),0 8px 24px rgba(20,20,30,0.08),inset 0 1px 0 rgba(255,255,255,0.92)",position:"relative",overflow:"hidden"}}>
             <div style={{position:"absolute",top:"38%",left:"50%",transform:"translate(-50%,-50%)",width:72,height:72,borderRadius:"50%",background:`radial-gradient(circle,rgba(212,104,138,${hov==="profile"?".2":".07"}),transparent 70%)`,pointerEvents:"none",transition:"all .35s"}}/>
             <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(38px,10vw,50px)",color:"rgba(212,104,138,0.88)",lineHeight:1,marginBottom:12,position:"relative",filter:hov==="profile"?"drop-shadow(0 0 18px rgba(212,104,138,0.6))":"none",transition:"filter .3s"}}>◉</div>
             <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,18px)",fontWeight:600,color:"#1f1f24",marginBottom:4,position:"relative"}}>Profilo</div>
@@ -2377,7 +2386,7 @@ function PersonalProfile({t,profile,onEdit,onBack}){
     </div>
   );
   const TriadCard=({sg,label,icon,primary})=>(
-    <div style={{flex:`0 0 clamp(145px,40vw,200px)`,borderRadius:16,overflow:"hidden",position:"relative",aspectRatio:"2/3",border:`1px solid ${primary?sg.color+"99":t.border+"80"}`,boxShadow:primary?`0 0 60px rgba(${sg.rgb},0.35),0 12px 40px rgba(${sg.rgb},0.2),0 0 0 1px rgba(255,255,255,0.06) inset`:`0 4px 20px rgba(0,0,0,0.25)`}}>
+    <div style={{flex:`0 0 clamp(145px,40vw,200px)`,borderRadius:16,overflow:"hidden",position:"relative",aspectRatio:"2/3",border:`1px solid ${primary?sg.color+"99":t.border+"80"}`,boxShadow:primary?`0 0 72px rgba(${sg.rgb},0.38),0 16px 48px rgba(${sg.rgb},0.22),0 0 0 1px rgba(255,255,255,0.08) inset`:`0 8px 36px rgba(0,0,0,0.28),0 0 0 1px rgba(255,255,255,0.04) inset`}}>
       {sg.img&&<img src={sg.img} loading="lazy" decoding="async" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0,filter:primary?"brightness(0.9)":"brightness(0.65) saturate(0.7)"}}/>}
       <div style={{position:"absolute",inset:0,background:primary?`linear-gradient(180deg,rgba(0,0,0,0.1) 0%,transparent 30%,rgba(${sg.rgb},0.92) 100%)`:`linear-gradient(180deg,rgba(0,0,0,0.2) 0%,transparent 40%,rgba(0,0,0,0.88) 100%)`,zIndex:1}}/>
       <div style={{position:"absolute",top:12,left:0,right:0,textAlign:"center",zIndex:2}}>
