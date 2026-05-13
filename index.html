@@ -4179,15 +4179,19 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
           const d=horo[cat.key];
           return(
             <div key={cat.key} style={{marginBottom:10,...card}}>
-              <div style={{padding:"24px 20px 22px",display:"flex",flexDirection:"column",alignItems:"center",textAlign:"center"}}>
-                {cat.img
-                  ?<img src={cat.img} alt={cat.label} style={{width:250,height:"auto",objectFit:"contain",marginBottom:2}}/>
-                  :<span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"56px",color:cat.col,lineHeight:1,marginBottom:2}}>{cat.icon}</span>}
-                <div style={{fontFamily:"'Inter',sans-serif",fontSize:"12px",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:cat.col,marginBottom:6}}>{cat.label}</div>
-                <div style={{display:"flex",gap:5,justifyContent:"center",marginBottom:14}}>
-                  {[1,2,3,4,5].map(n=>(
-                    <div key={n} style={{width:7,height:7,borderRadius:"50%",background:n<=d.stars?cat.col:"rgba(31,31,36,0.1)"}}/>
-                  ))}
+              <div style={{padding:"24px 20px 22px"}}>
+                <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:14}}>
+                  {cat.img
+                    ?<img src={cat.img} alt={cat.label} style={{width:250,height:"auto",objectFit:"contain",flexShrink:0}}/>
+                    :<span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"56px",color:cat.col,lineHeight:1,flexShrink:0}}>{cat.icon}</span>}
+                  <div>
+                    <div style={{fontFamily:"'Inter',sans-serif",fontSize:"13px",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:cat.col,marginBottom:8}}>{cat.label}</div>
+                    <div style={{display:"flex",gap:5}}>
+                      {[1,2,3,4,5].map(n=>(
+                        <div key={n} style={{width:7,height:7,borderRadius:"50%",background:n<=d.stars?cat.col:"rgba(31,31,36,0.1)"}}/>
+                      ))}
+                    </div>
+                  </div>
                 </div>
                 <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4.4vw,20px)",fontWeight:400,color:"#1f1f24",lineHeight:1.85}}>{d.text}</div>
               </div>
