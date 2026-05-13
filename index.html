@@ -4116,7 +4116,7 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
   const lucky=useMemo(()=>getLuckyNumbers(sunSg.key,dateStr),[sunSg.key,dateStr]);
   const localT={bg:"#f2f2f7",text:"#1f1f24",card:"#ffffff",border:"rgba(31,31,36,0.1)",muted:"rgba(60,60,67,0.5)",accent:t.accent,cardRgb:"255,255,255"};
   const CATS=[
-    {key:"amore",label:"Amore",icon:"♥",col:"#c07878"},
+    {key:"amore",label:"Amore",icon:"♥",img:"./icon-amore.png",col:"#c07878"},
     {key:"lavoro",label:"Lavoro",icon:"✦",col:t.accent},
     {key:"salute",label:"Salute",icon:"◎",col:"#78c090"},
     {key:"soldi",label:"Soldi",icon:"◈",col:"#c8a84a"},
@@ -4182,7 +4182,9 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
               <div style={{padding:"18px 20px 20px"}}>
                 <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:14}}>
                   <div style={{width:38,height:38,borderRadius:10,background:`${cat.col}14`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                    <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:cat.col,lineHeight:1}}>{cat.icon}</span>
+                    {cat.img
+                      ?<img src={cat.img} alt={cat.label} style={{width:24,height:24,objectFit:"contain"}}/>
+                      :<span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:cat.col,lineHeight:1}}>{cat.icon}</span>}
                   </div>
                   <div style={{flex:1}}>
                     <div style={{fontFamily:"'Inter',sans-serif",fontSize:"13px",fontWeight:600,color:"#1f1f24",marginBottom:5}}>{cat.label}</div>
