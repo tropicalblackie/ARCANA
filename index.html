@@ -670,17 +670,23 @@ function ZodiacGlyph({sgKey,size=24,color='#1f1f24',opacity=1,glow,style={}}){
   const imgSrc=ZODIAC_GLYPH_IMAGES[sgKey];
   if(imgSrc){
     return(
-      <img src={imgSrc} alt={sgKey} loading="lazy" decoding="async"
-        style={{
-          display:'inline-block',
-          width:size,
-          height:size,
-          objectFit:'contain',
-          flexShrink:0,
-          opacity,
-          filter:glow?`drop-shadow(0 0 ${Math.round(size*.18)}px ${glow})`:'none',
-          ...style
-        }}/>
+      <span style={{
+        display:'inline-block',
+        width:size,
+        height:size,
+        flexShrink:0,
+        opacity,
+        backgroundColor:color,
+        WebkitMaskImage:`url(${imgSrc})`,
+        maskImage:`url(${imgSrc})`,
+        WebkitMaskSize:'contain',
+        maskSize:'contain',
+        WebkitMaskRepeat:'no-repeat',
+        maskRepeat:'no-repeat',
+        WebkitMaskPosition:'center',
+        maskPosition:'center',
+        ...style
+      }}/>
     );
   }
   const d=ZODIAC_SVG_PATHS[sgKey];
@@ -881,7 +887,7 @@ function SignFlipCard({sg,t,i,onSelect}){
               ?<div style={{width:"100%",maxWidth:118,aspectRatio:"2/3",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:16}}>
                 <img src={sg.backLogo} alt={sg.name} loading="lazy" decoding="async" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 34%",display:"block"}}/>
               </div>
-              :<ZodiacGlyph sgKey={sg.key} size={64} style={{marginBottom:20}}/>}
+              :<ZodiacGlyph sgKey={sg.key} size={64} color='rgba(255,255,255,0.85)' style={{marginBottom:20}}/>}
             <div style={{width:44,height:"1px",background:`linear-gradient(to right,transparent,rgba(${sg.rgb},0.5),transparent)`,marginBottom:22}}/>
             <div style={{fontSize:"6px",letterSpacing:".58em",color:"rgba(0,0,0,0.35)",textTransform:"uppercase",paddingLeft:".58em",marginBottom:12}}>Periodo</div>
             <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,5vw,25px)",color:"rgba(0,0,0,0.82)",fontStyle:"italic",textAlign:"center",letterSpacing:".03em",lineHeight:1.2}}>{SIGN_DATES[sg.key]}</div>
@@ -983,7 +989,7 @@ function ProfileContent({tab,sg,t}){
       <div style={{padding:"26px 28px",border:`1px solid ${sg.color}40`,background:`rgba(${sg.rgb},.06)`}}>
         {label("L'Anatomia del Simbolo")}
         <div style={{display:'flex',justifyContent:'center',marginBottom:18,opacity:.8}}>
-          <ZodiacGlyph sgKey={sg.key} size={52}/>
+          <ZodiacGlyph sgKey={sg.key} size={52} color={sg.colorLight}/>
         </div>
         {body(sg.symbol_meaning)}
       </div>
