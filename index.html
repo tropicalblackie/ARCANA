@@ -1475,106 +1475,185 @@ const GRIMOIRE_CARDS=[
 
 function GrimorioView({onBack}){
   const[idx,setIdx]=useState(0);
-  const[reversed,setReversed]=useState(false);
+  const[rev,setRev]=useState(false);
   const[area,setArea]=useState("general");
-  const card=GRIMOIRE_CARDS[idx];
-  const accent="#b8892b";
-  const shadowAccent="rgba(60,20,80,0.92)";
-  const AREAS=[{k:"general",l:"Visione"},{k:"amore",l:"Amore"},{k:"lavoro",l:"Lavoro"},{k:"salute",l:"Salute"},{k:"soldi",l:"Soldi"}];
   const navRef=useRef(null);
+  const card=GRIMOIRE_CARDS[idx];
+  const A=ARCANI[idx];
+  const AREAS=[{k:"general",l:"Visione"},{k:"amore",l:"Amore"},{k:"lavoro",l:"Lavoro"},{k:"salute",l:"Salute"},{k:"soldi",l:"Soldi"}];
+  const gold="#b8892b";
 
   useEffect(()=>{
-    setReversed(false);
+    setRev(false);
+    setArea("general");
     if(navRef.current){
-      const el=navRef.current.querySelector(`[data-idx="${idx}"]`);
+      const el=navRef.current.querySelector(`[data-i="${idx}"]`);
       if(el)el.scrollIntoView({block:"nearest",inline:"center",behavior:"smooth"});
     }
   },[idx]);
 
-  const bg=reversed
-    ?"linear-gradient(160deg,#120820 0%,#1a0a2e 50%,#0d0618 100%)"
-    :"linear-gradient(160deg,#f5f3ee 0%,#ede8df 50%,#f0ece3 100%)";
-  const textCol=reversed?"rgba(230,210,255,0.92)":"#1f1f24";
-  const mutedCol=reversed?"rgba(200,170,255,0.55)":"rgba(31,31,36,0.5)";
-  const borderCol=reversed?"rgba(180,120,255,0.22)":"rgba(31,31,36,0.1)";
-  const cardBg=reversed?"rgba(30,10,50,0.85)":"#ffffff";
-  const accentCol=reversed?"#c890ff":accent;
+  const bg=rev
+    ?"linear-gradient(160deg,#0d0618 0%,#180828 60%,#0a0412 100%)"
+    :"linear-gradient(160deg,#f5f3ee 0%,#ede8df 60%,#f2ede4 100%)";
+  const textCol=rev?"rgba(228,208,255,0.92)":"#1a1a22";
+  const mutedCol=rev?"rgba(190,160,240,0.52)":"rgba(26,26,34,0.48)";
+  const brdCol=rev?"rgba(160,100,255,0.16)":"rgba(26,26,34,0.10)";
+  const surfCol=rev?"rgba(24,8,44,0.85)":"#ffffff";
+  const acc=rev?"#c088ff":gold;
 
   return(
-    <div style={{minHeight:"100vh",background:bg,color:textCol,transition:"background .6s,color .6s",paddingBottom:"calc(env(safe-area-inset-bottom,0px) + 90px)"}}>
+    <div style={{minHeight:"100vh",background:bg,color:textCol,transition:"background .5s,color .5s",display:"flex",flexDirection:"column"}}>
 
-      {/* ── TOP NAV ── */}
-      <div style={{padding:"calc(env(safe-area-inset-top,0px) + 14px) 20px 0",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-        <button onClick={onBack} style={{background:"none",border:"none",cursor:"pointer",fontFamily:"'Inter',sans-serif",fontSize:"11px",letterSpacing:".14em",color:mutedCol,padding:"10px 4px"}}>← indietro</button>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"11px",letterSpacing:".44em",color:accentCol,textTransform:"uppercase",opacity:.8}}>Il Grimorio</div>
-        <div style={{width:60}}/>
+      {/* ── TOP BAR ── */}
+      <div style={{position:"fixed",top:0,left:0,right:0,zIndex:100,
+        background:rev?"rgba(13,6,24,0.94)":"rgba(245,243,238,0.94)",
+        backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",
+        borderBottom:`1px solid ${brdCol}`,
+        padding:"calc(env(safe-area-inset-top,0px) + 10px) 18px 10px",
+        display:"flex",alignItems:"center",justifyContent:"space-between",gap:8}}>
+
+        <button onClick={onBack} style={{background:"none",border:"none",cursor:"pointer",
+          display:"flex",alignItems:"center",gap:5,padding:"6px 0",flexShrink:0}}>
+          <span style={{fontSize:"18px",lineHeight:1,color:mutedCol}}>←</span>
+          <span style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",letterSpacing:".12em",color:mutedCol}}>indietro</span>
+        </button>
+
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"13px",
+          letterSpacing:".38em",color:acc,textTransform:"uppercase",fontWeight:500,textAlign:"center"}}>
+          ⚷ Il Grimorio
+        </div>
+
+        <button onClick={()=>setRev(r=>!r)} style={{
+          background:rev?`${acc}22`:"transparent",
+          border:`1px solid ${rev?acc+"60":brdCol}`,
+          borderRadius:20,padding:"5px 12px",cursor:"pointer",flexShrink:0,
+          display:"flex",alignItems:"center",gap:5,transition:"all .3s"}}>
+          <span style={{fontSize:"14px",display:"inline-block",
+            transform:rev?"rotate(180deg)":"rotate(0deg)",
+            transition:"transform .5s cubic-bezier(.16,1,.3,1)",color:acc,lineHeight:1}}>☽</span>
+          <span style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",
+            letterSpacing:".16em",textTransform:"uppercase",color:acc,fontWeight:600}}>
+            {rev?"Rovescio":"Dritto"}
+          </span>
+        </button>
       </div>
 
-      {/* ── CARD ── */}
-      <div style={{padding:"24px 24px 0",maxWidth:540,margin:"0 auto"}}>
-        <div style={{background:cardBg,border:`1px solid ${borderCol}`,borderRadius:20,overflow:"hidden",boxShadow:reversed?"0 8px 40px rgba(120,0,200,0.18)":"0 8px 32px rgba(0,0,0,0.08)",transition:"all .6s"}}>
+      {/* ── SCROLLABLE CONTENT ── */}
+      <div style={{flex:1,overflowY:"auto",
+        paddingTop:"calc(env(safe-area-inset-top,0px) + 64px)",
+        paddingBottom:"calc(env(safe-area-inset-bottom,0px) + 72px)"}}>
+        <div style={{maxWidth:520,margin:"0 auto",padding:"24px 18px 8px"}}>
 
-          {/* card header */}
-          <div style={{padding:"24px 24px 20px",borderBottom:`1px solid ${borderCol}`,display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
-            <div style={{display:"flex",alignItems:"center",gap:16}}>
-              <div style={{width:48,height:48,borderRadius:12,background:`${accentCol}18`,border:`1px solid ${accentCol}40`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:accentCol,lineHeight:1}}>{card.rom}</span>
-              </div>
-              <div>
-                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(22px,6vw,28px)",fontWeight:600,color:textCol,lineHeight:1,marginBottom:4}}>{card.name}</div>
-                <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",letterSpacing:".16em",color:mutedCol,textTransform:"uppercase"}}>{card.archetype}</div>
+          {/* ─ Numero + Nome + Archetipo ─ */}
+          <div style={{display:"flex",alignItems:"flex-start",gap:14,marginBottom:30}}>
+            <div style={{flexShrink:0,width:54,height:54,borderRadius:14,
+              background:`${acc}14`,border:`1.5px solid ${acc}40`,
+              display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"19px",
+                color:acc,fontWeight:600,lineHeight:1}}>{card.rom}</span>
+            </div>
+            <div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",
+                fontSize:"clamp(26px,7vw,32px)",fontWeight:600,
+                color:textCol,lineHeight:1.1,marginBottom:6}}>{card.name}</div>
+              <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",
+                letterSpacing:".16em",textTransform:"uppercase",
+                color:mutedCol,lineHeight:1.6}}>{card.archetype}</div>
+            </div>
+          </div>
+
+          {/* ─ Simbolo grande ─ */}
+          <div style={{textAlign:"center",marginBottom:28}}>
+            <div style={{display:"inline-block",
+              fontFamily:"'Cormorant Garamond',serif",
+              fontSize:"clamp(72px,18vw,96px)",color:acc,lineHeight:1,
+              transform:rev?"rotate(180deg)":"rotate(0deg)",
+              transition:"transform .7s cubic-bezier(.16,1,.3,1)",
+              filter:rev?`drop-shadow(0 0 20px ${acc}55)`:`drop-shadow(0 0 12px ${acc}33)`}}>
+              {A.sym}
+            </div>
+            <div style={{marginTop:16,display:"flex",justifyContent:"center"}}>
+              <div style={{display:"inline-flex",alignItems:"center",gap:6,
+                padding:"5px 16px",borderRadius:20,
+                background:rev?`${acc}1a`:`${acc}0e`,
+                border:`1px solid ${acc}${rev?"55":"2a"}`}}>
+                <span style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",
+                  letterSpacing:".26em",textTransform:"uppercase",color:acc,fontWeight:600}}>
+                  {rev?"◈ Al Rovescio — L'Ombra":"✦ Al Dritto — La Luce"}
+                </span>
               </div>
             </div>
-            {/* mezzaluna flip button */}
-            <button onClick={()=>setReversed(r=>!r)} title="Al Rovescio" style={{background:reversed?`${accentCol}22`:"transparent",border:`1px solid ${accentCol}${reversed?"60":"30"}`,borderRadius:"50%",width:42,height:42,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0,transition:"all .35s"}}>
-              <span style={{fontSize:"20px",display:"inline-block",transform:reversed?"rotate(180deg)":"rotate(0deg)",transition:"transform .5s cubic-bezier(.16,1,.3,1)",color:accentCol}}>☽</span>
-            </button>
           </div>
 
-          {/* reversed banner */}
-          {reversed&&(
-            <div style={{background:`linear-gradient(135deg,${accentCol}18,transparent)`,padding:"10px 24px",borderBottom:`1px solid ${accentCol}28`}}>
-              <span style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",letterSpacing:".24em",textTransform:"uppercase",color:accentCol}}>◈ Al Rovescio — L'Ombra</span>
+          {/* ─ Divisore ─ */}
+          <div style={{height:1,background:`linear-gradient(to right,transparent,${brdCol} 20%,${brdCol} 80%,transparent)`,marginBottom:24}}/>
+
+          {/* ─ Il Simbolo ─ */}
+          <div style={{marginBottom:28}}>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",
+              letterSpacing:".3em",textTransform:"uppercase",color:acc,marginBottom:10}}>
+              Il Simbolo
             </div>
-          )}
-
-          {/* card image placeholder + simbolo */}
-          <div style={{padding:"28px 24px 0",textAlign:"center"}}>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(56px,14vw,76px)",color:accentCol,lineHeight:1,transform:reversed?"rotate(180deg) scaleX(-1)":"rotate(0deg)",transition:"transform .6s cubic-bezier(.16,1,.3,1)",display:"inline-block",marginBottom:4}}>{ARCANI[idx].sym}</div>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",
+              fontSize:"clamp(15px,4vw,17px)",fontStyle:"italic",
+              color:mutedCol,lineHeight:1.95}}>
+              {card.symbol_meaning}
+            </div>
           </div>
 
-          {/* symbol meaning */}
-          <div style={{padding:"16px 24px 24px"}}>
-            <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",letterSpacing:".32em",color:accentCol,textTransform:"uppercase",marginBottom:10}}>Il Simbolo</div>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(15px,4vw,17px)",fontStyle:"italic",color:mutedCol,lineHeight:1.9}}>{card.symbol_meaning}</div>
-          </div>
-        </div>
+          {/* ─ Divisore ─ */}
+          <div style={{height:1,background:`linear-gradient(to right,transparent,${brdCol} 20%,${brdCol} 80%,transparent)`,marginBottom:20}}/>
 
-        {/* ── AREA TABS ── */}
-        <div style={{display:"flex",gap:6,marginTop:16,overflowX:"auto",paddingBottom:2}}>
-          {AREAS.map(a=>(
-            <button key={a.k} onClick={()=>setArea(a.k)} style={{flexShrink:0,padding:"7px 14px",borderRadius:20,border:`1px solid ${area===a.k?accentCol+"70":borderCol}`,background:area===a.k?`${accentCol}18`:cardBg,color:area===a.k?accentCol:mutedCol,fontFamily:"'Cormorant Garamond',serif",fontSize:"13px",letterSpacing:".06em",cursor:"pointer",transition:"all .25s",whiteSpace:"nowrap"}}>
-              {a.l}
-            </button>
-          ))}
-        </div>
+          {/* ─ Tab aree ─ */}
+          <div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:4,
+            marginBottom:16,scrollbarWidth:"none",WebkitOverflowScrolling:"touch"}}>
+            {AREAS.map(a=>(
+              <button key={a.k} onClick={()=>setArea(a.k)} style={{
+                flexShrink:0,padding:"7px 16px",borderRadius:20,
+                border:`1px solid ${area===a.k?acc+"80":brdCol}`,
+                background:area===a.k?`${acc}1a`:surfCol,
+                color:area===a.k?acc:mutedCol,
+                fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",
+                letterSpacing:".04em",cursor:"pointer",
+                transition:"all .22s",whiteSpace:"nowrap"}}>
+                {a.l}
+              </button>
+            ))}
+          </div>
 
-        {/* ── CONTENT ── */}
-        <div style={{marginTop:12,background:cardBg,border:`1px solid ${borderCol}`,borderRadius:16,padding:"22px 20px",boxShadow:reversed?"0 4px 20px rgba(120,0,200,0.10)":"0 4px 16px rgba(0,0,0,0.05)",transition:"all .6s"}}>
-          <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",letterSpacing:".32em",color:accentCol,textTransform:"uppercase",marginBottom:14}}>
-            {reversed?"◈ Al Rovescio":"✦ Al Dritto"} · {AREAS.find(a=>a.k===area)?.l}
+          {/* ─ Interpretazione ─ */}
+          <div style={{background:surfCol,border:`1px solid ${brdCol}`,
+            borderRadius:18,padding:"22px 20px",
+            boxShadow:rev?"0 4px 24px rgba(100,0,180,0.10)":"0 4px 20px rgba(0,0,0,0.05)",
+            transition:"background .5s,box-shadow .5s"}}>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",
+              fontSize:"clamp(17px,4.5vw,20px)",color:textCol,
+              lineHeight:1.95,fontWeight:400}}>
+              {rev?card.reversed[area]:card.upright[area]}
+            </div>
           </div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4.4vw,20px)",color:textCol,lineHeight:1.95}}>
-            {reversed?card.reversed[area]:card.upright[area]}
-          </div>
+
         </div>
       </div>
 
       {/* ── BOTTOM NAV NUMERI ROMANI ── */}
-      <div ref={navRef} style={{position:"fixed",bottom:"calc(env(safe-area-inset-bottom,0px) + 56px)",left:0,right:0,background:reversed?"rgba(18,8,32,0.96)":"rgba(245,243,238,0.96)",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",borderTop:`1px solid ${borderCol}`,padding:"10px 0",zIndex:50,transition:"background .6s"}}>
-        <div style={{display:"flex",overflowX:"auto",gap:2,padding:"0 12px",scrollbarWidth:"none"}}>
+      <div ref={navRef} style={{
+        position:"fixed",bottom:0,left:0,right:0,zIndex:100,
+        background:rev?"rgba(13,6,24,0.96)":"rgba(245,243,238,0.96)",
+        backdropFilter:"blur(14px)",WebkitBackdropFilter:"blur(14px)",
+        borderTop:`1px solid ${brdCol}`,
+        paddingBottom:"env(safe-area-inset-bottom,0px)",
+        transition:"background .5s"}}>
+        <div style={{display:"flex",overflowX:"auto",gap:3,padding:"10px 12px",scrollbarWidth:"none"}}>
           {TROM.map((r,i)=>(
-            <button key={i} data-idx={i} onClick={()=>setIdx(i)} style={{flexShrink:0,minWidth:36,height:36,borderRadius:10,border:`1px solid ${idx===i?accentCol+"80":borderCol}`,background:idx===i?`${accentCol}20`:"transparent",color:idx===i?accentCol:mutedCol,fontFamily:"'Cormorant Garamond',serif",fontSize:"13px",cursor:"pointer",transition:"all .2s",fontWeight:idx===i?600:400}}>
+            <button key={i} data-i={i} onClick={()=>setIdx(i)} style={{
+              flexShrink:0,minWidth:38,height:38,borderRadius:10,
+              border:`1px solid ${idx===i?acc+"90":brdCol}`,
+              background:idx===i?`${acc}1c`:"transparent",
+              color:idx===i?acc:mutedCol,
+              fontFamily:"'Cormorant Garamond',serif",fontSize:"13px",
+              cursor:"pointer",transition:"all .18s",
+              fontWeight:idx===i?600:400}}>
               {r}
             </button>
           ))}
