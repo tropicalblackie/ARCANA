@@ -652,7 +652,32 @@ const ZODIAC_SVG_PATHS={
   // ♓ Pesci — due archi ( ) con barra orizzontale centrale
   pesci:     "M10 4C7 8 7 16 10 20M14 4C17 8 17 16 14 20M7 12h10",
 };
+const ZODIAC_GLYPH_IMAGES={
+  ariete:"./glyph-ariete.png",
+};
 function ZodiacGlyph({sgKey,size=24,color='#1f1f24',opacity=1,glow,style={}}){
+  const imgSrc=ZODIAC_GLYPH_IMAGES[sgKey];
+  if(imgSrc){
+    return(
+      <img
+        src={imgSrc}
+        alt={sgKey}
+        loading="lazy"
+        decoding="async"
+        style={{
+          display:'inline-block',
+          width:size,
+          height:size,
+          objectFit:'contain',
+          flexShrink:0,
+          opacity,
+          mixBlendMode:'multiply',
+          filter:glow?`drop-shadow(0 0 ${Math.round(size*.18)}px ${glow})`:'none',
+          ...style
+        }}
+      />
+    );
+  }
   const d=ZODIAC_SVG_PATHS[sgKey];
   if(!d)return null;
   const sw=size<=18?2:size<=32?1.8:1.5;
