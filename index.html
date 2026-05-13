@@ -666,7 +666,7 @@ const ZODIAC_GLYPH_IMAGES={
   acquario:"./glyph-acquario.png",
   pesci:"./glyph-pesci.png",
 };
-function ZodiacGlyph({sgKey,size=24,color='#1f1f24',opacity=1,glow,style={}}){
+function ZodiacGlyph({sgKey,size=28,color='#1f1f24',opacity=1,glow,style={}}){
   const imgSrc=ZODIAC_GLYPH_IMAGES[sgKey];
   if(imgSrc){
     return(
@@ -877,11 +877,9 @@ function SignFlipCard({sg,t,i,onSelect}){
           }}>
             <CandleShine/>
             <GlassOverlay/>
-            {sg.backLogo
-              ?<div style={{width:"100%",maxWidth:118,aspectRatio:"2/3",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:16}}>
+            {sg.backLogo&&<div style={{width:"100%",maxWidth:118,aspectRatio:"2/3",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:16}}>
                 <img src={sg.backLogo} alt={sg.name} loading="lazy" decoding="async" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 34%",display:"block"}}/>
-              </div>
-              :<ZodiacGlyph sgKey={sg.key} size={64} style={{marginBottom:20}}/>}}
+              </div>}
             <div style={{width:44,height:"1px",background:`linear-gradient(to right,transparent,rgba(${sg.rgb},0.5),transparent)`,marginBottom:22}}/>
             <div style={{fontSize:"6px",letterSpacing:".58em",color:"rgba(0,0,0,0.35)",textTransform:"uppercase",paddingLeft:".58em",marginBottom:12}}>Periodo</div>
             <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(18px,5vw,25px)",color:"rgba(0,0,0,0.82)",fontStyle:"italic",textAlign:"center",letterSpacing:".03em",lineHeight:1.2}}>{SIGN_DATES[sg.key]}</div>
@@ -983,7 +981,7 @@ function ProfileContent({tab,sg,t}){
       <div style={{padding:"26px 28px",border:`1px solid ${sg.color}40`,background:`rgba(${sg.rgb},.06)`}}>
         {label("L'Anatomia del Simbolo")}
         <div style={{display:'flex',justifyContent:'center',marginBottom:18,opacity:.8}}>
-          <ZodiacGlyph sgKey={sg.key} size={52}/>
+          <ZodiacGlyph sgKey={sg.key} size={60}/>
         </div>
         {body(sg.symbol_meaning)}
       </div>
@@ -4086,7 +4084,7 @@ function TemanataleView({t,profile,onBack}){
                       <div style={{fontFamily:"'Inter',sans-serif",fontSize:"9px",fontWeight:500,letterSpacing:".20em",color:"rgba(31,31,36,0.38)",textTransform:"uppercase",textAlign:"center",marginBottom:10}}>{pl.sub}</div>
                       {/* sign badge */}
                       <div style={{display:"inline-flex",alignItems:"center",gap:6,padding:"5px 12px",background:sg?`rgba(${sg.rgb},0.10)`:"rgba(31,31,36,0.06)",border:`1px solid ${sg?`rgba(${sg.rgb},0.28)`:"rgba(31,31,36,0.12)"}`,borderRadius:20,marginBottom:12}}>
-                        {sg&&<ZodiacGlyph sgKey={sg.key} size={15}/>}
+                        {sg&&<ZodiacGlyph sgKey={sg.key} size={17}/>}
                         <span style={{fontFamily:"'Inter',sans-serif",fontSize:"10px",fontWeight:600,letterSpacing:".08em",color:sg?`rgba(${sg.rgb},0.85)`:"rgba(31,31,36,0.50)",textTransform:"capitalize"}}>{sg?sg.name:signKey}</span>
                       </div>
                       {/* description */}
@@ -4170,7 +4168,7 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
             {trinity.map(({sg:s,label,icon})=>(
               <div key={s.key} style={{flex:1,...card,padding:"16px 10px 14px",textAlign:"center"}}>
                 <div style={{display:'flex',justifyContent:'center',marginBottom:7}}>
-                  <ZodiacGlyph sgKey={s.key} size={28}/>
+                  <ZodiacGlyph sgKey={s.key} size={32}/>
                 </div>
                 <div style={{fontFamily:"'Inter',sans-serif",fontSize:"clamp(11px,3vw,13px)",fontWeight:600,color:"#1f1f24",marginBottom:4}}>{s.name}</div>
                 <div style={{fontFamily:"'Inter',sans-serif",fontSize:"8px",fontWeight:400,letterSpacing:".18em",color:"rgba(31,31,36,0.35)",textTransform:"uppercase"}}>{icon} {label}</div>
