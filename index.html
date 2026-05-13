@@ -4403,7 +4403,11 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
         </div>
 
         {/* CTA */}
-        <button onClick={onProfile} style={{width:"100%",marginBottom:28,padding:"15px",border:`1px solid ${t.accent}44`,background:"#ffffff",color:t.accent,fontFamily:"'Inter',sans-serif",fontSize:"11px",fontWeight:500,letterSpacing:".24em",textTransform:"uppercase",borderRadius:100,cursor:"pointer",boxShadow:"0 4px 14px rgba(0,0,0,0.06)"}}>Carta Natale Archetipica</button>
+        <button onClick={onProfile} style={{width:"100%",marginBottom:28,padding:"18px 24px",border:"none",background:`linear-gradient(135deg,${t.accent},rgba(148,108,28,0.95))`,color:"#fff",fontFamily:"'Cormorant Garamond',serif",fontSize:"17px",fontWeight:500,letterSpacing:".18em",textTransform:"uppercase",borderRadius:100,cursor:"pointer",boxShadow:`0 6px 24px ${t.accent}44`,display:"flex",alignItems:"center",justifyContent:"center",gap:10}}>
+          <span style={{opacity:.75,fontSize:"14px"}}>✦</span>
+          <span>Carta Natale Archetipica</span>
+          <span style={{opacity:.75,fontSize:"14px"}}>✦</span>
+        </button>
 
         {/* ── SECTION: oroscopo ── */}
         <div style={{...secLabel,marginBottom:14,paddingLeft:2}}>Il tuo oroscopo di oggi</div>
