@@ -1262,7 +1262,15 @@ function Tarocchi({t,setView}){
           <div style={{fontFamily:"'Inter',sans-serif",fontSize:"10px",fontWeight:600,letterSpacing:".38em",color:"rgba(184,138,43,0.75)",textTransform:"uppercase",marginBottom:14}}>Arcani Maggiori</div>
           <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(32px,9vw,50px)",fontWeight:300,letterSpacing:"-.02em",marginBottom:12}}>I Tarocchi</div>
           <div style={{width:40,height:1,background:"linear-gradient(to right,transparent,rgba(184,138,43,0.5),transparent)",margin:"0 auto 18px"}}/>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",fontStyle:"italic",color:tarotUi.muted}}>Scegli il dominio da esplorare</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"16px",fontStyle:"italic",color:tarotUi.muted,marginBottom:22}}>Scegli il dominio da esplorare</div>
+          {/* Grimorio entry */}
+          <button onClick={()=>setView&&setView("grimorio")}
+            onMouseEnter={e=>{e.currentTarget.style.opacity="1";}}
+            onMouseLeave={e=>{e.currentTarget.style.opacity="0.72";}}
+            style={{background:"none",border:"1px solid rgba(184,138,43,0.3)",borderRadius:50,padding:"9px 22px",cursor:"pointer",display:"inline-flex",alignItems:"center",gap:8,opacity:.72,transition:"opacity .2s"}}>
+            <span style={{fontSize:"14px",color:"rgba(184,138,43,0.85)"}}>&#x26B7;</span>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"14px",letterSpacing:".12em",color:"rgba(184,138,43,0.85)"}}>Il Grimorio</span>
+          </button>
         </div>
         {/* 2x2 grid */}
         <div style={{padding:"0 20px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,maxWidth:500,margin:"0 auto"}}>
@@ -1282,18 +1290,8 @@ function Tarocchi({t,setView}){
             );
           })}
         </div>
-        <div style={{textAlign:"center",marginTop:44}}>
+        <div style={{textAlign:"center",marginTop:28}}>
           <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"12px",fontStyle:"italic",color:"rgba(184,138,43,0.45)",letterSpacing:".06em"}}>22 Arcani · 3 carte · 1 verità</div>
-        </div>
-        {/* Grimorio entry */}
-        <div style={{textAlign:"center",marginTop:22,paddingBottom:8}}>
-          <button onClick={()=>setView&&setView("grimorio")}
-            onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 8px 28px rgba(90,30,130,0.22)";}}
-            onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow="none";}}
-            style={{background:"none",border:"1px solid rgba(184,138,43,0.3)",borderRadius:50,padding:"11px 28px",cursor:"pointer",display:"inline-flex",alignItems:"center",gap:9,transition:"transform .25s,box-shadow .25s"}}>
-            <span style={{fontSize:"15px",color:"rgba(184,138,43,0.75)"}}>⚷</span>
-            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"15px",letterSpacing:".12em",color:"rgba(184,138,43,0.75)"}}>Il Grimorio</span>
-          </button>
         </div>
       </div>
     </div>
