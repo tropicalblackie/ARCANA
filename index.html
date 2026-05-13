@@ -4181,9 +4181,9 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
             <div key={cat.key} style={{marginBottom:10,...card}}>
               <div style={{padding:"18px 20px 20px"}}>
                 <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:14}}>
-                  <div style={{width:64,height:64,borderRadius:10,background:cat.img?"transparent":`${cat.col}14`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                  <div style={{width:128,height:128,borderRadius:10,background:cat.img?"transparent":`${cat.col}14`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
                     {cat.img
-                      ?<img src={cat.img} alt={cat.label} style={{width:64,height:64,objectFit:"contain"}}/>
+                      ?<img src={cat.img} alt={cat.label} style={{width:128,height:128,objectFit:"contain"}}/>
                       :<span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"20px",color:cat.col,lineHeight:1}}>{cat.icon}</span>}
                   </div>
                   <div style={{flex:1}}>
