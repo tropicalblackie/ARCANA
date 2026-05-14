@@ -4225,6 +4225,8 @@ function ChineseView({t,profile,onBack}){
   const col=sign.col;
   const RED='#c8382a';
   const GOLD='#c8a040';
+  const REDARK='#0d0204';
+  const CREAM='#f5e8d0';
 
   useEffect(()=>{
     if(phase==='reveal'){
@@ -4233,7 +4235,7 @@ function ChineseView({t,profile,onBack}){
     }
   },[phase]);
 
-  const card={background:'#ffffff',border:'1px solid rgba(31,31,36,0.10)',borderRadius:16,boxShadow:'0 2px 8px rgba(0,0,0,0.06),0 0 0 0.5px rgba(0,0,0,0.03)'};
+  const card={background:'rgba(200,56,42,0.10)',border:'1px solid rgba(200,56,42,0.28)',borderRadius:16,boxShadow:'0 2px 16px rgba(0,0,0,0.40)'};
   const ELEMENTS={Metallo:{col:'#8090a8',icon:'⊕'},Acqua:{col:'#4a88b8',icon:'≋'},Legno:{col:'#5a9060',icon:'✦'},Fuoco:{col:'#c84030',icon:'∆'},Terra:{col:'#a08040',icon:'□'}};
   const elData=ELEMENTS[element]||ELEMENTS['Legno'];
 
