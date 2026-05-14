@@ -2243,7 +2243,7 @@ function HomeHub({t,setView,profile}){
         {/* ── Sogni ── */}
         <div onClick={()=>profile?setView("sogni"):setView("setup")} onMouseEnter={()=>setHov("sogni")} onMouseLeave={()=>setHov(null)}
           style={{marginBottom:10,padding:"20px 24px",background:hov==="sogni"?"rgba(148,104,216,0.10)":"#ffffff",border:`1px solid ${hov==="sogni"?"rgba(148,104,216,0.50)":"rgba(31,31,36,0.1)"}`,borderRadius:100,display:"flex",alignItems:"center",gap:18,cursor:"pointer",transition:"all .3s cubic-bezier(.16,1,.3,1)",transform:hov==="sogni"?"translateY(-2px)":"translateY(0)",boxShadow:hov==="sogni"?"0 20px 44px rgba(148,104,216,0.22),0 4px 14px rgba(148,104,216,0.08),inset 0 1px 0 rgba(255,255,255,0.92)":"0 1px 4px rgba(20,20,30,0.05),0 8px 24px rgba(20,20,30,0.08),inset 0 1px 0 rgba(255,255,255,0.92)"}}>
-          <NavIcon src="icon-sogni.png" zoom={1.1} active={true} size={64}/>
+          <NavIcon src="icon-sogni.png" zoom={1.1} active={true} size={72}/>
           <div style={{flex:1}}>
             <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(17px,4.5vw,21px)",fontWeight:600,color:"#1f1f24",marginBottom:2}}>Sogni</div>
             <div style={{fontFamily:"'Inter',sans-serif",fontSize:"11px",color:"rgba(31,31,36,0.45)",letterSpacing:".02em"}}>Scrivi e interpreta i tuoi sogni</div>
