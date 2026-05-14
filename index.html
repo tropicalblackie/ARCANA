@@ -1182,10 +1182,10 @@ function BottomNav({view,setView,t,profile}){
    TAROCCHI  —  dati & componente
 ══════════════════════════════════════════════════════ */
 const TAROT_AREAS=[
-  {key:"amore", label:"Amore", icon:"♡",img:"./icon-amore.png", color:"#d4688a",desc:"Relazioni & Cuore"},
-  {key:"lavoro",label:"Lavoro",icon:"◈",img:"./icon-lavoro.png",color:"#7090d8",desc:"Carriera & Potere"},
-  {key:"salute",label:"Salute",icon:"✦",img:"./icon-salute.png",color:"#58b878",desc:"Corpo & Vitalità"},
-  {key:"soldi", label:"Soldi", icon:"◉",img:"./icon-soldi.png", color:"#c8a030",desc:"Abbondanza & Flusso"},
+  {key:"amore", label:"Amore", icon:"♡",img:"./icon-amore.png", color:"#c4856a",desc:"Relazioni & Cuore"},
+  {key:"lavoro",label:"Lavoro",icon:"◈",img:"./icon-lavoro.png",color:"#b8892b",desc:"Carriera & Potere"},
+  {key:"salute",label:"Salute",icon:"✦",img:"./icon-salute.png",color:"#8a9c52",desc:"Corpo & Vitalità"},
+  {key:"soldi", label:"Soldi", icon:"◉",img:"./icon-soldi.png", color:"#c8a040",desc:"Abbondanza & Flusso"},
 ];
 const TROM=["0","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI"];
 const TPOS=["Passato","Presente","Futuro"];
@@ -1259,7 +1259,7 @@ function Tarocchi({t,setView}){
       {/* Star field */}
       <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0}}>
         {[...Array(28)].map((_,i)=>(
-          <div key={i} style={{position:"absolute",width:i%5===0?2:1.5,height:i%5===0?2:1.5,borderRadius:"50%",background:`rgba(25,25,35,${i%3===0?0.09:0.05})`,top:`${(i*37+11)%100}%`,left:`${(i*71+7)%100}%`,animation:`pulse ${2+(i*0.29)%2.5}s ${(i*0.17)%2.5}s ease-in-out infinite`}}/>
+          <div key={i} style={{position:"absolute",width:i%5===0?2:1.5,height:i%5===0?2:1.5,borderRadius:"50%",background:`rgba(184,138,43,${i%3===0?0.09:0.05})`,top:`${(i*37+11)%100}%`,left:`${(i*71+7)%100}%`,animation:`pulse ${2+(i*0.29)%2.5}s ${(i*0.17)%2.5}s ease-in-out infinite`}}/>
         ))}
       </div>
       <div style={{position:"relative",zIndex:1}}>
@@ -1314,7 +1314,7 @@ function Tarocchi({t,setView}){
       {/* Star field */}
       <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0}}>
         {[...Array(20)].map((_,i)=>(
-          <div key={i} style={{position:"absolute",width:1.5,height:1.5,borderRadius:"50%",background:"rgba(25,25,35,0.08)",top:`${(i*41+9)%100}%`,left:`${(i*67+17)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
+          <div key={i} style={{position:"absolute",width:1.5,height:1.5,borderRadius:"50%",background:"rgba(184,138,43,0.07)",top:`${(i*41+9)%100}%`,left:`${(i*67+17)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
         ))}
       </div>
       <div style={{position:"relative",zIndex:1}}>
@@ -1390,7 +1390,7 @@ function Tarocchi({t,setView}){
       {/* Stars */}
       <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0}}>
         {[...Array(18)].map((_,i)=>(
-          <div key={i} style={{position:"absolute",width:1.5,height:1.5,borderRadius:"50%",background:"rgba(25,25,35,0.07)",top:`${(i*41+9)%100}%`,left:`${(i*67+17)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
+          <div key={i} style={{position:"absolute",width:1.5,height:1.5,borderRadius:"50%",background:"rgba(184,138,43,0.06)",top:`${(i*41+9)%100}%`,left:`${(i*67+17)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
         ))}
       </div>
       <div style={{position:"relative",zIndex:1}}>
