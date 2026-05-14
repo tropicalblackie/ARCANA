@@ -4240,26 +4240,33 @@ function ChineseView({t,profile,onBack}){
   /* ── FASE 1: IL SIGILLO (carta di riso) ── */
   if(phase==='seal'){
     return(
-      <div style={{minHeight:'100vh',background:'#f2f2f7',color:'#1f1f24',display:'flex',flexDirection:'column',overflowY:'auto',paddingBottom:'calc(env(safe-area-inset-bottom,0px) + 80px)'}}>
+      <div style={{minHeight:'100vh',background:REDARK,color:CREAM,display:'flex',flexDirection:'column',overflowY:'auto',paddingBottom:'calc(env(safe-area-inset-bottom,0px) + 80px)'}}>
         <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
-          {[...Array(20)].map((_,i)=>(
-            <div key={i} style={{position:'absolute',width:1.5,height:1.5,borderRadius:'50%',background:`rgba(31,31,36,${i%3===0?0.07:0.04})`,top:`${(i*43+17)%100}%`,left:`${(i*71+11)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
+          {[...Array(24)].map((_,i)=>(
+            <div key={i} style={{position:'absolute',width:i%5===0?2:1.5,height:i%5===0?2:1.5,borderRadius:'50%',background:i%3===0?`rgba(200,56,42,0.22)`:`rgba(200,160,48,0.12)`,top:`${(i*43+17)%100}%`,left:`${(i*71+11)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
           ))}
         </div>
-        <div style={{position:'relative',zIndex:1,maxWidth:640,margin:'0 auto',padding:'0 16px',width:'100%',flex:1,display:'flex',flexDirection:'column'}}>
+        <div style={{position:'fixed',top:18,left:18,width:46,height:46,borderTop:`1.5px solid ${GOLD}44`,borderLeft:`1.5px solid ${GOLD}44`,pointerEvents:'none',zIndex:1}}/>
+        <div style={{position:'fixed',top:18,right:18,width:46,height:46,borderTop:`1.5px solid ${GOLD}44`,borderRight:`1.5px solid ${GOLD}44`,pointerEvents:'none',zIndex:1}}/>
+        <div style={{position:'fixed',bottom:18,left:18,width:46,height:46,borderBottom:`1.5px solid ${GOLD}44`,borderLeft:`1.5px solid ${GOLD}44`,pointerEvents:'none',zIndex:1}}/>
+        <div style={{position:'fixed',bottom:18,right:18,width:46,height:46,borderBottom:`1.5px solid ${GOLD}44`,borderRight:`1.5px solid ${GOLD}44`,pointerEvents:'none',zIndex:1}}/>
+        <div style={{position:'relative',zIndex:2,maxWidth:640,margin:'0 auto',padding:'0 16px',width:'100%',flex:1,display:'flex',flexDirection:'column'}}>
           <div style={{padding:'calc(env(safe-area-inset-top,0px) + 14px) 4px 0'}}>
-            <button onClick={onBack} style={{color:'rgba(31,31,36,0.45)',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:400,letterSpacing:'.14em',padding:'12px 4px',background:'none',border:'none',cursor:'pointer'}}>← indietro</button>
+            <button onClick={onBack} style={{color:'rgba(245,232,208,0.42)',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:400,letterSpacing:'.14em',padding:'12px 4px',background:'none',border:'none',cursor:'pointer'}}>← indietro</button>
           </div>
           <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'40px 0 60px',textAlign:'center'}}>
-            <div className="gold-text" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(9px,2.4vw,11px)',fontWeight:500,letterSpacing:'.52em',textTransform:'uppercase',marginBottom:36}}>ARCANA · ZODIACO CINESE</div>
-            {/* Sigillo rosso pulsante */}
-            <div onClick={()=>setPhase('reveal')} style={{width:80,height:80,borderRadius:'50%',background:`radial-gradient(circle at 40% 40%,${RED}cc,${RED}88)`,boxShadow:`0 8px 32px ${RED}44,0 2px 8px ${RED}22`,marginBottom:40,animation:'pulse 2.6s ease-in-out infinite',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>
-              <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:32,color:'rgba(255,240,200,0.9)',lineHeight:1,userSelect:'none'}}>印</span>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(9px,2.4vw,11px)',fontWeight:500,letterSpacing:'.52em',textTransform:'uppercase',marginBottom:36,color:`rgba(200,160,48,0.78)`}}>ARCANA · 生肖 · ZODIACO CINESE</div>
+            <div onClick={()=>setPhase('reveal')} style={{width:104,height:104,borderRadius:'50%',background:`radial-gradient(circle at 38% 38%,${RED}f0,${RED}99)`,boxShadow:`0 8px 56px ${RED}66,0 0 0 1.5px ${RED}55,0 0 100px ${RED}22`,marginBottom:40,animation:'pulse 2.6s ease-in-out infinite',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>
+              <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:46,color:'rgba(255,240,200,0.96)',lineHeight:1,userSelect:'none',textShadow:`0 0 22px ${GOLD}88`}}>印</span>
             </div>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(24px,6.5vw,36px)',fontWeight:400,fontStyle:'italic',color:'#1f1f24',lineHeight:1.4,marginBottom:16,maxWidth:320}}>Il Calendario di Giada<br/>conosce il tuo respiro.</div>
-            <div style={{width:36,height:1,background:`linear-gradient(to right,transparent,${RED}55,transparent)`,margin:'0 auto 20px'}}/>
-            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'10px',letterSpacing:'.28em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase',marginBottom:48}}>Il tuo anno rivela l'animale dell'anima</div>
-            <button onClick={()=>setPhase('reveal')} style={{padding:'14px 36px',background:'#1f1f24',color:'#f2f2f7',fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontStyle:'italic',fontWeight:500,letterSpacing:'.04em',borderRadius:100,border:'none',cursor:'pointer',boxShadow:'0 4px 20px rgba(0,0,0,0.15)'}}>Scopri il tuo Segno</button>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(24px,6.5vw,36px)',fontWeight:400,fontStyle:'italic',color:CREAM,lineHeight:1.4,marginBottom:18,maxWidth:320}}>Il Calendario di Giada<br/>conosce il tuo respiro.</div>
+            <div style={{display:'flex',alignItems:'center',gap:8,margin:'0 auto 20px',width:200}}>
+              <div style={{flex:1,height:'1px',background:`rgba(200,56,42,0.50)`}}/>
+              <div style={{width:5,height:5,borderRadius:'50%',background:GOLD,opacity:0.80}}/>
+              <div style={{flex:1,height:'1px',background:`rgba(200,56,42,0.50)`}}/>
+            </div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'10px',letterSpacing:'.28em',color:'rgba(245,232,208,0.34)',textTransform:'uppercase',marginBottom:48}}>Il tuo anno rivela l'animale dell'anima</div>
+            <button onClick={()=>setPhase('reveal')} style={{padding:'14px 44px',background:`linear-gradient(135deg,${RED} 0%,#a01818 100%)`,color:CREAM,fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontStyle:'italic',fontWeight:500,letterSpacing:'.04em',borderRadius:100,border:`1px solid rgba(200,56,42,0.55)`,cursor:'pointer',boxShadow:`0 4px 28px ${RED}55,0 2px 8px rgba(0,0,0,0.5)`}}>Scopri il tuo Segno</button>
           </div>
         </div>
       </div>
@@ -4269,10 +4276,10 @@ function ChineseView({t,profile,onBack}){
   /* ── FASE 2: REVEAL ── */
   if(phase==='reveal'){
     return(
-      <div style={{minHeight:'100vh',background:'#f2f2f7',display:'flex',alignItems:'center',justifyContent:'center'}}>
+      <div style={{minHeight:'100vh',background:REDARK,display:'flex',alignItems:'center',justifyContent:'center'}}>
         <div style={{textAlign:'center'}}>
-          <div style={{width:80,height:80,borderRadius:'50%',background:`radial-gradient(circle,${RED}cc,${RED}44,transparent 75%)`,margin:'0 auto 24px',animation:'pulse 0.5s ease-out',boxShadow:`0 0 40px ${RED}55`}}/>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(20px,5vw,26px)',fontStyle:'italic',color:'rgba(31,31,36,0.55)'}}>Il sigillo si apre…</div>
+          <div style={{width:104,height:104,borderRadius:'50%',background:`radial-gradient(circle,${RED}f0,${RED}44,transparent 75%)`,margin:'0 auto 24px',animation:'pulse 0.5s ease-out',boxShadow:`0 0 80px ${RED}99`}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(20px,5vw,26px)',fontStyle:'italic',color:'rgba(245,232,208,0.60)'}}>Il sigillo si apre…</div>
         </div>
       </div>
     );
@@ -4280,26 +4287,31 @@ function ChineseView({t,profile,onBack}){
 
   /* ── FASE 3: CARTA COMPLETA ── */
   return(
-    <div style={{minHeight:'100vh',background:'#f2f2f7',color:'#1f1f24',overflowY:'auto',paddingBottom:'calc(env(safe-area-inset-bottom,0px) + 80px)'}}>
+    <div style={{minHeight:'100vh',background:REDARK,color:CREAM,overflowY:'auto',paddingBottom:'calc(env(safe-area-inset-bottom,0px) + 80px)'}}>
       <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
-        {[...Array(20)].map((_,i)=>(
-          <div key={i} style={{position:'absolute',width:1.5,height:1.5,borderRadius:'50%',background:`rgba(31,31,36,${i%3===0?0.07:0.04})`,top:`${(i*43+17)%100}%`,left:`${(i*71+11)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
+        {[...Array(24)].map((_,i)=>(
+          <div key={i} style={{position:'absolute',width:i%5===0?2:1.5,height:i%5===0?2:1.5,borderRadius:'50%',background:i%3===0?`rgba(200,56,42,0.18)`:`rgba(200,160,48,0.10)`,top:`${(i*43+17)%100}%`,left:`${(i*71+11)%100}%`,animation:`pulse ${2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
         ))}
       </div>
+      <div style={{position:'fixed',top:0,left:0,right:0,height:2,background:`linear-gradient(to right,transparent,${RED}88,transparent)`,pointerEvents:'none',zIndex:10}}/>
       <div style={{position:'relative',zIndex:1,maxWidth:640,margin:'0 auto',padding:'0 16px'}}>
 
         {/* NAV */}
         <div style={{padding:'calc(env(safe-area-inset-top,0px) + 14px) 4px 0'}}>
-          <button onClick={onBack} style={{color:'rgba(31,31,36,0.45)',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:400,letterSpacing:'.14em',padding:'12px 4px',background:'none',border:'none',cursor:'pointer'}}>← indietro</button>
+          <button onClick={onBack} style={{color:'rgba(245,232,208,0.42)',fontFamily:"'Inter',sans-serif",fontSize:'11px',fontWeight:400,letterSpacing:'.14em',padding:'12px 4px',background:'none',border:'none',cursor:'pointer'}}>← indietro</button>
         </div>
 
         {/* HEADER */}
-        <div style={{textAlign:'center',padding:'clamp(18px,5vw,32px) 0 24px'}}>
-          <div className="gold-text" style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(9px,2.4vw,11px)',fontWeight:500,letterSpacing:'.52em',textTransform:'uppercase',marginBottom:14}}>ARCANA · ZODIACO CINESE</div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(50px,13vw,72px)',fontWeight:400,color:col,letterSpacing:'-.02em',lineHeight:1,marginBottom:6}}>{sign.hanzi}</div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(28px,7.5vw,44px)',fontWeight:500,color:'#1f1f24',letterSpacing:'-.01em',lineHeight:1.1,marginBottom:4}}>{sign.nome}</div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(13px,3.5vw,16px)',fontStyle:'italic',color:'rgba(31,31,36,0.45)',marginBottom:10}}>{sign.pinyin} · {element}</div>
-          <div style={{width:36,height:1,background:`linear-gradient(to right,transparent,${RED}66,transparent)`,margin:'0 auto'}}/>
+        <div style={{textAlign:'center',padding:'clamp(18px,5vw,32px) 0 20px'}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(9px,2.4vw,11px)',fontWeight:500,letterSpacing:'.52em',textTransform:'uppercase',marginBottom:14,color:`rgba(200,160,48,0.78)`}}>ARCANA · 生肖 · ZODIACO CINESE</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(56px,15vw,80px)',fontWeight:400,color:RED,letterSpacing:'-.02em',lineHeight:1,marginBottom:6,textShadow:`0 0 48px ${RED}66,0 0 12px ${RED}44`}}>{sign.hanzi}</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(28px,7.5vw,44px)',fontWeight:500,color:CREAM,letterSpacing:'-.01em',lineHeight:1.1,marginBottom:4}}>{sign.nome}</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(13px,3.5vw,16px)',fontStyle:'italic',color:'rgba(245,232,208,0.48)',marginBottom:14}}>{sign.pinyin} · {element}</div>
+          <div style={{display:'flex',alignItems:'center',gap:6,margin:'0 auto',width:180}}>
+            <div style={{flex:1,height:'1px',background:`rgba(200,56,42,0.50)`}}/>
+            <div style={{width:4,height:4,borderRadius:'50%',background:GOLD,opacity:0.82}}/>
+            <div style={{flex:1,height:'1px',background:`rgba(200,56,42,0.50)`}}/>
+          </div>
         </div>
 
         {/* IMMAGINE ANIMALE */}
@@ -4309,16 +4321,16 @@ function ChineseView({t,profile,onBack}){
               src={sign.img}
               alt={sign.nome}
               onError={e=>{e.target.style.display='none';e.target.nextSibling&&(e.target.nextSibling.style.display='flex');}}
-              style={{width:'100%',display:'block',borderRadius:20,objectFit:'contain',background:'transparent',maxHeight:'72vw'}}
+              style={{width:'100%',display:'block',borderRadius:10,objectFit:'contain',background:'transparent',maxHeight:'88vw',boxShadow:'0 16px 56px rgba(0,0,0,0.75),0 0 0 1px rgba(200,56,42,0.22)'}}
             />
             <div style={{display:'none',justifyContent:'center'}}>
-              <div style={{width:'min(180px,48vw)',height:'min(180px,48vw)',background:'#ffffff',borderRadius:'50%',padding:20,boxSizing:'border-box',border:'1px solid rgba(31,31,36,0.10)',boxShadow:'0 4px 20px rgba(0,0,0,0.07)',display:'flex',alignItems:'center',justifyContent:'center'}}>{sign.svg}</div>
+              <div style={{width:'min(180px,48vw)',height:'min(180px,48vw)',background:'rgba(200,56,42,0.12)',borderRadius:'50%',padding:20,boxSizing:'border-box',border:'1px solid rgba(200,56,42,0.35)',boxShadow:'0 4px 24px rgba(0,0,0,0.50)',display:'flex',alignItems:'center',justifyContent:'center'}}>{sign.svg}</div>
             </div>
           </div>
         )}
         {!sign.img&&(
           <div style={{display:'flex',justifyContent:'center',marginBottom:24}} className="fade-in">
-            <div style={{width:'min(180px,48vw)',height:'min(180px,48vw)',background:'#ffffff',borderRadius:'50%',padding:20,boxSizing:'border-box',border:'1px solid rgba(31,31,36,0.10)',boxShadow:'0 4px 20px rgba(0,0,0,0.07)'}}>{sign.svg}</div>
+            <div style={{width:'min(180px,48vw)',height:'min(180px,48vw)',background:'rgba(200,56,42,0.12)',borderRadius:'50%',padding:20,boxSizing:'border-box',border:'1px solid rgba(200,56,42,0.35)',boxShadow:'0 4px 24px rgba(0,0,0,0.50)'}}>{sign.svg}</div>
           </div>
         )}
 
@@ -4326,11 +4338,11 @@ function ChineseView({t,profile,onBack}){
         <div style={{...card,marginBottom:10,padding:'22px 22px 20px'}} className="fade-in-up">
           <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12}}>
             <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 3 Q14 7 14 12 Q14 16 10 17 Q6 16 6 12 Q6 7 10 3Z" stroke={col} strokeWidth="1.3" fill={`${col}22`}/><path d="M10 17 L10 20" stroke={col} strokeWidth="1" strokeLinecap="round"/></svg>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontWeight:600,color:'#1f1f24'}}>L'Istinto Primordiale</div>
-            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.16em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase',marginLeft:'auto'}}>L'Archetipo</div>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontWeight:600,color:CREAM}}>L'Istinto Primordiale</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.16em',color:'rgba(245,232,208,0.40)',textTransform:'uppercase',marginLeft:'auto'}}>L'Archetipo</div>
           </div>
-          <div style={{width:'100%',height:'1px',background:'rgba(31,31,36,0.07)',marginBottom:14}}/>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'#1f1f24',lineHeight:1.9,fontStyle:'italic'}}>{sign.istinto}</div>
+          <div style={{width:'100%',height:'1px',background:'rgba(200,56,42,0.30)',marginBottom:14}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'rgba(245,232,208,0.88)',lineHeight:1.9,fontStyle:'italic'}}>{sign.istinto}</div>
         </div>
 
         {/* SOSTANZA DELL'ANIMA (ELEMENTO) */}
@@ -4339,29 +4351,29 @@ function ChineseView({t,profile,onBack}){
             <div style={{width:18,height:18,borderRadius:4,background:`${elData.col}22`,border:`1px solid ${elData.col}66`,display:'flex',alignItems:'center',justifyContent:'center'}}>
               <span style={{fontSize:10,color:elData.col,lineHeight:1}}>{elData.icon}</span>
             </div>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontWeight:600,color:'#1f1f24'}}>La Sostanza dell'Anima</div>
-            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.16em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase',marginLeft:'auto'}}>Elemento · {element}</div>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontWeight:600,color:CREAM}}>La Sostanza dell'Anima</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.16em',color:'rgba(245,232,208,0.40)',textTransform:'uppercase',marginLeft:'auto'}}>Elemento · {element}</div>
           </div>
-          <div style={{width:'100%',height:'1px',background:'rgba(31,31,36,0.07)',marginBottom:14}}/>
-          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:14,padding:'10px 14px',background:`${elData.col}0d`,borderRadius:10,border:`1px solid ${elData.col}22`}}>
+          <div style={{width:'100%',height:'1px',background:'rgba(200,56,42,0.30)',marginBottom:14}}/>
+          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:14,padding:'10px 14px',background:`${elData.col}1e`,borderRadius:10,border:`1px solid ${elData.col}55`}}>
             <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(18px,5vw,22px)',fontWeight:500,color:elData.col,flexShrink:0}}>{sign.nome} di {element}</div>
           </div>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'#1f1f24',lineHeight:1.9,fontStyle:'italic'}}>{sign.elemento_base}</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'rgba(245,232,208,0.88)',lineHeight:1.9,fontStyle:'italic'}}>{sign.elemento_base}</div>
         </div>
 
         {/* OMBRA INVERTITA */}
         <div style={{...card,marginBottom:28,padding:'22px 22px 20px'}} className="fade-in-up">
           <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12}}>
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="rgba(31,31,36,0.4)" strokeWidth="1.3" fill="rgba(31,31,36,0.06)"/><path d="M10 3 A7 7 0 0 1 10 17Z" fill="rgba(31,31,36,0.15)"/><circle cx="10" cy="10" r="2" fill="rgba(31,31,36,0.3)"/></svg>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontWeight:600,color:'#1f1f24'}}>L'Ombra Invertita</div>
-            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.16em',color:'rgba(31,31,36,0.35)',textTransform:'uppercase',marginLeft:'auto'}}>Opposto · {sign.opposto}</div>
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="rgba(245,232,208,0.45)" strokeWidth="1.3" fill="rgba(245,232,208,0.06)"/><path d="M10 3 A7 7 0 0 1 10 17Z" fill="rgba(245,232,208,0.14)"/><circle cx="10" cy="10" r="2" fill="rgba(245,232,208,0.36)"/></svg>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(15px,4vw,18px)',fontWeight:600,color:CREAM}}>L'Ombra Invertita</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:'9px',letterSpacing:'.16em',color:'rgba(245,232,208,0.40)',textTransform:'uppercase',marginLeft:'auto'}}>Opposto · {sign.opposto}</div>
           </div>
-          <div style={{width:'100%',height:'1px',background:'rgba(31,31,36,0.07)',marginBottom:14}}/>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'#1f1f24',lineHeight:1.9,fontStyle:'italic'}}>{sign.ombra}</div>
+          <div style={{width:'100%',height:'1px',background:'rgba(200,56,42,0.30)',marginBottom:14}}/>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(16px,4.2vw,19px)',fontWeight:400,color:'rgba(245,232,208,0.88)',lineHeight:1.9,fontStyle:'italic'}}>{sign.ombra}</div>
         </div>
 
         <div style={{textAlign:'center',paddingBottom:20}}>
-          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(11px,3vw,13px)',fontStyle:'italic',color:'rgba(31,31,36,0.30)',letterSpacing:'.06em'}}>Zodiaco Cinese · {sign.nome} {sign.hanzi} · {element}</div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(11px,3vw,13px)',fontStyle:'italic',color:'rgba(245,232,208,0.26)',letterSpacing:'.06em'}}>生肖 · {sign.nome} {sign.hanzi} · {element}</div>
         </div>
       </div>
     </div>
