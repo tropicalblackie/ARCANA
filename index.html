@@ -4533,7 +4533,7 @@ function DailyHoroscope({t,profile,onBack,onProfile,onEdit}){
       {/* subtle star field */}
       <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0}}>
         {[...Array(28)].map((_,i)=>(
-          <div key={i} style={{position:"absolute",width:i%5===0?2:1.5,height:i%5===0?2:1.5,borderRadius:"50%",background:`rgba(184,138,43,${i%3===0?0.09:0.05})`,top:`${(i*41+13)%100}%`,left:`${(i*67+9)%100}%`,animation:`pulse ${2.2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}}/>
+          <div key={i} style={{position:"absolute",width:i%5===0?2:1.5,height:i%5===0?2:1.5,borderRadius:"50%",background:`rgba(184,138,43,${i%3===0?0.09:0.05})`,top:`${(i*41+13)%100}%`,left:`${(i*67+9)%100}%`,animation:`pulse ${2.2+(i*0.31)%2.5}s ${(i*0.19)%2.5}s ease-in-out infinite`}}/>
         ))}
       </div>
 
